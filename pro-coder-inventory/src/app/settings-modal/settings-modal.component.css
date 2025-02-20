@@ -1,0 +1,19 @@
+.custom_setting .dynamic-block .choose-skin li {
+    background-color: var(--primary-color);
+    color: #fff;
+    border-radius: 0.25rem;
+    font-size: 16px;
+  }
+  .custom_setting .dynamic-block .choose-skin li.active .dynamic {
+    background-color: var(--secondary-color);
+  }
+  .custom_setting .dynamic-block .choose-skin li.active:after {
+    content: "";
+  }
+  .custom_setting .dynamic-block .choose-skin li div {
+    width: 100%;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
