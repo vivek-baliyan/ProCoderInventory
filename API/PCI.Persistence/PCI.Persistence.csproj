@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PCI.Application\PCI.Application.csproj" />
     <ProjectReference Include="..\PCI.Domain\PCI.Domain.csproj" />
   </ItemGroup>
 

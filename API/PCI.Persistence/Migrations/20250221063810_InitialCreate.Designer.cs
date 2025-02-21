@@ -11,7 +11,7 @@ using PCI.Persistence.Context;
 namespace PCI.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250221042828_InitialCreate")]
+    [Migration("20250221063810_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -171,6 +171,9 @@ namespace PCI.Persistence.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("RoleId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Id")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("UserId", "RoleId");

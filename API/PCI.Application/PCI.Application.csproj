@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PCI.Domain\PCI.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
