@@ -1,7 +1,4 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { SettingsModalComponent } from './settings-modal/settings-modal.component';
 
 @Component({
   selector: 'app-root',
