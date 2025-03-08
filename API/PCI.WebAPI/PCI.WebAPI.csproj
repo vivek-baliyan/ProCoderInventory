@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PCI.Application\PCI.Application.csproj" />
     <ProjectReference Include="..\PCI.Persistence\PCI.Persistence.csproj" />
   </ItemGroup>
 

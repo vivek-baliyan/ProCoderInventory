@@ -1,26 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using PCI.Domain.Common;
 
-namespace PCI.Domain.Models
+namespace PCI.Domain.Models;
+
+public class SessionManagement : BaseEntity
 {
-    public class SessionManagement : BaseEntity
-    {
-        [ForeignKey("User")] public int UserId { get; set; }
+    public string UserId { get; set; }
 
-        [Required]
-        [StringLength(255)]
-        public string SessionToken { get; set; } // Unique token for session identification
+    public string SessionToken { get; set; }
 
-        [Required] public DateTime LoginTime { get; set; }
+    public DateTime LoginTime { get; set; }
 
-        public DateTime? LogoutTime { get; set; }
+    public DateTime? LogoutTime { get; set; }
 
-        [StringLength(100)] public string DeviceInfo { get; set; } // e.g., "Apple Safari"
+    public string DeviceInfo { get; set; }
 
-        [StringLength(45)] public string IpAddress { get; set; } // IPv4 or IPv6 address
+    public string IpAddress { get; set; }
 
-        public bool IsActive { get; set; } // True if session is active, False if expired/logged out
+    public bool IsActive { get; set; }
 
-        public virtual User User { get; set; }
-    }
+    public virtual AppUser User { get; set; }
 }

@@ -1,0 +1,45 @@
+.sidebar .menu-list li[aria-expanded="true"] .m-link {
+  color: var(--secondary-color);
+}
+.m-link,
+.ms-link {
+  display: flex;
+}
+.m-link:hover,
+.m-link.active,
+.ms-link:hover,
+.ms-link.active {
+  color: var(--secondary-color);
+}
+.m-link:hover::before,
+.m-link.active::before,
+.ms-link:hover::before,
+.ms-link.active::before {
+  display: block;
+}
+
+.sidebar.sidebar-mini .menu-list .m-link {
+  margin-bottom: 10px;
+}
+.sidebar.sidebar-mini .menu-list .m-link span {
+  display: none;
+}
+.sidebar.sidebar-mini .menu-list .m-link:hover span {
+  display: block;
+  background: var(--primary-color);
+  border-radius: 0.25rem;
+  box-shadow: 0 10px 40px 10px rgba(33, 37, 41, 0.2);
+  width: 200px;
+  padding: 10px 0px 10px 30px;
+  text-align: left;
+  position: absolute;
+  left: 101px;
+  top: 0;
+  font-size: 17px;
+}
+.sidebar.sidebar-mini .menu-list .m-link:hover span.badge {
+  font-size: 13px;
+}
+.sidebar.sidebar-mini .menu-list .m-link:hover span.badge:before {
+  top: 12px;
+}

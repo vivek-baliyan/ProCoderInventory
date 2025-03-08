@@ -1,17 +1,18 @@
+using PCI.Application;
 using PCI.Persistence;
+using PCI.WebAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.ConfigurePersistence(builder.Configuration);
+builder.Services.ConfigureApplication();
+builder.Services.ConfigureWebApi();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("CorsApi", corsPolicyBuilder =>
-        corsPolicyBuilder.WithOrigins("*")
-            .AllowAnyHeader()
-            .AllowAnyMethod());
-});
+builder.Services.AddHttpContextAccessor();
+
+// Add authentication
+builder.Services.AddAuthentication();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

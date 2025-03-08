@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using PCI.Application.Repository;
+using PCI.Application.Services.Interfaces;
 using PCI.Domain.Models;
 
 namespace PCI.WebAPI.Controllers;
 
-public class UserController(IUnitOfWork unitOfWork) : BaseController
+public class UserController(IIdentityService identityService) : BaseController
 {
     [HttpPost("register")]
     public IActionResult Register()
@@ -12,11 +12,11 @@ public class UserController(IUnitOfWork unitOfWork) : BaseController
         return Ok();
     }
 
-    [HttpGet("getAll")]
-    public async Task<ActionResult<IReadOnlyList<User>>> GetAllUsersAsync()
+    [HttpGet("getById/{userId}")]
+    public async Task<ActionResult<AppUser>> GetUserById(string userId)
     {
-        var users = await unitOfWork.Repository<User>().ListAllAsync();
+        var user = await identityService.GetUserById(userId);
 
-        return Ok(users);
+        return Ok(user);
     }
 }
