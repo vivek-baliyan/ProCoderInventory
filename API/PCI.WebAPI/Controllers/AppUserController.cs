@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using PCI.Application.Services.Interfaces;
-using PCI.Domain.Models;
+using PCI.Shared.Dtos;
 
 namespace PCI.WebAPI.Controllers;
 
-public class UserController(IIdentityService identityService) : BaseController
+public class AppUserController(IIdentityService identityService) : BaseController
 {
     [HttpPost("register")]
     public IActionResult Register()
@@ -13,7 +13,7 @@ public class UserController(IIdentityService identityService) : BaseController
     }
 
     [HttpGet("getById/{userId}")]
-    public async Task<ActionResult<AppUser>> GetUserById(string userId)
+    public async Task<ActionResult<AppUserDto>> GetUserById(string userId)
     {
         var user = await identityService.GetUserById(userId);
 

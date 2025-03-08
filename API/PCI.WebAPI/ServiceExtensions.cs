@@ -28,7 +28,7 @@ public static class ServiceExtensions
 
             options.User.RequireUniqueEmail = true;
         })
-        .AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddEntityFrameworkStores<AppIdentityDbContext>()
         .AddDefaultTokenProviders();
     }
 }

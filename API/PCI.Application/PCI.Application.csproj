@@ -6,7 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Mapster" Version="7.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\PCI.Domain\PCI.Domain.csproj" />
+    <ProjectReference Include="..\PCI.Shared\PCI.Shared.csproj" />
   </ItemGroup>
 
 </Project>

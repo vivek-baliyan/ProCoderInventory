@@ -10,4 +10,5 @@ public interface IIdentityRepository
     Task<IdentityResult> AddUserToRoleAsync(AppUser user, string roleName);
     Task<AppUser> FindUserByIdAsync(string userId);
     Task<AppRole> FindRoleByNameAsync(string roleName);
+    Task<List<AppRole>> GetAllRolesAsync();
 }

@@ -8,10 +8,10 @@ using PCI.Persistence.Context;
 
 #nullable disable
 
-namespace PCI.Persistence.Migrations
+namespace PCI.Persistence.Migrations.Identity
 {
-    [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250308172614_InitialCreate")]
+    [DbContext(typeof(AppIdentityDbContext))]
+    [Migration("20250308192640_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -42,7 +42,7 @@ namespace PCI.Persistence.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserRoles", (string)null);
+                    b.ToTable("UserRoles", "Auth");
 
                     b.HasDiscriminator().HasValue("IdentityUserRole<string>");
 
@@ -75,7 +75,7 @@ namespace PCI.Persistence.Migrations
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles", "Auth");
                 });
 
             modelBuilder.Entity("PCI.Domain.Models.AppUser", b =>
@@ -213,7 +213,7 @@ namespace PCI.Persistence.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users", "Auth");
                 });
 
             modelBuilder.Entity("PCI.Domain.Models.SessionManagement", b =>
@@ -263,7 +263,7 @@ namespace PCI.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Sessions");
+                    b.ToTable("Sessions", "Auth");
                 });
 
             modelBuilder.Entity("PCI.Domain.Models.AppUserRole", b =>

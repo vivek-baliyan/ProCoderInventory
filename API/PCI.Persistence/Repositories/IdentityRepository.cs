@@ -1,42 +1,39 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using PCI.Application.Repositories;
 using PCI.Domain.Models;
 
 namespace PCI.Persistence.Repositories;
 
-public class IdentityRepository : IIdentityRepository
+public class IdentityRepository(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager) : IIdentityRepository
 {
-    private readonly UserManager<AppUser> _userManager;
-    private readonly RoleManager<AppRole> _roleManager;
-
-    public IdentityRepository(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
-    {
-        _userManager = userManager;
-        _roleManager = roleManager;
-    }
-
     public async Task<IdentityResult> CreateUserAsync(AppUser user, string password)
     {
-        return await _userManager.CreateAsync(user, password);
+        return await userManager.CreateAsync(user, password);
     }
 
     public async Task<IdentityResult> CreateRoleAsync(AppRole role)
     {
-        return await _roleManager.CreateAsync(role);
+        return await roleManager.CreateAsync(role);
     }
 
     public async Task<IdentityResult> AddUserToRoleAsync(AppUser user, string roleName)
     {
-        return await _userManager.AddToRoleAsync(user, roleName);
+        return await userManager.AddToRoleAsync(user, roleName);
     }
 
     public async Task<AppUser> FindUserByIdAsync(string userId)
     {
-        return await _userManager.FindByIdAsync(userId);
+        return await userManager.FindByIdAsync(userId);
     }
 
     public async Task<AppRole> FindRoleByNameAsync(string roleName)
     {
-        return await _roleManager.FindByNameAsync(roleName);
+        return await roleManager.FindByNameAsync(roleName);
+    }
+
+    public async Task<List<AppRole>> GetAllRolesAsync()
+    {
+        return await roleManager.Roles.ToListAsync();
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace PCI.Persistence.Migrations
+namespace PCI.Persistence.Migrations.Identity
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -11,8 +11,12 @@ namespace PCI.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "Auth");
+
             migrationBuilder.CreateTable(
                 name: "Roles",
+                schema: "Auth",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
@@ -28,6 +32,7 @@ namespace PCI.Persistence.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Users",
+                schema: "Auth",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
@@ -72,6 +77,7 @@ namespace PCI.Persistence.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Sessions",
+                schema: "Auth",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -94,6 +100,7 @@ namespace PCI.Persistence.Migrations
                     table.ForeignKey(
                         name: "FK_Sessions_Users_UserId",
                         column: x => x.UserId,
+                        principalSchema: "Auth",
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -101,6 +108,7 @@ namespace PCI.Persistence.Migrations
 
             migrationBuilder.CreateTable(
                 name: "UserRoles",
+                schema: "Auth",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "TEXT", nullable: false),
@@ -115,17 +123,20 @@ namespace PCI.Persistence.Migrations
                     table.ForeignKey(
                         name: "FK_UserRoles_Roles_RoleId",
                         column: x => x.RoleId,
+                        principalSchema: "Auth",
                         principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserRoles_Users_AppUserId",
                         column: x => x.AppUserId,
+                        principalSchema: "Auth",
                         principalTable: "Users",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_UserRoles_Users_UserId",
                         column: x => x.UserId,
+                        principalSchema: "Auth",
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -133,38 +144,45 @@ namespace PCI.Persistence.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
+                schema: "Auth",
                 table: "Roles",
                 column: "NormalizedName",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Sessions_UserId",
+                schema: "Auth",
                 table: "Sessions",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserRoles_AppUserId",
+                schema: "Auth",
                 table: "UserRoles",
                 column: "AppUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserRoles_RoleId",
+                schema: "Auth",
                 table: "UserRoles",
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
+                schema: "Auth",
                 table: "Users",
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",
+                schema: "Auth",
                 table: "Users",
                 column: "Email",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
+                schema: "Auth",
                 table: "Users",
                 column: "NormalizedUserName",
                 unique: true);
@@ -174,16 +192,20 @@ namespace PCI.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Sessions");
+                name: "Sessions",
+                schema: "Auth");
 
             migrationBuilder.DropTable(
-                name: "UserRoles");
+                name: "UserRoles",
+                schema: "Auth");
 
             migrationBuilder.DropTable(
-                name: "Roles");
+                name: "Roles",
+                schema: "Auth");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Users",
+                schema: "Auth");
         }
     }
 }

@@ -1,0 +1,20 @@
+[
+  {
+    "Name": "StoreManager"
+  },
+  {
+    "Name": "InventoryClerk"
+  },
+  {
+    "Name": "OrderProcessor"
+  },
+  {
+    "Name": "CustomerSupport"
+  },
+  {
+    "Name": "WarehouseStaff"
+  },
+  {
+    "Name": "Shopper"
+  }
+]
