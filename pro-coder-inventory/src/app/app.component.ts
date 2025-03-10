@@ -8,4 +8,5 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'pro-coders-inventory';
+  userId = 0;
 }

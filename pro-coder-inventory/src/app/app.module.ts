@@ -3,38 +3,26 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
-import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './components/header/header.component';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { SettingsModalComponent } from './components/settings-modal/settings-modal.component';
-import { ProfileComponent } from './components/profile/profile.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-
-import { routes } from './app.routes';
-import { MenuItemComponent } from './components/sidebar/menu-item/menu-item.component';
+import { AuthModule } from './features/auth/auth.module';
+import { SharedModule } from './shared/shared.module';
+import { DashboardModule } from './features/dashboard/dashboard.module';
+import { AppRoutingModule } from './app-routing.module';
+import { LayoutModule } from './layout/layout.module';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    DashboardComponent,
-    ProfileComponent,
-    HeaderComponent,
-    SidebarComponent,
-    SettingsModalComponent,
-    MenuItemComponent
-  ],
+  declarations: [AppComponent],
   bootstrap: [AppComponent],
   providers: [provideAnimationsAsync(), BsModalService],
   imports: [
     BrowserModule,
-    RouterModule.forRoot(routes),
-    BsDropdownModule,
-    ModalModule,
-    CollapseModule,
+    AppRoutingModule,
+    LayoutModule,
+    AuthModule,
+    DashboardModule,
+    SharedModule,
   ],
 })
 export class AppModule {}
