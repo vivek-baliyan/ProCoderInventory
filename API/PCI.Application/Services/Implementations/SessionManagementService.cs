@@ -1,12 +1,15 @@
 ﻿using PCI.Application.Repositories;
 using PCI.Application.Services.Interfaces;
 using PCI.Domain.Models;
+using PCI.Shared.Common;
 
 namespace PCI.Application.Services.Implementations;
 
 public class SessionManagementService(IUnitOfWork unitOfWork) : ISessionManagementService
 {
-    public async Task<string> CreateSessionAsync(string userId, string ipAddress = null, string deviceInfo = null)
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+
+    public async Task<ServiceResult<string>> CreateSessionAsync(string userId, string ipAddress = null, string deviceInfo = null)
     {
         var sessionToken = Guid.NewGuid().ToString();
 
@@ -21,15 +24,15 @@ public class SessionManagementService(IUnitOfWork unitOfWork) : ISessionManageme
             CreatedOn = DateTime.UtcNow
         };
 
-        unitOfWork.Repository<SessionManagement>().Add(session);
-        await unitOfWork.SaveChangesAsync();
+        _unitOfWork.Repository<SessionManagement>().Add(session);
+        await _unitOfWork.SaveChangesAsync();
 
-        return sessionToken;
+        return ServiceResult<string>.Success(sessionToken);
     }
 
     public async Task EndSessionAsync(string sessionToken)
     {
-        var session = await unitOfWork.Repository<SessionManagement>().GetFirstOrDefaultAsync(s => s.SessionToken == sessionToken && s.IsActive);
+        var session = await _unitOfWork.Repository<SessionManagement>().GetFirstOrDefaultAsync(s => s.SessionToken == sessionToken && s.IsActive);
 
         if (session != null)
         {
@@ -37,14 +40,14 @@ public class SessionManagementService(IUnitOfWork unitOfWork) : ISessionManageme
             session.IsActive = false;
             session.UpdatedOn = DateTime.UtcNow;
 
-            unitOfWork.Repository<SessionManagement>().Update(session);
-            await unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<SessionManagement>().Update(session);
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 
     public async Task EndAllUserSessionsAsync(string userId, string currentSessionToken = null)
     {
-        var sessions = await unitOfWork.Repository<SessionManagement>()
+        var sessions = await _unitOfWork.Repository<SessionManagement>()
             .GetFilteredAsync(s => s.UserId == userId && s.IsActive && s.SessionToken != currentSessionToken);
 
         foreach (var session in sessions)
@@ -53,25 +56,31 @@ public class SessionManagementService(IUnitOfWork unitOfWork) : ISessionManageme
             session.IsActive = false;
             session.UpdatedOn = DateTime.UtcNow;
 
-            unitOfWork.Repository<SessionManagement>().Update(session);
+            _unitOfWork.Repository<SessionManagement>().Update(session);
         }
 
-        await unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync();
 
     }
 
-    public async Task<bool> ValidateSessionAsync(string sessionToken)
+    public async Task<ServiceResult<bool>> ValidateSessionAsync(string sessionToken)
     {
-        return await unitOfWork.Repository<SessionManagement>()
-            .AnyAsync(s => s.SessionToken == sessionToken && s.IsActive);
+        var session = await _unitOfWork.Repository<SessionManagement>()
+            .GetFirstOrDefaultAsync(s => s.SessionToken == sessionToken && s.IsActive);
+        if (session == null)
+        {
+            return ServiceResult<bool>.Error(new Problem("SessionNotFound", "Session not found or inactive."));
+        }
 
+        var isValid = session.LogoutTime == null && session.IsActive;
+        return ServiceResult<bool>.Success(isValid);
     }
 
-    public async Task<List<SessionManagement>> GetUserActiveSessions(string userId)
+    public async Task<ServiceResult<List<SessionManagement>>> GetUserActiveSessions(string userId)
     {
-        var sessions = await unitOfWork.Repository<SessionManagement>()
+        var sessions = await _unitOfWork.Repository<SessionManagement>()
             .GetFilteredAsync(s => s.UserId == userId && s.IsActive);
 
-        return [.. sessions.OrderByDescending(s => s.LoginTime)];
+        return ServiceResult<List<SessionManagement>>.Success([.. sessions.OrderByDescending(s => s.LoginTime)]);
     }
 }

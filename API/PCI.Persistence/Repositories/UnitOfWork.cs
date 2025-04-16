@@ -5,19 +5,13 @@ using System.Collections.Concurrent;
 
 namespace PCI.Persistence.Repositories;
 
-public class UnitOfWork : IUnitOfWork, IDisposable
+public class UnitOfWork(ApplicationDbContext context, IIdentityRepository identityRepository) : IUnitOfWork, IDisposable
 {
     private ConcurrentDictionary<string, object> _repositories;
     private bool _disposed;
-    private readonly ApplicationDbContext _context;
+    private readonly ApplicationDbContext _context = context;
 
-    public UnitOfWork(ApplicationDbContext context, IIdentityRepository identityRepository)
-    {
-        _context = context;
-        IdentityRepository = identityRepository;
-    }
-
-    public IIdentityRepository IdentityRepository { get; private set; }
+    public IIdentityRepository IdentityRepository { get; private set; } = identityRepository;
 
     public async Task<int> SaveChangesAsync()
     {

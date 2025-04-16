@@ -12,11 +12,11 @@ namespace PCI.Persistence.Migrations.Identity
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "Auth");
+                name: "AUTH");
 
             migrationBuilder.CreateTable(
                 name: "Roles",
-                schema: "Auth",
+                schema: "AUTH",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
@@ -32,28 +32,14 @@ namespace PCI.Persistence.Migrations.Identity
 
             migrationBuilder.CreateTable(
                 name: "Users",
-                schema: "Auth",
+                schema: "AUTH",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
-                    FirstName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
-                    ProfileImageUrl = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
-                    DateOfBirth = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    Country = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
-                    StreetAddress = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
-                    City = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
-                    State = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
-                    PostalCode = table.Column<string>(type: "TEXT", maxLength: 20, nullable: true),
-                    Bio = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
-                    CompanyName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
-                    ContactPerson = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
-                    WebsiteUrl = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
-                    LastLogin = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    LastLoginDevice = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
-                    LastPasswordChange = table.Column<DateTime>(type: "TEXT", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    LastLogin = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    LastLoginDevice = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    LastPasswordChange = table.Column<DateTime>(type: "TEXT", nullable: true),
                     IsDeleted = table.Column<bool>(type: "INTEGER", nullable: false),
                     UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
@@ -77,7 +63,7 @@ namespace PCI.Persistence.Migrations.Identity
 
             migrationBuilder.CreateTable(
                 name: "Sessions",
-                schema: "Auth",
+                schema: "AUTH",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -89,9 +75,9 @@ namespace PCI.Persistence.Migrations.Identity
                     DeviceInfo = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
                     IpAddress = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
                     IsActive = table.Column<bool>(type: "INTEGER", nullable: false),
-                    CreatedBy = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedBy = table.Column<string>(type: "TEXT", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "TEXT", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedBy = table.Column<int>(type: "INTEGER", nullable: true),
                     UpdatedOn = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
@@ -100,7 +86,7 @@ namespace PCI.Persistence.Migrations.Identity
                     table.ForeignKey(
                         name: "FK_Sessions_Users_UserId",
                         column: x => x.UserId,
-                        principalSchema: "Auth",
+                        principalSchema: "AUTH",
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -108,7 +94,7 @@ namespace PCI.Persistence.Migrations.Identity
 
             migrationBuilder.CreateTable(
                 name: "UserRoles",
-                schema: "Auth",
+                schema: "AUTH",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "TEXT", nullable: false),
@@ -123,20 +109,20 @@ namespace PCI.Persistence.Migrations.Identity
                     table.ForeignKey(
                         name: "FK_UserRoles_Roles_RoleId",
                         column: x => x.RoleId,
-                        principalSchema: "Auth",
+                        principalSchema: "AUTH",
                         principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserRoles_Users_AppUserId",
                         column: x => x.AppUserId,
-                        principalSchema: "Auth",
+                        principalSchema: "AUTH",
                         principalTable: "Users",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_UserRoles_Users_UserId",
                         column: x => x.UserId,
-                        principalSchema: "Auth",
+                        principalSchema: "AUTH",
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -144,45 +130,38 @@ namespace PCI.Persistence.Migrations.Identity
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
-                schema: "Auth",
+                schema: "AUTH",
                 table: "Roles",
                 column: "NormalizedName",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Sessions_UserId",
-                schema: "Auth",
+                schema: "AUTH",
                 table: "Sessions",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserRoles_AppUserId",
-                schema: "Auth",
+                schema: "AUTH",
                 table: "UserRoles",
                 column: "AppUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserRoles_RoleId",
-                schema: "Auth",
+                schema: "AUTH",
                 table: "UserRoles",
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
-                schema: "Auth",
+                schema: "AUTH",
                 table: "Users",
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_Email",
-                schema: "Auth",
-                table: "Users",
-                column: "Email",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
-                schema: "Auth",
+                schema: "AUTH",
                 table: "Users",
                 column: "NormalizedUserName",
                 unique: true);
@@ -193,19 +172,19 @@ namespace PCI.Persistence.Migrations.Identity
         {
             migrationBuilder.DropTable(
                 name: "Sessions",
-                schema: "Auth");
+                schema: "AUTH");
 
             migrationBuilder.DropTable(
                 name: "UserRoles",
-                schema: "Auth");
+                schema: "AUTH");
 
             migrationBuilder.DropTable(
                 name: "Roles",
-                schema: "Auth");
+                schema: "AUTH");
 
             migrationBuilder.DropTable(
                 name: "Users",
-                schema: "Auth");
+                schema: "AUTH");
         }
     }
 }

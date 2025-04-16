@@ -8,7 +8,9 @@ public static class ServiceExtensions
 {
     public static void ConfigureApplication(this IServiceCollection services)
     {
-        services.AddScoped<ISessionManagementService, SessionManagementService>();
         services.AddScoped<IIdentityService, IdentityService>();
+        services.AddScoped<ISessionManagementService, SessionManagementService>();
+
+        services.AddScoped<IAccountService, AccountService>();
     }
 }

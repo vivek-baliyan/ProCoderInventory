@@ -8,6 +8,7 @@ namespace PCI.Persistence.Repositories;
 
 public class GenericRepository<T>(ApplicationDbContext context) : IGenericRepository<T> where T : BaseEntity
 {
+    private readonly ApplicationDbContext _context = context;
     private readonly DbSet<T> _dbSet = context.Set<T>();
 
     public void Add(T entity)
@@ -18,7 +19,7 @@ public class GenericRepository<T>(ApplicationDbContext context) : IGenericReposi
     public void Update(T entity)
     {
         _dbSet.Attach(entity);
-        context.Entry(entity).State = EntityState.Modified;
+        _context.Entry(entity).State = EntityState.Modified;
     }
 
     public void Remove(T entity)

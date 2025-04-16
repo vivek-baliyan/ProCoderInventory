@@ -11,14 +11,16 @@ using PCI.Persistence.Context;
 namespace PCI.Persistence.Migrations.Identity
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    [Migration("20250308192640_InitialCreate")]
+    [Migration("20250416060248_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.13");
+            modelBuilder
+                .HasDefaultSchema("AUTH")
+                .HasAnnotation("ProductVersion", "8.0.13");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
@@ -42,7 +44,7 @@ namespace PCI.Persistence.Migrations.Identity
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserRoles", "Auth");
+                    b.ToTable("UserRoles", "AUTH");
 
                     b.HasDiscriminator().HasValue("IdentityUserRole<string>");
 
@@ -75,7 +77,7 @@ namespace PCI.Persistence.Migrations.Identity
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("Roles", "Auth");
+                    b.ToTable("Roles", "AUTH");
                 });
 
             modelBuilder.Entity("PCI.Domain.Models.AppUser", b =>
@@ -86,34 +88,11 @@ namespace PCI.Persistence.Migrations.Identity
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Bio")
-                        .HasMaxLength(500)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("City")
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CompanyName")
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ContactPerson")
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Country")
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
@@ -123,11 +102,6 @@ namespace PCI.Persistence.Migrations.Identity
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("INTEGER");
 
@@ -135,11 +109,7 @@ namespace PCI.Persistence.Migrations.Identity
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LastLoginDevice")
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LastName")
-                        .HasMaxLength(100)
+                        .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("LastPasswordChange")
@@ -168,43 +138,17 @@ namespace PCI.Persistence.Migrations.Identity
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("PostalCode")
-                        .HasMaxLength(20)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ProfileImageUrl")
-                        .HasMaxLength(255)
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("State")
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("StreetAddress")
-                        .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime?>("UpdatedOn")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("WebsiteUrl")
-                        .HasMaxLength(255)
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -213,7 +157,7 @@ namespace PCI.Persistence.Migrations.Identity
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("Users", "Auth");
+                    b.ToTable("Users", "AUTH");
                 });
 
             modelBuilder.Entity("PCI.Domain.Models.SessionManagement", b =>
@@ -222,8 +166,8 @@ namespace PCI.Persistence.Migrations.Identity
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("TEXT");
@@ -250,8 +194,8 @@ namespace PCI.Persistence.Migrations.Identity
                         .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("TEXT");
@@ -263,7 +207,7 @@ namespace PCI.Persistence.Migrations.Identity
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Sessions", "Auth");
+                    b.ToTable("Sessions", "AUTH");
                 });
 
             modelBuilder.Entity("PCI.Domain.Models.AppUserRole", b =>
