@@ -4,9 +4,7 @@ using PCI.Shared.Dtos;
 
 namespace PCI.WebAPI.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class AccountController(IIdentityService identityService, IAccountService accountService) : ControllerBase
+public class AccountController(IIdentityService identityService, IAccountService accountService) : BaseController
 {
     private readonly IIdentityService _identityService = identityService;
     private readonly IAccountService _accountService = accountService;
@@ -21,7 +19,7 @@ public class AccountController(IIdentityService identityService, IAccountService
 
             if (!result.Succeeded)
             {
-                return BadRequest(result.Problems);
+                return StatusCode(StatusCodes.Status400BadRequest, result);
             }
 
             try
@@ -29,22 +27,30 @@ public class AccountController(IIdentityService identityService, IAccountService
                 var userResponse = await _identityService.GetUserByEmail(registerUserDto.Email);
                 if (!userResponse.Succeeded)
                 {
-                    return BadRequest(userResponse.Problems);
+                    return StatusCode(StatusCodes.Status400BadRequest, ErrorResponse(userResponse));
                 }
 
                 // 2. Create the user profile in the application database
                 var userProfile = await _accountService.CreateUserProfile(userResponse.ResultData.Id, registerUserDto);
 
-                return Ok(new { userId = userResponse.ResultData.Id, message = "Registration successful" });
+                if (!userProfile.Succeeded)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ErrorResponse(userProfile));
+                }
+
+                return StatusCode(StatusCodes.Status200OK,
+                    SuccessResponse(userProfile.ResultData.UserId, "User profile created successfully."));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred while creating user profile: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    ErrorResponse(ex.ToString(), $"An error occurred while creating user profile: {ex.Message}"));
             }
         }
         catch (Exception ex)
         {
-            return StatusCode(500, $"An error occurred during registration: {ex.Message}");
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                ErrorResponse(ex.ToString(), $"An error occurred during registration: {ex.Message}"));
         }
     }
 }

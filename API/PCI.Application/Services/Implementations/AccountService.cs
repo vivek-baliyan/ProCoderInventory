@@ -50,7 +50,7 @@ public class AccountService(IUnitOfWork unitOfWork) : IAccountService
         catch (Exception ex)
         {
             return ServiceResult<UserProfile>.Error(
-                new Problem("UserProfileCreationError", ex.ToString(), "An error occurred while creating the user profile."));
+                new Problem("UserProfileCreationError", ex.ToString()));
         }
     }
 }

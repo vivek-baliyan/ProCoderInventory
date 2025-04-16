@@ -35,5 +35,4 @@ public record ServiceResult<TResult>
     public bool Succeeded => !Failed;
 }
 
-public record Problem(string Code, string Description, string Message = "");
-
+public record Problem(string Code, string Description);

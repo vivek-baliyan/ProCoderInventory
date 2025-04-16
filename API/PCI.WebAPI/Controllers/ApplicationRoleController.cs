@@ -7,26 +7,42 @@ namespace PCI.WebAPI.Controllers;
 public class ApplicationRoleController(IIdentityService identityService) : BaseController
 {
     [HttpPost("createRole")]
-    public async Task<ActionResult> CreateRole(AddAppRoleDto role)
+    public async Task<IActionResult> CreateRole(AddAppRoleDto role)
     {
         var result = await identityService.CreateRole(role);
 
-        return Ok();
+        if (!result.Succeeded)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, ErrorResponse(result));
+        }
+
+        return StatusCode(StatusCodes.Status200OK, SuccessResponse(result));
+
     }
 
     [HttpGet("getAllRoles")]
-    public async Task<ActionResult<IReadOnlyList<AppRoleDto>>> GetAllRoles()
+    public async Task<IActionResult> GetAllRoles()
     {
-        var roles = await identityService.GetAllRoles();
+        var result = await identityService.GetAllRoles();
 
-        return Ok(roles);
+        if (!result.Succeeded)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, ErrorResponse(result));
+        }
+
+        return StatusCode(StatusCodes.Status200OK, SuccessResponse(result));
     }
 
     [HttpGet("getById/{roleName}")]
-    public async Task<ActionResult<AppRoleDto>> GetRoleByName(string roleName)
+    public async Task<IActionResult> GetRoleByName(string roleName)
     {
-        var role = await identityService.GetRoleByName(roleName);
+        var result = await identityService.GetRoleByName(roleName);
 
-        return Ok(role);
+        if (!result.Succeeded)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, ErrorResponse(result));
+        }
+
+        return StatusCode(StatusCodes.Status200OK, SuccessResponse(result));
     }
 }
