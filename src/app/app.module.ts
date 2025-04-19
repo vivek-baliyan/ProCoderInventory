@@ -11,10 +11,11 @@ import { DashboardModule } from './features/dashboard/dashboard.module';
 import { AppRoutingModule } from './app-routing.module';
 import { LayoutModule } from './layout/layout.module';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { loadingInterceptor } from './shared/interceptors/loading.interceptor';
+import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,18 +23,18 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   providers: [
     provideAnimationsAsync(),
     BsModalService,
-    provideHttpClient(withInterceptors([loadingInterceptor])),
+    provideHttpClient(withInterceptors([loadingInterceptor, authInterceptor])),
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule, // Added for toastr animations
+    AppRoutingModule,
     ToastrModule.forRoot({
       timeOut: 3000,
       positionClass: 'toast-top-right',
       preventDuplicates: true,
     }),
     NgxSpinnerModule.forRoot({ type: 'ball-scale-multiple' }),
-    AppRoutingModule,
     LayoutModule,
     AuthModule,
     DashboardModule,

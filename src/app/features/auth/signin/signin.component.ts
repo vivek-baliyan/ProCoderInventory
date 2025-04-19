@@ -1,8 +1,8 @@
 import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
-import { Router } from '@angular/router';
-import { NotificationService } from '../../../shared/services/notification.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-signin',
@@ -21,6 +21,7 @@ export class SigninComponent {
   });
 
   constructor(
+    private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
     private notificationService: NotificationService
@@ -45,20 +46,11 @@ export class SigninComponent {
   onSubmit() {
     this.authService.signin(this.form.value).subscribe({
       next: (response: any) => {
-        // 1. Store auth token
-        localStorage.setItem('authToken', response.token);
-
-        // 2. Store any user data if needed
-        localStorage.setItem('userData', JSON.stringify(response.user));
-
-        // 3. Update authentication state (if using a state management service)
-        this.authService.setAuthState(true);
-
-        // 4. Show success message (if you have a notification service)
         this.notificationService.showSuccess('Login successful!');
 
-        // 5. Navigate to the protected route (usually dashboard)
-        this.router.navigate(['/dashboard']);
+        const returnUrl =
+          this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+        this.router.navigateByUrl(returnUrl);
       },
       error: (error) => {
         console.error('Login failed:', error);
