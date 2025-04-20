@@ -2,7 +2,7 @@
 import { HttpInterceptorFn, HttpRequest, HttpHandlerFn, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { AuthService } from '../../features/auth/services/auth.service';
+import { AuthService } from '../../modules/auth/services/auth.service';
 import { Router } from '@angular/router';
 import { inject } from '@angular/core';
 
