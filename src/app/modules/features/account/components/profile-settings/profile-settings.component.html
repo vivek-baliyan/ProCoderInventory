@@ -5,39 +5,61 @@
     <h6 class="mb-0 fw-bold">Profile Settings</h6>
   </div>
   <div class="card-body">
-    <form class="row g-4">
+    <form
+      class="row g-4"
+      [formGroup]="profileSettingsForm"
+      (ngSubmit)="onSubmit()"
+    >
       <div class="col-md-6 col-sm-12">
         <div class="form-group">
-          <label class="form-label"
-            >Company Name <span class="text-danger">*</span></label
-          >
-          <input class="form-control" type="text" value="" />
+          <label class="form-label">Company Name</label>
+          <input
+            class="form-control"
+            type="text"
+            name="companyName"
+            formControlName="companyName"
+          />
         </div>
       </div>
       <div class="col-md-6 col-sm-12">
         <div class="form-group">
           <label class="form-label">Contact Person</label>
-          <input class="form-control" type="text" />
+          <input
+            class="form-control"
+            type="text"
+            name="contactPerson"
+            formControlName="contactPerson"
+          />
         </div>
       </div>
       <div class="col-md-12 col-sm-12">
         <label class="form-label">Website Url</label>
         <div class="input-group">
           <span class="input-group-text">http://</span>
-          <input type="text" class="form-control" value="" />
+          <input
+            type="text"
+            class="form-control"
+            name="websiteUrl"
+            formControlName="websiteUrl"
+          />
         </div>
       </div>
       <div class="col-12">
         <div class="form-group">
           <label class="form-label">Address</label>
-          <textarea class="form-control" aria-label="With textarea"></textarea>
+          <textarea
+            class="form-control"
+            aria-label="With textarea"
+            name="streetAddress"
+            formControlName="streetAddress"
+          ></textarea>
         </div>
       </div>
 
       <div class="col-sm-6 col-md-6">
         <div class="form-group">
           <label class="form-label">Country</label>
-          <select class="form-control">
+          <select class="form-control" name="country" formControlName="country">
             <option value="">-- Select Country --</option>
             <option value="AF">Afghanistan</option>
             <option value="AX">Åland Islands</option>
@@ -300,7 +322,8 @@
       <div class="col-sm-6 col-md-6">
         <div class="form-group">
           <label class="form-label">State/Province</label>
-          <select class="form-control">
+          <select class="form-control" name="state" formControlName="state">
+            <option value="">-- Select State --</option>
             <option>California</option>
             <option>Alaska</option>
             <option>Alabama</option>
@@ -310,18 +333,28 @@
       <div class="col-sm-6 col-md-6">
         <div class="form-group">
           <label class="form-label">City</label>
-          <input class="form-control" type="text" />
+          <input
+            class="form-control"
+            type="text"
+            name="city"
+            formControlName="city"
+          />
         </div>
       </div>
       <div class="col-sm-6 col-md-6">
         <div class="form-group">
           <label class="form-label">Postal Code</label>
-          <input class="form-control" type="text" />
+          <input
+            class="form-control"
+            type="text"
+            name="postalCode"
+            formControlName="postalCode"
+          />
         </div>
       </div>
 
       <div class="col-12 mt-4">
-        <button type="button" class="btn btn-primary text-uppercase px-5">
+        <button type="submit" class="btn btn-primary text-uppercase px-5">
           SAVE
         </button>
       </div>

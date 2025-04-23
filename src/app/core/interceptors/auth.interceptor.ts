@@ -1,4 +1,3 @@
-// auth.interceptor.ts
 import { HttpInterceptorFn, HttpRequest, HttpHandlerFn, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -31,8 +30,8 @@ export const authInterceptor: HttpInterceptorFn = (
     catchError((error: HttpErrorResponse) => {
       // Handle 401 Unauthorized errors (expired token)
       if (error.status === 401) {
-        authService.logout();
-        router.navigate(['/login']);
+        authService.signout();
+        router.navigate(['/auth/signin']);
       }
       
       return throwError(() => error);

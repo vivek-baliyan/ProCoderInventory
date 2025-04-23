@@ -15,6 +15,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { AuthModule } from './modules/auth/auth.module';
 import { MainModule } from './modules/main/main.module';
+import { httpErrorInterceptor } from './core/interceptors/http-error.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,7 +23,13 @@ import { MainModule } from './modules/main/main.module';
   providers: [
     provideAnimationsAsync(),
     BsModalService,
-    provideHttpClient(withInterceptors([loadingInterceptor, authInterceptor])),
+    provideHttpClient(
+      withInterceptors([
+        loadingInterceptor,
+        authInterceptor,
+        httpErrorInterceptor,
+      ])
+    ),
   ],
   imports: [
     BrowserModule,

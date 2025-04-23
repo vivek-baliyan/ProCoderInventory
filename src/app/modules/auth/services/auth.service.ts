@@ -2,15 +2,16 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { LoggedInUserData } from '../../../core/models/loggedInUserData';
-import { ApiResponse } from '../../../core/models/apiResponse';
+import { LoggedInUserData } from '../../../core/models/logged-in-user-data';
+import { ApiResponse } from '../../../core/models/api-response';
+import { UserLogin } from '../../../core/models/user-login';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private isAuthenticated = new BehaviorSubject<boolean>(this.hasToken());
-  private currentUser = new BehaviorSubject<LoggedInUserData | null>(
+  private currentUser = new BehaviorSubject<LoggedInUserData>(
     this.getUserFromStorage()
   );
 
@@ -26,11 +27,11 @@ export class AuthService {
     this.isAuthenticated.next(isAuth);
   }
 
-  logout(): void {
+  signout() {
     localStorage.removeItem('authToken');
     localStorage.removeItem('userData');
     this.isAuthenticated.next(false);
-    this.currentUser.next(null);
+    this.currentUser.next({} as LoggedInUserData);
   }
 
   signup(data: any) {
@@ -40,7 +41,7 @@ export class AuthService {
     );
   }
 
-  signin(credentials: any): Observable<ApiResponse<LoggedInUserData>> {
+  signin(credentials: UserLogin): Observable<ApiResponse<LoggedInUserData>> {
     return this.httpClient
       .post<ApiResponse<LoggedInUserData>>(
         `${environment.apiBaseUrl}/Account/login`,

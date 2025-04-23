@@ -1,4 +1,3 @@
-// src/app/core/guards/redirect-if-authenticated.guard.ts
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../modules/auth/services/auth.service';

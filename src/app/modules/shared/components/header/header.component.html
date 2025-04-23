@@ -192,7 +192,9 @@
         >
           <div class="u-info me-2">
             <p class="mb-0 text-end line-height-sm">
-              <span class="font-weight-bold">Hello, {{ userData?.firstName }}</span>
+              <span class="font-weight-bold"
+                >Hello, {{ userData?.firstName }}</span
+              >
             </p>
             <!-- <small>{{ userData?.userName }}</small> -->
           </div>
@@ -249,8 +251,9 @@
                   ><i class="icofont-file-text fs-5 me-3"></i>Order Invoices</a
                 >
                 <a
-                  href="ui-elements/auth-signin.html"
                   class="list-group-item list-group-item-action border-0"
+                  routerLink="/auth/signin"
+                  (click)="onSignout()"
                   ><i class="icofont-logout fs-5 me-3"></i>Signout</a
                 >
               </div>

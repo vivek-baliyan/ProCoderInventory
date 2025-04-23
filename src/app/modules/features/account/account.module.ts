@@ -7,6 +7,7 @@ import { ProfileSettingsComponent } from './components/profile-settings/profile-
 import { AuthSettingsComponent } from './components/auth-settings/auth-settings.component';
 import { NotificationSettingsComponent } from './components/notification-settings/notification-settings.component';
 import { PaymentSettingsComponent } from './components/payment-settings/payment-settings.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,6 @@ import { PaymentSettingsComponent } from './components/payment-settings/payment-
     PaymentSettingsComponent,
     NotificationSettingsComponent,
   ],
-  imports: [CommonModule, AccountRoutingModule],
+  imports: [CommonModule, ReactiveFormsModule, AccountRoutingModule],
 })
 export class AccountModule {}

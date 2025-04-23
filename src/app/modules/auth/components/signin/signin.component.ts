@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { AuthService } from '../../services/auth.service';
+import { UserLogin } from '../../../../core/models/user-login';
 
 @Component({
   selector: 'app-signin',
@@ -44,18 +45,24 @@ export class SigninComponent {
   }
 
   onSubmit() {
-    this.authService.signin(this.form.value).subscribe({
-      next: (response: any) => {
+    if (this.form.invalid) {
+      this.notificationService.showError('Please fill in all required fields.');
+      return;
+    }
+
+    let userLogin: UserLogin = {
+      email: this.form.value.email!,
+      password: this.form.value.password!,
+      rememberMe: false,
+    };
+
+    this.authService.signin(userLogin).subscribe({
+      next: (_) => {
         this.notificationService.showSuccess('Login successful!');
 
         const returnUrl =
           this.route.snapshot.queryParams['returnUrl'] || '/app/dashboard';
         this.router.navigateByUrl(returnUrl);
-      },
-      error: (error) => {
-        console.error('Login failed:', error);
-        // Handle error (show error message)
-        this.notificationService.showError('Login failed. Please try again.');
       },
     });
   }

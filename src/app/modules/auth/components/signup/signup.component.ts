@@ -7,6 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-signup',
@@ -36,7 +37,10 @@ export class SignupComponent {
     termsAccepted: new FormControl(false, [Validators.requiredTrue]),
   });
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private notificationService: NotificationService
+  ) {}
 
   get firstName() {
     return this.form.controls.firstName;
@@ -82,10 +86,8 @@ export class SignupComponent {
     this.authService.signup(this.form.value).subscribe({
       next: (response: any) => {
         console.log(response);
-      },
-      error: (error: any) => {
-        console.error('Error during signup:', error);
-      },
+        this.notificationService.showSuccess('Signup successful!');
+      }
     });
 
     this.form.reset(); // Reset the form after submission

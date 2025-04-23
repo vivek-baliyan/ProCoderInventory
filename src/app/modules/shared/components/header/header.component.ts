@@ -3,7 +3,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { SettingsModalComponent } from '../settings-modal/settings-modal.component';
 import { AuthService } from '../../../auth/services/auth.service';
 import { Router } from '@angular/router';
-import { LoggedInUserData } from '../../../../core/models/loggedInUserData';
+import { LoggedInUserData } from '../../../../core/models/logged-in-user-data';
 
 @Component({
   selector: 'app-header',
@@ -31,9 +31,9 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+  onSignout() {
+    this.authService.signout();
+    this.router.navigate(['/auth/signin']);
   }
 
   openSettingsModal() {
@@ -44,6 +44,4 @@ export class HeaderComponent implements OnInit {
       keyboard: true, // Esc key to close
     });
   }
-
-  getLoggedInUser() {}
 }

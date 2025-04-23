@@ -14,10 +14,10 @@
         />
       </a>
       <button
+        type="button"
         class="btn btn-primary"
         style="position: absolute; top: 15px; right: 15px"
-        data-bs-toggle="modal"
-        data-bs-target="#editprofile"
+        (click)="openModal()"
       >
         <i class="icofont-edit"></i>
       </button>
@@ -29,17 +29,16 @@
     </div>
     <div class="profile-info w-100">
       <h6 class="mb-0 mt-2 fw-bold d-block fs-6 text-center">
-        {{ userProfileData?.firstName }} {{ userProfileData?.lastName }}
+        {{ userProfileData.firstName }} {{ userProfileData.lastName }}
       </h6>
       <span
         class="py-1 fw-bold small-11 mb-0 mt-1 text-muted text-center mx-auto d-block"
       >
         <!-- 24 years, California -->
-        {{ getUserAge }} years,
-        {{ userProfileData?.state }}</span
+        {{ getUserAge }} years, {{ userProfileData.state }}</span
       >
       <p class="mt-2">
-        {{ userProfileData?.bio }}
+        {{ userProfileData.bio }}
         <!-- Duis felis ligula, pharetra at nisl sit amet, ullamcorper fringilla mi.
         Cras luctus metus non enim porttitor sagittis. Sed tristique scelerisque
         arcu id dignissim. -->
@@ -48,25 +47,25 @@
         <div class="col-xl-12">
           <div class="d-flex align-items-center">
             <i class="icofont-ui-touch-phone"></i>
-            <span class="ms-2">{{ userProfileData?.phoneNumber }}</span>
+            <span class="ms-2">{{ userProfileData.phoneNumber }}</span>
           </div>
         </div>
         <div class="col-xl-12">
           <div class="d-flex align-items-center">
             <i class="icofont-email"></i>
-            <span class="ms-2">{{ userProfileData?.email }}</span>
+            <span class="ms-2">{{ userProfileData.email }}</span>
           </div>
         </div>
         <div class="col-xl-12">
           <div class="d-flex align-items-center">
             <i class="icofont-birthday-cake"></i>
-            <span class="ms-2">{{ userProfileData?.dateOfBirth | date }}</span>
+            <span class="ms-2">{{ userProfileData.dateOfBirth | date }}</span>
           </div>
         </div>
         <div class="col-xl-12">
           <div class="d-flex align-items-center">
             <i class="icofont-address-book"></i>
-            <span class="ms-2">{{ userProfileData?.streetAddress }}</span>
+            <span class="ms-2">{{ userProfileData.streetAddress }}</span>
           </div>
         </div>
       </div>
@@ -74,6 +73,89 @@
   </div>
 </div>
 
-<app-payment-settings></app-payment-settings>
+<!-- <app-payment-settings></app-payment-settings>
 
-<app-notification-settings></app-notification-settings>
+<app-notification-settings></app-notification-settings> -->
+
+<!-- Edit profile Modal-->
+<ng-template #editProfileModal>
+  <div class="modal-header">
+    <h5 class="modal-title fw-bold" id="expeditLabel1111">Edit Profile</h5>
+    <button type="button" class="btn-close" (click)="closeModal()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="deadline-form">
+      <form [formGroup]="editProfileForm">
+        <div class="row g-3 mb-3">
+          <div class="col-sm-6">
+            <label for="txtFirstName" class="form-label">First Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="txtFirstName"
+              name="firstName"
+              formControlName="firstName"
+            />
+          </div>
+          <div class="col-sm-6">
+            <label for="txtLastName" class="form-label">Last Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="txtLastName"
+              name="lastName"
+              formControlName="lastName"
+            />
+          </div>
+          <div class="col-sm-12">
+            <label for="fnProfileImg" class="form-label">Profile</label>
+            <input type="file" class="form-control" id="fnProfileImg" />
+          </div>
+        </div>
+        <div class="row g-3 mb-3">
+          <div class="col-sm-12">
+            <label for="taBio" class="form-label">Bio</label>
+            <textarea
+              id="taBio"
+              class="form-control"
+              rows="5"
+              name="bio"
+              formControlName="bio"
+            >
+            </textarea>
+          </div>
+        </div>
+        <div class="row g-3 mb-3">
+          <div class="col-sm-6">
+            <label for="dtBirthDate" class="form-label">Birthday date</label>
+            <input
+              type="date"
+              class="form-control w-100"
+              id="dtBirthDate"
+              name="birthDate"
+              formControlName="birthDate"
+            />
+          </div>
+          <div class="col-sm-6">
+            <label for="txtPhone" class="form-label">Phone</label>
+            <input
+              type="text"
+              class="form-control"
+              id="txtPhone"
+              name="phone"
+              formControlName="phone"
+            />
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">
+      Done
+    </button>
+    <button type="submit" class="btn btn-primary" (click)="onSubmit()">
+      Save
+    </button>
+  </div>
+</ng-template>

@@ -8,4 +8,7 @@ export interface LoggedInUserData {
   accessToken: string;
   refreshToken: string;
   userRoles: string[];
+  lastLogin: Date;
+  lastLoginDevice: string;
+  lastPasswordChange: Date;
 }
