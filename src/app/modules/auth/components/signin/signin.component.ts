@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { AuthService } from '../../services/auth.service';
-import { UserLogin } from '../../../../core/models/user-login';
+import { UserLogin } from '../../../../core/models/user/user-login';
 
 @Component({
   selector: 'app-signin',

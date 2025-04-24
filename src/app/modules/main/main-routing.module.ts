@@ -28,6 +28,20 @@ const routes: Routes = [
             (m) => m.AccountModule
           ),
       },
+      {
+        path: 'products',
+        loadChildren: () =>
+          import('../features/product/product.module').then(
+            (m) => m.ProductModule
+          ),
+      },
+      {
+        path: 'categories',
+        loadChildren: () =>
+          import('../features/category/category.module').then(
+            (m) => m.CategoryModule
+          ),
+      },
     ],
   },
 ];

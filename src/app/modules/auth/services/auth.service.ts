@@ -2,9 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { LoggedInUserData } from '../../../core/models/logged-in-user-data';
+import { LoggedInUserData } from '../../../core/models/user/logged-in-user-data';
 import { ApiResponse } from '../../../core/models/api-response';
-import { UserLogin } from '../../../core/models/user-login';
+import { UserLogin } from '../../../core/models/user/user-login';
 
 @Injectable({
   providedIn: 'root',

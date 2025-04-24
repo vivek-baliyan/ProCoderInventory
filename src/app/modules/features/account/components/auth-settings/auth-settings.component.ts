@@ -8,7 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Observable } from 'rxjs';
-import { LoggedInUserData } from '../../../../../core/models/logged-in-user-data';
+import { LoggedInUserData } from '../../../../../core/models/user/logged-in-user-data';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import {
   AbstractControl,
@@ -17,9 +17,9 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { UserLogin } from '../../../../../core/models/user-login';
+import { UserLogin } from '../../../../../core/models/user/user-login';
 import { AccountService } from '../../services/account.service';
-import { UpdateLoginDetails } from '../../../../../core/models/update-login-details';
+import { UpdateLoginDetails } from '../../../../../core/models/user/update-login-details';
 
 @Component({
   selector: 'app-auth-settings',

@@ -7,10 +7,10 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-import { UserProfileDetails } from '../../../../../core/models/user-profile-details';
+import { UserProfileDetails } from '../../../../../core/models/user/user-profile-details';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { UpdateProfile } from '../../../../../core/models/update-profile';
+import { UpdateProfile } from '../../../../../core/models/user/update-profile';
 
 @Component({
   selector: 'app-profile',

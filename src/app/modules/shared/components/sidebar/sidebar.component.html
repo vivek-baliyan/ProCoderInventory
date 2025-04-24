@@ -14,12 +14,30 @@
         </a>
       </li>
       <li class="collapsed">
-        <a
-          class="m-link"
-          data-bs-toggle="collapse"
-          data-bs-target="#menu-product"
-          (click)="isCollapsed = !isCollapsed"
+        <a class="m-link" (click)="isCollapsed = !isCollapsed">
+          <i class="icofont-chart-flow fs-5"></i> <span>Categories</span>
+          <span class="arrow icofont-rounded-down ms-auto text-end fs-5"></span
+        ></a>
+        <!-- Menu: Sub menu ul -->
+        <ul
+          class="sub-menu collapse"
+          id="categories"
+          [collapse]="isCollapsed"
+          [isAnimated]="true"
         >
+          <li>
+            <a class="ms-link" href="categorie-list.html">Categories List</a>
+          </li>
+          <li>
+            <a class="ms-link" href="categories-edit.html">Categories Edit</a>
+          </li>
+          <li>
+            <a class="ms-link" routerLink="categories/add">Categories Add</a>
+          </li>
+        </ul>
+      </li>
+      <li class="collapsed">
+        <a class="m-link" (click)="isCollapsed = !isCollapsed">
           <i class="icofont-truck-loaded fs-5"></i> <span>Products</span>
           <span class="arrow icofont-rounded-down ms-auto text-end fs-5"></span
         ></a>
@@ -36,34 +54,12 @@
           <li>
             <a class="ms-link" href="product-detail.html">Product Details</a>
           </li>
-          <li><a class="ms-link" href="product-add.html">Product Add</a></li>
+          <li><a class="ms-link" routerLink="products/add">Product Add</a></li>
           <li><a class="ms-link" href="product-cart.html">Shopping Cart</a></li>
           <li><a class="ms-link" href="checkout.html">Checkout</a></li>
         </ul>
       </li>
-      <li class="collapsed">
-        <a
-          class="m-link"
-          data-bs-toggle="collapse"
-          data-bs-target="#categories"
-          href="#"
-        >
-          <i class="icofont-chart-flow fs-5"></i> <span>Categories</span>
-          <span class="arrow icofont-rounded-down ms-auto text-end fs-5"></span
-        ></a>
-        <!-- Menu: Sub menu ul -->
-        <ul class="sub-menu collapse" id="categories">
-          <li>
-            <a class="ms-link" href="categorie-list.html">Categories List</a>
-          </li>
-          <li>
-            <a class="ms-link" href="categories-edit.html">Categories Edit</a>
-          </li>
-          <li>
-            <a class="ms-link" href="categories-add.html">Categories Add</a>
-          </li>
-        </ul>
-      </li>
+
       <li class="collapsed">
         <a
           class="m-link"

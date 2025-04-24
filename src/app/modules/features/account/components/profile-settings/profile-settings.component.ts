@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { LoggedInUserData } from '../../../../../core/models/logged-in-user-data';
+import { LoggedInUserData } from '../../../../../core/models/user/logged-in-user-data';
 import { Observable } from 'rxjs';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { UserProfileDetails } from '../../../../../core/models/user-profile-details';
-import { UpdateProfileSettings } from '../../../../../core/models/update-profile-settings';
+import { UserProfileDetails } from '../../../../../core/models/user/user-profile-details';
+import { UpdateProfileSettings } from '../../../../../core/models/user/update-profile-settings';
 
 @Component({
   selector: 'app-profile-settings',

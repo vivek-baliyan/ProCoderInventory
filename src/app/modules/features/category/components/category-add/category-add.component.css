@@ -1,0 +1,267 @@
+/* Dropzone Container */
+.custom-dropzone {
+  border: 2px dashed #aaa;
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  background-color: #f9f9f9;
+  position: relative;
+  overflow: hidden;
+  min-height: 250px;
+}
+
+/* Hover effect */
+.custom-dropzone.dragover {
+  background-color: #e0f7fa;
+  border-color: #26c6da;
+}
+
+/* When a preview is available, remove border and padding */
+.custom-dropzone.has-preview {
+  border: none;
+  padding: 0;
+  background-color: transparent;
+}
+
+/* Preview as full background image */
+.dropzone-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  opacity: 0.9;
+  border-radius: 10px;
+}
+
+/* Content inside dropzone */
+.drop-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  pointer-events: none;
+}
+
+/* Ensure child elements are clickable */
+.drop-content * {
+  pointer-events: auto;
+}
+
+/* Upload Icon */
+.upload-icon {
+  font-size: 48px;
+  color: #26c6da;
+}
+
+/* Clickable browse text */
+.click-text {
+  color: #26c6da;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Remove Button Position */
+.preview-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
+}
+
+/* Remove Button Styling */
+.clear-btn {
+  padding: 6px 12px;
+  border: none;
+  background-color: #ff5252;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.clear-btn:hover {
+  background-color: #e53935;
+}
+
+.img-container,
+.img-preview {
+  background-color: #f7f7f7;
+  width: 100%;
+  text-align: center;
+}
+
+.img-preview {
+  float: left;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.preview-lg {
+  width: 263px;
+  height: 148px;
+}
+
+.preview-md {
+  width: 139px;
+  height: 78px;
+}
+
+.preview-sm {
+  width: 69px;
+  height: 39px;
+}
+
+.preview-xs {
+  width: 35px;
+  height: 20px;
+  margin-right: 0;
+}
+
+/* Dropzone Container */
+.custom-dropzone {
+  border: 2px dashed #aaa;
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  background-color: #f9f9f9;
+  position: relative;
+  overflow: hidden;
+  min-height: 250px;
+}
+
+/* Drag over effect */
+.custom-dropzone.dragover {
+  background-color: #e0f7fa;
+  border-color: #26c6da;
+}
+
+/* Preview present - no border */
+.custom-dropzone.has-preview {
+  border: none;
+  padding: 0;
+  background-color: transparent;
+}
+
+/* Background Image */
+.dropzone-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  opacity: 0.9;
+  border-radius: 10px;
+}
+
+/* Loader Overlay */
+.dropzone-loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+}
+
+/* Spinner Styling */
+.spinner {
+  background-size: 30px 30px;
+  background-image: -webkit-linear-gradient(
+    135deg,
+    #f6f6f6 25%,
+    transparent 25%,
+    transparent 50%,
+    #f6f6f6 50%,
+    #f6f6f6 75%,
+    transparent 75%,
+    transparent
+  );
+  background-image: linear-gradient(
+    -45deg,
+    #f6f6f6 25%,
+    transparent 25%,
+    transparent 50%,
+    #f6f6f6 50%,
+    #f6f6f6 75%,
+    transparent 75%,
+    transparent
+  );
+  -webkit-animation: stripes 2s linear infinite;
+  animation: stripes 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Content Overlay */
+.drop-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  pointer-events: none;
+}
+
+.drop-content * {
+  pointer-events: auto;
+}
+
+.upload-icon {
+  font-size: 48px;
+  color: #26c6da;
+}
+
+.click-text {
+  color: #26c6da;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Remove Button */
+.preview-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 4;
+}
+
+.clear-btn {
+  padding: 6px 12px;
+  border: none;
+  background-color: #ff5252;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.clear-btn:hover {
+  background-color: #e53935;
+}

@@ -3,7 +3,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { SettingsModalComponent } from '../settings-modal/settings-modal.component';
 import { AuthService } from '../../../auth/services/auth.service';
 import { Router } from '@angular/router';
-import { LoggedInUserData } from '../../../../core/models/logged-in-user-data';
+import { LoggedInUserData } from '../../../../core/models/user/logged-in-user-data';
 
 @Component({
   selector: 'app-header',

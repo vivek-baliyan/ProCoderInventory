@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { LoggedInUserData } from '../../../../../core/models/logged-in-user-data';
+import { LoggedInUserData } from '../../../../../core/models/user/logged-in-user-data';
 import { AuthService } from '../../../../auth/services/auth.service';
 import { AccountService } from '../../services/account.service';
 import { Observable } from 'rxjs';
-import { UserProfileDetails } from '../../../../../core/models/user-profile-details';
-import { UpdateProfileSettings } from '../../../../../core/models/update-profile-settings';
+import { UserProfileDetails } from '../../../../../core/models/user/user-profile-details';
+import { UpdateProfileSettings } from '../../../../../core/models/user/update-profile-settings';
 import { NotificationService } from '../../../../../core/services/notification.service';
-import { UpdateLoginDetails } from '../../../../../core/models/update-login-details';
-import { UserLogin } from '../../../../../core/models/user-login';
-import { UpdateProfile } from '../../../../../core/models/update-profile';
+import { UpdateLoginDetails } from '../../../../../core/models/user/update-login-details';
+import { UserLogin } from '../../../../../core/models/user/user-login';
+import { UpdateProfile } from '../../../../../core/models/user/update-profile';
 
 @Component({
   selector: 'app-account',
