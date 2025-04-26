@@ -8,7 +8,6 @@ export interface Category {
   urlIdentifier: string;
   description: string;
   parentCategoryId?: number;
-  imagePath: string;
   status: string;
   publishDate?: Date;
 

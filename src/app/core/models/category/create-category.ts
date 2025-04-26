@@ -1,11 +1,10 @@
 export interface CreateCategory {
-  userId: string;
   name: string;
   pageTitle: string;
   urlIdentifier: string;
   description: string;
   parentCategoryId: number | null;
-  imagePath: string;
+  image: string;
   status: number;
-  publishDate: Date | null;
+  publishDateTime: Date | null;
 }

@@ -1,5 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CategoryService } from '../../services/category.service';
+import { CreateCategory } from '../../../../../core/models/category/create-category';
+import { NotificationService } from '../../../../../core/services/notification.service';
+import { CategoryDropdown } from '../../../../../core/models/category/categoryDropdown';
 
 @Component({
   selector: 'app-category-add',
@@ -9,25 +13,51 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 })
 export class CategoryAddComponent implements OnInit {
   imageChangedEvent: Event | null = null;
-  croppedImage: SafeUrl = '';
-  isDragOver = false;
   selectedFile: File | null = null;
   previewUrl: string | ArrayBuffer | null = null;
-  originalImageData: string | null = null; // To store original image
-  @ViewChild('imageCropper') imageCropper: any;
+  originalImageData: string = '';
 
-  cropData = {
-    x1: 0,
-    y1: 0,
-    x2: 0,
-    y2: 0,
-    width: 0,
-    height: 0,
-  };
+  createCategoryForm!: FormGroup;
 
-  constructor(private sanitizer: DomSanitizer) {}
+  parentCategories: CategoryDropdown[] = [];
+
+  visibilityStatuses = [
+    { value: '0', label: 'Published' },
+    { value: '1', label: 'Scheduled' },
+    { value: '2', label: 'Hidden' },
+  ];
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private categoryService: CategoryService,
+    private notificationService: NotificationService
+  ) {}
+
   ngOnInit(): void {
-    this.loadSavedData('0');
+    this.getParentCategories();
+
+    this.initializeForm();
+    
+  }
+
+  initializeForm() {
+    this.createCategoryForm = this.formBuilder.group({
+      name: ['', Validators.required],
+      pageTitle: ['', Validators.required],
+      urlIdentifier: [''],
+      description: [''],
+      parentCategory: [0],
+      image: [],
+      visibilityStatus: ['0'],
+      publishDate: [''],
+      publishTime: [''],
+    });
+  }
+
+  getParentCategories() {
+    this.categoryService.getCategoriesForDropdown().subscribe((response) => {
+      this.parentCategories = response.data;
+    });
   }
 
   fileChangeEvent(event: Event): void {
@@ -42,135 +72,44 @@ export class CategoryAddComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = () => {
         this.originalImageData = reader.result as string;
+
+        this.createCategoryForm.get('image')?.setValue(this.originalImageData);
       };
       reader.readAsDataURL(this.selectedFile);
     }
   }
 
-  // Save both the original image and crop data
-  saveCategory() {
-    // Create data object to send to server or store locally
-    const categoryData = {
-      originalImage: this.originalImageData,
-      cropData: this.cropData,
-      croppedImage: this.getCroppedImageBase64(), // Implement this method to get base64 from the cropped image
-    };
+  onSubmit() {
+    if (this.createCategoryForm.valid) {
+      const formData = this.createCategoryForm.value;
 
-    // Now you can send this to your backend service
-    // this.categoryService.saveCategory(categoryData);
+      const publishDateTime = this.getPublishDateTime(
+        formData.publishDate,
+        formData.publishTime
+      );
 
-    // Or store in localStorage for demo purposes
-    localStorage.setItem('categoryImageData', JSON.stringify(categoryData));
-  }
-
-  // Separate method to apply the saved position
-  applySavedCropperPosition() {
-    if (!this.imageCropper) {
-      console.error('Image cropper component not found');
-      return;
-    }
-
-    // Different versions of ngx-image-cropper have different methods
-    // Try these approaches based on your version:
-
-    // Approach 1: Direct crop position setting (newer versions)
-    if (this.imageCropper.setCropperPosition) {
-      const cropperPosition = {
-        x1: this.cropData.x1,
-        y1: this.cropData.y1,
-        x2: this.cropData.x2,
-        y2: this.cropData.y2,
+      const categoryData: CreateCategory = {
+        name: formData.name,
+        pageTitle: formData.pageTitle,
+        urlIdentifier: formData.urlIdentifier,
+        description: formData.description,
+        parentCategoryId: formData.parentCategory,
+        image: formData.image,
+        status: formData.visibilityStatus,
+        publishDateTime: publishDateTime,
       };
-      this.imageCropper.setCropperPosition(cropperPosition);
-    }
-    // Approach 2: Using cropper.crop (some versions)
-    else if (this.imageCropper.cropper && this.imageCropper.cropper.crop) {
-      const cropperPosition = {
-        x1: this.cropData.x1,
-        y1: this.cropData.y1,
-        x2: this.cropData.x2,
-        y2: this.cropData.y2,
-      };
-      this.imageCropper.cropper.crop(cropperPosition);
-    }
 
-    // Approach 3: Using internal updateCropperPosition (some versions)
-    else if (this.imageCropper.updateCropperPosition) {
-      const cropperPosition = {
-        x1: this.cropData.x1,
-        y1: this.cropData.y1,
-        x2: this.cropData.x2,
-        y2: this.cropData.y2,
-      };
-      this.imageCropper.updateCropperPosition(cropperPosition);
+      this.categoryService
+        .createCategory(categoryData)
+        .subscribe((response) => {
+          this.notificationService.showSuccess(response.message);
+        });
     }
   }
 
-  // Method to get base64 from the cropped image
-  getCroppedImageBase64(): string {
-    // This is a simplified approach - you may need to adjust based on how your cropper provides data
-    // If your cropper provides base64 directly, use that instead
-    const croppedImageStr = this.croppedImage.toString();
-    return croppedImageStr.replace('unsafe:', '');
-  }
-
-  loadSavedData(categoryId: string) {
-    // Get saved data (from API or localStorage)
-    const savedDataStr = localStorage.getItem('categoryImageData');
-    if (savedDataStr) {
-      const savedData = JSON.parse(savedDataStr);
-
-      // Store crop data first
-      this.cropData = savedData.cropData;
-
-      // IMPORTANT: Create image from saved data and trigger cropper
-      if (savedData.originalImage) {
-        this.originalImageData = savedData.originalImage;
-        this.createFileFromBase64AndTriggerCropper(savedData.originalImage);
-      }
-    }
-  }
-
-  // Improved method to create file and trigger cropper
-  createFileFromBase64AndTriggerCropper(base64String: string) {
-    try {
-      // Extract base64 data
-      const parts = base64String.split(',');
-      const byteString = atob(parts[1]);
-      const mimeType = parts[0].split(':')[1].split(';')[0];
-
-      // Create array buffer
-      const ab = new ArrayBuffer(byteString.length);
-      const ia = new Uint8Array(ab);
-      for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-      }
-
-      // Create File object
-      const blob = new Blob([ab], { type: mimeType });
-      this.selectedFile = new File([blob], 'image.jpg', { type: mimeType });
-
-      // Approach 1: Create a real file input event (better compatibility)
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(this.selectedFile);
-
-      const event = new Event('change', { bubbles: true });
-      const target = document.createElement('input');
-      target.type = 'file';
-      target.files = dataTransfer.files;
-
-      Object.defineProperty(event, 'target', { value: target });
-      this.imageChangedEvent = event;
-    } catch (error) {
-      console.error('Error creating file from base64', error);
-    }
-  }
-
-  cropperReady() {
-    console.log('cropper ready');
-  }
-
-  loadImageFailed() {
-    // show message
+  private getPublishDateTime(publishDate: string, publishTime: string) {
+    const combinedDateTime = `${publishDate}T${publishTime}:00`;
+    const publishDateTime = new Date(combinedDateTime);
+    return publishDateTime;
   }
 }
