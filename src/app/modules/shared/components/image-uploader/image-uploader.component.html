@@ -1,0 +1,48 @@
+<!-- image-uploader.component.html -->
+<div class="image-uploader-container">
+  <div
+    class="dropzone"
+    [class.has-image]="imagePreviewUrl"
+    [class.dragging]="isDragging"
+    [class.hovering]="isHovering"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)"
+    (click)="triggerFileInput()"
+    (mouseenter)="isHovering = true"
+    (mouseleave)="isHovering = false"
+  >
+    <!-- Default state -->
+    <div class="upload-prompt" *ngIf="!imagePreviewUrl">
+      <span class="icon">+</span>
+      <p>Drag and drop an image or click to browse</p>
+    </div>
+
+    <!-- Linear gradient overlay on hover (before upload) -->
+    <div class="hover-overlay" *ngIf="isHovering && !imagePreviewUrl"></div>
+
+    <!-- Image preview state -->
+    <div class="image-preview" *ngIf="imagePreviewUrl">
+      <img [src]="imagePreviewUrl" alt="Selected image" />
+
+      <!-- Remove button overlay on hover (after upload) -->
+      <div class="remove-overlay" *ngIf="isHovering && imagePreviewUrl">
+        <button
+          class="remove-btn"
+          (click)="removeFile(); $event.stopPropagation()"
+        >
+          <span class="icon">×</span>
+          <span class="file-name">{{ selectedFile?.name }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <input
+    #fileInput
+    type="file"
+    accept="image/*"
+    style="display: none"
+    (change)="onFileSelected($event)"
+  />
+</div>
