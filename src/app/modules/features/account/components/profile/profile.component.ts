@@ -7,10 +7,11 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-import { UserProfileDetails } from '../../../../../core/models/user/user-profile-details';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UpdateProfile } from '../../../../../core/models/user/update-profile';
+import { User } from '../../../../../core/models/user/user';
+import { first } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -21,7 +22,7 @@ import { UpdateProfile } from '../../../../../core/models/user/update-profile';
 export class ProfileComponent implements OnInit {
   @ViewChild('editProfileModal') editProfileModal!: TemplateRef<any>;
 
-  @Input({ required: true }) userProfileData!: UserProfileDetails;
+  @Input({ required: true }) userData!: User;
   @Output() onProfileUpdate = new EventEmitter<UpdateProfile>();
 
   modalRef?: BsModalRef;
@@ -39,12 +40,17 @@ export class ProfileComponent implements OnInit {
 
   initializeForm() {
     this.editProfileForm = this.formBuilder.group({
-      firstName: [this.userProfileData.firstName],
-      lastName: [this.userProfileData.lastName],
-      profileImage: [this.userProfileData.profileImageUrl],
-      bio: [this.userProfileData.bio],
-      phone: [this.userProfileData.phoneNumber],
-      dateOfBirth: [this.userProfileData.dateOfBirth],
+      firstName: [this.userData.firstName, Validators.required],
+      lastName: [this.userData.lastName, Validators.required],
+      profileImage: [this.userData.profileImageUrl],
+      bio: [this.userData.bio],
+      phone: [this.userData.phoneNumber],
+      dateOfBirth: [this.userData.dateOfBirth],
+      address: [this.userData.address],
+      country: [this.userData.country],
+      state: [this.userData.state],
+      city: [this.userData.city],
+      postalCode: [this.userData.postalCode],
     });
   }
 
@@ -53,21 +59,25 @@ export class ProfileComponent implements OnInit {
       var formData = this.editProfileForm.value;
 
       const updatProfile: UpdateProfile = {
-        profileId: this.userProfileData.id,
-        userId: this.userProfileData.userId,
+        userId: this.userData.id,
         firstName: formData.firstName,
         lastName: formData.lastName,
         profileImageUrl: formData.profileImage,
         bio: formData.bio,
         phoneNumber: formData.phone,
         dateOfBirth: formData.dateOfBirth,
+        address: formData.address,
+        country: formData.country,
+        state: formData.state,
+        city: formData.city,
+        postalCode: formData.postalCode,
       };
 
       this.onProfileUpdate.emit(updatProfile);
     }
   }
   get getUserAge(): number {
-    const birthDateObj = new Date(this.userProfileData.dateOfBirth!);
+    const birthDateObj = new Date(this.userData.dateOfBirth!);
     const today = new Date();
     let age = today.getFullYear() - birthDateObj.getFullYear();
     const monthDiff = today.getMonth() - birthDateObj.getMonth();

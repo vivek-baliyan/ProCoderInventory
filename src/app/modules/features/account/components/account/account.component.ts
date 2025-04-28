@@ -3,12 +3,11 @@ import { LoggedInUserData } from '../../../../../core/models/user/logged-in-user
 import { AuthService } from '../../../../auth/services/auth.service';
 import { AccountService } from '../../services/account.service';
 import { Observable } from 'rxjs';
-import { UserProfileDetails } from '../../../../../core/models/user/user-profile-details';
-import { UpdateProfileSettings } from '../../../../../core/models/user/update-profile-settings';
 import { NotificationService } from '../../../../../core/services/notification.service';
 import { UpdateLoginDetails } from '../../../../../core/models/user/update-login-details';
 import { UserLogin } from '../../../../../core/models/user/user-login';
 import { UpdateProfile } from '../../../../../core/models/user/update-profile';
+import { User } from '../../../../../core/models/user/user';
 
 @Component({
   selector: 'app-account',
@@ -19,8 +18,8 @@ import { UpdateProfile } from '../../../../../core/models/user/update-profile';
 export class AccountComponent implements OnInit {
   userObservable$!: Observable<LoggedInUserData>;
   isLoggedIn = false;
-  userData!: LoggedInUserData;
-  userProfileData!: UserProfileDetails;
+  loggedInUserData!: LoggedInUserData;
+  userData!: User;
 
   constructor(
     private authService: AuthService,
@@ -33,7 +32,7 @@ export class AccountComponent implements OnInit {
     this.userObservable$ = this.authService.currentUser$;
 
     this.userObservable$.subscribe((userData) => {
-      this.userData = userData;
+      this.loggedInUserData = userData;
     });
 
     // Check if user is logged in
@@ -47,25 +46,17 @@ export class AccountComponent implements OnInit {
   }
 
   private getAccountByUserId() {
-    this.accountService.getAccountByUserId(this.userData.userId!).subscribe({
-      next: (response) => {
-        this.userProfileData = response.data;
-      },
-    });
+    this.accountService
+      .getAccountByUserId(this.loggedInUserData.userId!)
+      .subscribe({
+        next: (response) => {
+          this.userData = response.data;
+        },
+      });
   }
 
   onProfileUpdate(updateProfile: UpdateProfile) {
     this.accountService.updateProfile(updateProfile).subscribe({
-      next: (_) => {
-        // Refresh the user profile data after update
-        this.getAccountByUserId();
-        this.notificationService.showSuccess('Profile updated successfully!');
-      },
-    });
-  }
-
-  onProfileSettingsUpdate(updatedProfile: UpdateProfileSettings) {
-    this.accountService.updateProfileSettings(updatedProfile).subscribe({
       next: (_) => {
         // Refresh the user profile data after update
         this.getAccountByUserId();

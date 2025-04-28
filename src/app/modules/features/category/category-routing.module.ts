@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CategoryAddComponent } from './components/category-add/category-add.component';
 import { CategoryListComponent } from './components/category-list/category-list.component';
+import { CategoryAddComponent } from './components/category-add/category-add.component';
 
 const routes: Routes = [
   {
@@ -11,6 +11,10 @@ const routes: Routes = [
   {
     path: 'list',
     component: CategoryListComponent,
+  },
+  {
+    path: 'edit/:id',
+    component: CategoryAddComponent,
   },
 ];
 

@@ -1,18 +1,18 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CategoryService } from '../../services/category.service';
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { VisibilityStatuses } from '../../../../../core/enums/visibility-status.enum';
+import { CategoryDropdown } from '../../../../../core/models/category/categoryDropdown';
 import { CreateCategory } from '../../../../../core/models/category/create-category';
 import { NotificationService } from '../../../../../core/services/notification.service';
-import { CategoryDropdown } from '../../../../../core/models/category/categoryDropdown';
-import { VisibilityStatuses } from '../../../../../core/enums/visibility-status.enum';
+import { CategoryService } from '../../services/category.service';
 
 @Component({
-  selector: 'app-category-add',
+  selector: 'app-category-edit',
   standalone: false,
-  templateUrl: './category-add.component.html',
-  styleUrl: './category-add.component.css',
+  templateUrl: './category-edit.component.html',
+  styleUrl: './category-edit.component.css',
 })
-export class CategoryAddComponent implements OnInit {
+export class CategoryEditComponent implements OnInit {
   imageChangedEvent: Event | null = null;
   selectedFile: File | null = null;
   previewUrl: string | ArrayBuffer | null = null;

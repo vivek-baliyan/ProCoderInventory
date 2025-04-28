@@ -12,19 +12,15 @@
     </div>
     <!-- Row end  -->
     <div class="row g-3">
-      @if(userProfileData){
+      @if(userData){
       <div class="col-xl-4 col-lg-5 col-md-12">
         <app-profile
-          [userProfileData]="userProfileData"
+          [userData]="userData"
           (onProfileUpdate)="onProfileUpdate($event)"
         ></app-profile>
       </div>
       <div class="col-xl-8 col-lg-7 col-md-12">
-        <app-profile-settings
-          [userProfileData]="userProfileData"
-          [userObservable]="userObservable$"
-          (onProfileSettingsUpdate)="onProfileSettingsUpdate($event)"
-        ></app-profile-settings>
+        <app-organisation [userObservable]="userObservable$"></app-organisation>
         <app-auth-settings
           [userObservable]="userObservable$"
           (onLoginDetailUpdate)="onLoginDetailUpdate($event)"

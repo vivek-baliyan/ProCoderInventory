@@ -2,33 +2,59 @@
   <div
     class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0"
   >
-    <h6 class="mb-0 fw-bold">Profile Settings</h6>
+    <h6 class="mb-0 fw-bold">Organisation Profile</h6>
   </div>
   <div class="card-body">
     <form
       class="row g-4"
-      [formGroup]="profileSettingsForm"
+      [formGroup]="organisationForm"
       (ngSubmit)="onSubmit()"
     >
       <div class="col-md-6 col-sm-12">
         <div class="form-group">
-          <label class="form-label">Company Name</label>
+          <label class="form-label">Organisation Name <span class="text-danger">*</span></label>
           <input
             class="form-control"
             type="text"
-            name="companyName"
-            formControlName="companyName"
+            name="organisationName"
+            formControlName="organisationName"
           />
         </div>
       </div>
       <div class="col-md-6 col-sm-12">
         <div class="form-group">
-          <label class="form-label">Contact Person</label>
+          <label class="form-label">Contact Person <span class="text-danger">*</span></label>
           <input
             class="form-control"
             type="text"
             name="contactPerson"
             formControlName="contactPerson"
+          />
+        </div>
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <label class="form-label"
+          >Email <span class="text-danger">*</span></label
+        >
+        <div class="input-group">
+          <span class="input-group-text">&#64;</span>
+          <input
+            type="email"
+            class="form-control"
+            name="email"
+            formControlName="email"
+          />
+        </div>
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <div class="form-group">
+          <label class="form-label">Phone Number <span class="text-danger">*</span></label
+          >
+          <input
+            class="form-control"
+            type="text"
+            name="phoneNumber"
+            formControlName="phoneNumber"
           />
         </div>
       </div>
@@ -50,8 +76,8 @@
           <textarea
             class="form-control"
             aria-label="With textarea"
-            name="streetAddress"
-            formControlName="streetAddress"
+            name="address"
+            formControlName="address"
           ></textarea>
         </div>
       </div>

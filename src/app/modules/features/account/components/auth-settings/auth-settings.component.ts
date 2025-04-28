@@ -17,8 +17,6 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { UserLogin } from '../../../../../core/models/user/user-login';
-import { AccountService } from '../../services/account.service';
 import { UpdateLoginDetails } from '../../../../../core/models/user/update-login-details';
 
 @Component({
@@ -41,8 +39,7 @@ export class AuthSettingsComponent implements OnInit {
 
   constructor(
     private modalService: BsModalService,
-    private formBuilder: FormBuilder,
-    private accountService: AccountService
+    private formBuilder: FormBuilder
   ) {}
 
   ngOnInit() {
@@ -85,7 +82,6 @@ export class AuthSettingsComponent implements OnInit {
         email: formData.email,
         currentPassword: formData.oldPassword,
         newPassword: formData.newPassword,
-        confirmPassword: formData.confirmPassword,
       };
 
       this.onLoginDetailUpdate.emit(userLogin);

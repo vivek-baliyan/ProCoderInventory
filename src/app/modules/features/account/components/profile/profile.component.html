@@ -29,16 +29,16 @@
     </div>
     <div class="profile-info w-100">
       <h6 class="mb-0 mt-2 fw-bold d-block fs-6 text-center">
-        {{ userProfileData.firstName }} {{ userProfileData.lastName }}
+        {{ userData.firstName }} {{ userData.lastName }}
       </h6>
       <span
         class="py-1 fw-bold small-11 mb-0 mt-1 text-muted text-center mx-auto d-block"
       >
         <!-- 24 years, California -->
-        {{ getUserAge }} years, {{ userProfileData.state }}</span
+        {{ getUserAge }} years, {{ userData.state }}</span
       >
       <p class="mt-2">
-        {{ userProfileData.bio }}
+        {{ userData.bio }}
         <!-- Duis felis ligula, pharetra at nisl sit amet, ullamcorper fringilla mi.
         Cras luctus metus non enim porttitor sagittis. Sed tristique scelerisque
         arcu id dignissim. -->
@@ -47,25 +47,25 @@
         <div class="col-xl-12">
           <div class="d-flex align-items-center">
             <i class="icofont-ui-touch-phone"></i>
-            <span class="ms-2">{{ userProfileData.phoneNumber }}</span>
+            <span class="ms-2">{{ userData.phoneNumber }}</span>
           </div>
         </div>
         <div class="col-xl-12">
           <div class="d-flex align-items-center">
             <i class="icofont-email"></i>
-            <span class="ms-2">{{ userProfileData.email }}</span>
+            <span class="ms-2">{{ userData.email }}</span>
           </div>
         </div>
         <div class="col-xl-12">
           <div class="d-flex align-items-center">
             <i class="icofont-birthday-cake"></i>
-            <span class="ms-2">{{ userProfileData.dateOfBirth | date }}</span>
+            <span class="ms-2">{{ userData.dateOfBirth | date }}</span>
           </div>
         </div>
         <div class="col-xl-12">
           <div class="d-flex align-items-center">
             <i class="icofont-address-book"></i>
-            <span class="ms-2">{{ userProfileData.streetAddress }}</span>
+            <span class="ms-2">{{ userData.address }}</span>
           </div>
         </div>
       </div>
@@ -132,8 +132,8 @@
               type="date"
               class="form-control w-100"
               id="dtBirthDate"
-              name="birthDate"
-              formControlName="birthDate"
+              name="dateOfBirth"
+              formControlName="dateOfBirth"
             />
           </div>
           <div class="col-sm-6">
@@ -144,6 +144,54 @@
               id="txtPhone"
               name="phone"
               formControlName="phone"
+            />
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-sm-12">
+              <label class="form-label">Address</label>
+              <textarea
+                class="form-control"
+                rows="3"
+                name="address"
+                formControlName="address"
+              ></textarea>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label">Country</label>
+            <input
+              type="text"
+              class="form-control"
+              name="country"
+              formControlName="country"
+            />
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label">State</label>
+            <input
+              type="text"
+              class="form-control"
+              name="state"
+              formControlName="state"
+            />
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label">City</label>
+            <input
+              type="text"
+              class="form-control"
+              name="city"
+              formControlName="city"
+            />
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label">Postal Code</label>
+            <input
+              type="text"
+              class="form-control"
+              name="postalCode"
+              formControlName="postalCode"
             />
           </div>
         </div>
