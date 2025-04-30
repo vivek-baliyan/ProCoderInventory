@@ -13,17 +13,10 @@ import { VisibilityStatuses } from '../../../../../core/enums/visibility-status.
   styleUrl: './category-add.component.css',
 })
 export class CategoryAddComponent implements OnInit {
-  imageChangedEvent: Event | null = null;
-  selectedFile: File | null = null;
-  previewUrl: string | ArrayBuffer | null = null;
-  originalImageData: string = '';
-
-  visibilityStatuses = Object.entries(VisibilityStatuses).map(
-    ([key, value]) => ({
-      label: key,
-      value: value,
-    })
-  );
+  statusOptions = Object.entries(VisibilityStatuses).map(([key, value]) => ({
+    label: key,
+    value: value,
+  }));
 
   createCategoryForm!: FormGroup;
 
@@ -61,23 +54,8 @@ export class CategoryAddComponent implements OnInit {
     });
   }
 
-  fileChangeEvent(event: Event): void {
-    this.imageChangedEvent = event;
-
-    // Store the original image data
-    const target = event.target as HTMLInputElement;
-    if (target.files && target.files.length > 0) {
-      this.selectedFile = target.files[0];
-
-      // Read and store the original image as base64
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.originalImageData = reader.result as string;
-
-        this.createCategoryForm.get('image')?.setValue(this.originalImageData);
-      };
-      reader.readAsDataURL(this.selectedFile);
-    }
+  onFileSelected(imageBase64: string) {
+    this.createCategoryForm.patchValue({ image: imageBase64 });
   }
 
   onSubmit() {

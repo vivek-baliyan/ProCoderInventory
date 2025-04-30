@@ -6,6 +6,7 @@ import { ApiResponse } from '../../../../core/models/api-response';
 import { Category } from '../../../../core/models/category/category';
 import { CategoryDropdown } from '../../../../core/models/category/categoryDropdown';
 import { CategoryListItem } from '../../../../core/models/category/category-list-item';
+import { UpdateCategory } from '../../../../core/models/category/update-category';
 
 @Injectable({
   providedIn: 'root',
@@ -13,10 +14,17 @@ import { CategoryListItem } from '../../../../core/models/category/category-list
 export class CategoryService {
   constructor(private httpClient: HttpClient) {}
 
-  createCategory(category: CreateCategory) {
+  createCategory(create: CreateCategory) {
     return this.httpClient.post<ApiResponse<Category>>(
       `${environment.apiBaseUrl}/category/create`,
-      category
+      create
+    );
+  }
+
+  updateCategory(update: UpdateCategory) {
+    return this.httpClient.put<ApiResponse<Category>>(
+      `${environment.apiBaseUrl}/category/update`,
+      update
     );
   }
 
@@ -25,10 +33,15 @@ export class CategoryService {
       `${environment.apiBaseUrl}/category/dropdown`
     );
   }
-  // Get all categories with custom filter and pagination
   getCategories(pageIndex: number, pageSize: number) {
     return this.httpClient.get<ApiResponse<CategoryListItem[]>>(
       `${environment.apiBaseUrl}/category/all/${pageIndex}/${pageSize}`
+    );
+  }
+
+  getCategoryById(id: number) {
+    return this.httpClient.get<ApiResponse<Category>>(
+      `${environment.apiBaseUrl}/category/getById/${id}`
     );
   }
 

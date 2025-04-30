@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { VisibilityStatuses } from '../../../../../core/enums/visibility-status.enum';
 import { CategoryDropdown } from '../../../../../core/models/category/categoryDropdown';
-import { CreateCategory } from '../../../../../core/models/category/create-category';
 import { NotificationService } from '../../../../../core/services/notification.service';
 import { CategoryService } from '../../services/category.service';
+import { Category } from '../../../../../core/models/category/category';
+import { ActivatedRoute } from '@angular/router';
+import { UpdateCategory } from '../../../../../core/models/category/update-category';
 
 @Component({
   selector: 'app-category-edit',
@@ -13,23 +15,21 @@ import { CategoryService } from '../../services/category.service';
   styleUrl: './category-edit.component.css',
 })
 export class CategoryEditComponent implements OnInit {
-  imageChangedEvent: Event | null = null;
-  selectedFile: File | null = null;
-  previewUrl: string | ArrayBuffer | null = null;
-  originalImageData: string = '';
+  categoryImageBase64: string | null = null;
 
-  visibilityStatuses = Object.entries(VisibilityStatuses).map(
-    ([key, value]) => ({
-      label: key,
-      value: value,
-    })
-  );
+  statusOptions = Object.entries(VisibilityStatuses).map(([key, value]) => ({
+    label: key,
+    value: value,
+  }));
 
-  createCategoryForm!: FormGroup;
+  updateCategoryForm!: FormGroup;
 
   parentCategories: CategoryDropdown[] = [];
 
+  category!: Category;
+
   constructor(
+    private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private categoryService: CategoryService,
     private notificationService: NotificationService
@@ -38,20 +38,41 @@ export class CategoryEditComponent implements OnInit {
   ngOnInit(): void {
     this.getParentCategories();
 
+    // Access the resolved data
+    this.category = this.route.snapshot.data['category'].data;
+
+    this.categoryImageBase64 = this.category.categoryImages?.length
+      ? this.category.categoryImages[0].image
+      : '';
+
     this.initializeForm();
   }
 
   initializeForm() {
-    this.createCategoryForm = this.formBuilder.group({
-      name: ['', Validators.required],
-      pageTitle: ['', Validators.required],
-      urlIdentifier: [''],
-      description: [''],
-      parentCategory: [0],
+    //get publish date and time from the category object
+    const publishDate = this.category.publishDate
+      ? new Date(this.category.publishDate).toISOString().split('T')[0]
+      : '';
+
+    const publishTime = this.category.publishDate
+      ? new Date(this.category.publishDate)
+          .toTimeString()
+          .split(' ')[0]
+          .split(':')
+          .slice(0, 2)
+          .join(':')
+      : '';
+
+    this.updateCategoryForm = this.formBuilder.group({
+      name: [this.category.name, Validators.required],
+      pageTitle: [this.category.pageTitle, Validators.required],
+      urlIdentifier: [this.category.urlIdentifier],
+      description: [this.category.description],
+      parentCategory: [this.category.parentCategoryId],
       image: [],
-      visibilityStatus: ['0'],
-      publishDate: [''],
-      publishTime: [''],
+      visibilityStatus: [String(this.category.status)],
+      publishDate: [publishDate],
+      publishTime: [publishTime],
     });
   }
 
@@ -61,35 +82,21 @@ export class CategoryEditComponent implements OnInit {
     });
   }
 
-  fileChangeEvent(event: Event): void {
-    this.imageChangedEvent = event;
-
-    // Store the original image data
-    const target = event.target as HTMLInputElement;
-    if (target.files && target.files.length > 0) {
-      this.selectedFile = target.files[0];
-
-      // Read and store the original image as base64
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.originalImageData = reader.result as string;
-
-        this.createCategoryForm.get('image')?.setValue(this.originalImageData);
-      };
-      reader.readAsDataURL(this.selectedFile);
-    }
+  onFileSelected(imageBase64: string) {
+    this.updateCategoryForm.patchValue({ image: imageBase64 });
   }
 
   onSubmit() {
-    if (this.createCategoryForm.valid) {
-      const formData = this.createCategoryForm.value;
+    if (this.updateCategoryForm.valid) {
+      const formData = this.updateCategoryForm.value;
 
       const publishDateTime = this.getPublishDateTime(
         formData.publishDate,
         formData.publishTime
       );
 
-      const categoryData: CreateCategory = {
+      const categoryData: UpdateCategory = {
+        categoryId: this.category.id,
         name: formData.name,
         pageTitle: formData.pageTitle,
         urlIdentifier: formData.urlIdentifier,
@@ -101,7 +108,7 @@ export class CategoryEditComponent implements OnInit {
       };
 
       this.categoryService
-        .createCategory(categoryData)
+        .updateCategory(categoryData)
         .subscribe((response) => {
           this.notificationService.showSuccess(response.message);
         });

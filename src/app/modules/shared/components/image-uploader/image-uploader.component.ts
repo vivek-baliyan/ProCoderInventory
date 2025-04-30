@@ -2,6 +2,8 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  Input,
+  OnInit,
   Output,
   ViewChild,
 } from '@angular/core';
@@ -12,13 +14,22 @@ import {
   templateUrl: './image-uploader.component.html',
   styleUrl: './image-uploader.component.css',
 })
-export class ImageUploaderComponent {
+export class ImageUploaderComponent implements OnInit {
   @ViewChild('fileInput') fileInput!: ElementRef;
+  @Input() imageBase64: string | null = null;
+
+  @Output() onFileSelection = new EventEmitter<string>();
 
   isDragging = false;
   isHovering = false;
   selectedFile: File | null = null;
-  imagePreviewUrl: string | null = null;
+  imagePreview: string | null = null;
+
+  ngOnInit(): void {
+    if (this.imageBase64) {
+      this.imagePreview = 'data:image/jpeg;base64,' + this.imageBase64;
+    }
+  }
 
   onDragOver(event: DragEvent): void {
     event.preventDefault();
@@ -56,15 +67,18 @@ export class ImageUploaderComponent {
       // Create a preview URL
       const reader = new FileReader();
       reader.onload = () => {
-        this.imagePreviewUrl = reader.result as string;
+        this.imagePreview = reader.result as string;
+
+        this.onFileSelection.emit(this.imagePreview!);
       };
+
       reader.readAsDataURL(file);
     }
   }
 
   removeFile(): void {
     this.selectedFile = null;
-    this.imagePreviewUrl = null;
+    this.imagePreview = null;
     this.fileInput.nativeElement.value = '';
   }
 }

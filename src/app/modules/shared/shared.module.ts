@@ -7,7 +7,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ImageUploaderComponent } from './components/image-uploader/image-uploaded.component';
+import { ImageUploaderComponent } from './components/image-uploader/image-uploader.component';
 import { FormsModule } from '@angular/forms';
 import { ImageCropperComponent } from './components/image-cropper/image-cropper.component';
 

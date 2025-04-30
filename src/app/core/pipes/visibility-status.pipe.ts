@@ -8,7 +8,7 @@ export class VisibilityStatusPipe implements PipeTransform {
   transform(value: string): string {
     const entries = Object.entries(VisibilityStatuses);
 
-    const entry = entries.find(([_, val]) => val === value);
+    const entry = entries.find(([_, val]) => val == value);
 
     return entry ? entry[0] : 'Unknown';
   }

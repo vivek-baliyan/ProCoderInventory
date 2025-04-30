@@ -31,18 +31,19 @@
                   <h6 class="m-0 fw-bold">Visibility Status</h6>
                 </div>
                 <div class="card-body">
-                  <div
-                    class="form-check"
-                    *ngFor="let status of visibilityStatuses"
-                  >
+                  <div class="form-check" *ngFor="let option of statusOptions">
                     <input
                       class="form-check-input"
                       type="radio"
-                      name="visibilityStatus"
-                      [value]="status.value"
+                      [id]="'status-' + option.value"
+                      [value]="option.value"
                       [formControlName]="'visibilityStatus'"
                     />
-                    <label class="form-check-label">{{ status.label }}</label>
+                    <label
+                      class="form-check-label"
+                      [for]="'status-' + option.value"
+                      >{{ option.label }}</label
+                    >
                   </div>
                 </div>
               </div>
@@ -76,13 +77,8 @@
                 </div>
               </div>
               <div class="card mb-3">
-                <div
-                  class="card-header py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom-0"
-                >
-                  <h6 class="m-0 fw-bold">Categories</h6>
-                </div>
                 <div class="card-body">
-                  <label class="form-label">Parent category Select</label>
+                  <label class="form-label">Parent category</label>
                   <select
                     class="form-select"
                     size="3"
@@ -90,6 +86,7 @@
                     formControlName="parentCategory"
                     aria-label="size 3 select example"
                   >
+                    <option value="0">-- Select Parent Category --</option>
                     @for (category of parentCategories; track $index) {
                     <option [value]="category.id">{{ category.name }}</option>
                     }
@@ -102,12 +99,13 @@
                 </div>
                 <div class="card-body">
                   <app-image-uploader
-                    (change)="fileChangeEvent($event)"
+                    (onFileSelection)="onFileSelected($event)"
                   ></app-image-uploader>
 
                   <!-- <input
                   type="file"
                   id="dropify-event"
+                  (change)="fileChangeEvent($event)"
                   data-default-file="assets/images/product/cropimg-upload.jpg"
                 /> -->
                 </div>

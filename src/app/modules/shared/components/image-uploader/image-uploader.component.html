@@ -2,7 +2,7 @@
 <div class="image-uploader-container">
   <div
     class="dropzone"
-    [class.has-image]="imagePreviewUrl"
+    [class.has-image]="imagePreview"
     [class.dragging]="isDragging"
     [class.hovering]="isHovering"
     (dragover)="onDragOver($event)"
@@ -13,20 +13,20 @@
     (mouseleave)="isHovering = false"
   >
     <!-- Default state -->
-    <div class="upload-prompt" *ngIf="!imagePreviewUrl">
+    <div class="upload-prompt" *ngIf="!imagePreview">
       <span class="icon">+</span>
       <p>Drag and drop an image or click to browse</p>
     </div>
 
     <!-- Linear gradient overlay on hover (before upload) -->
-    <div class="hover-overlay" *ngIf="isHovering && !imagePreviewUrl"></div>
+    <div class="hover-overlay" *ngIf="isHovering && !imagePreview"></div>
 
     <!-- Image preview state -->
-    <div class="image-preview" *ngIf="imagePreviewUrl">
-      <img [src]="imagePreviewUrl" alt="Selected image" />
+    <div class="image-preview" *ngIf="imagePreview">
+      <img [src]="imagePreview" alt="Selected image" />
 
       <!-- Remove button overlay on hover (after upload) -->
-      <div class="remove-overlay" *ngIf="isHovering && imagePreviewUrl">
+      <div class="remove-overlay" *ngIf="isHovering && imagePreview">
         <button
           class="remove-btn"
           (click)="removeFile(); $event.stopPropagation()"

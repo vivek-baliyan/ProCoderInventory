@@ -9,11 +9,15 @@
     <!-- Menu: main ul -->
     <ul class="menu-list flex-grow-1 mt-3">
       <li>
-        <a class="m-link active">
+        <a class="m-link">
           <i class="icofont-home fs-5"></i> <span>Dashboard</span>
         </a>
       </li>
-      <li class="collapsed">
+      <li
+        class="collapsed"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+      >
         <a class="m-link" (click)="isCollapsed = !isCollapsed">
           <i class="icofont-chart-flow fs-5"></i> <span>Categories</span>
           <span class="arrow icofont-rounded-down ms-auto text-end fs-5"></span
@@ -26,7 +30,18 @@
           [isAnimated]="true"
         >
           <li>
-            <a class="ms-link" routerLink="categories/list">Categories List</a>
+            <a
+              class="ms-link"
+              routerLinkActive="active"
+              routerLink="categories/list"
+              >Categories List</a
+            >
+            <a
+              class="ms-link"
+              routerLinkActive="active"
+              routerLink="categories/add"
+              >Categories Add</a
+            >
           </li>
         </ul>
       </li>

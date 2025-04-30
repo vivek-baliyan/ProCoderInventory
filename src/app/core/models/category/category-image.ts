@@ -1,5 +1,6 @@
 export interface CategoryImage {
   categoryId: number;
+  image: string;
   imagePath: string;
   altText: string;
 
