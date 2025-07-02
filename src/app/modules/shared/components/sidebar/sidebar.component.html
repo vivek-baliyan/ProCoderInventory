@@ -4,7 +4,7 @@
       <span class="logo-icon">
         <i class="bi bi-bag-check-fill fs-4"></i>
       </span>
-      <span class="logo-text">eBazar</span>
+      <span class="logo-text">Pro Inventory</span>
     </a>
     <!-- Menu: main ul -->
     <ul class="menu-list flex-grow-1 mt-3">
@@ -18,7 +18,7 @@
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: false }"
       >
-        <a class="m-link" (click)="isCollapsed = !isCollapsed">
+        <a class="m-link" (click)="toggleMenu(0)">
           <i class="icofont-chart-flow fs-5"></i> <span>Categories</span>
           <span class="arrow icofont-rounded-down ms-auto text-end fs-5"></span
         ></a>
@@ -26,7 +26,7 @@
         <ul
           class="sub-menu collapse"
           id="categories"
-          [collapse]="isCollapsed"
+          [collapse]="menus[0].isCollapsed"
           [isAnimated]="true"
         >
           <li>
@@ -46,7 +46,7 @@
         </ul>
       </li>
       <li class="collapsed">
-        <a class="m-link" (click)="isCollapsed = !isCollapsed">
+        <a class="m-link" (click)="toggleMenu(1)">
           <i class="icofont-truck-loaded fs-5"></i> <span>Products</span>
           <span class="arrow icofont-rounded-down ms-auto text-end fs-5"></span
         ></a>
@@ -54,7 +54,7 @@
         <ul
           class="sub-menu collapse"
           id="menu-product"
-          [collapse]="isCollapsed"
+          [collapse]="menus[1].isCollapsed"
           [isAnimated]="true"
         >
           <li>
@@ -73,15 +73,13 @@
       <li class="collapsed">
         <a
           class="m-link"
-          data-bs-toggle="collapse"
-          data-bs-target="#menu-order"
-          href="#"
+          (click)="toggleMenu(2)"
         >
           <i class="icofont-notepad fs-5"></i> <span>Orders</span>
           <span class="arrow icofont-rounded-down ms-auto text-end fs-5"></span
         ></a>
         <!-- Menu: Sub menu ul -->
-        <ul class="sub-menu collapse" id="menu-order">
+        <ul class="sub-menu collapse" id="menu-order" [collapse]="menus[2].isCollapsed" [isAnimated]="true">
           <li><a class="ms-link" href="order-list.html">Orders List</a></li>
           <li>
             <a class="ms-link" href="order-details.html">Order Details</a>
@@ -94,15 +92,13 @@
       <li class="collapsed">
         <a
           class="m-link"
-          data-bs-toggle="collapse"
-          data-bs-target="#customers-info"
-          href="#"
+          (click)="toggleMenu(3)"
         >
           <i class="icofont-funky-man fs-5"></i> <span>Customers</span>
           <span class="arrow icofont-rounded-down ms-auto text-end fs-5"></span
         ></a>
         <!-- Menu: Sub menu ul -->
-        <ul class="sub-menu collapse" id="customers-info">
+        <ul class="sub-menu collapse" id="customers-info" [collapse]="menus[3].isCollapsed" [isAnimated]="true">
           <li><a class="ms-link" href="customers.html">Customers List</a></li>
           <li>
             <a class="ms-link" href="customer-detail.html">Customers Details</a>
@@ -112,16 +108,14 @@
       <li class="collapsed">
         <a
           class="m-link"
-          data-bs-toggle="collapse"
-          data-bs-target="#menu-sale"
-          href="#"
+          (click)="toggleMenu(4)"
         >
           <i class="icofont-sale-discount fs-5"></i>
           <span>Sales Promotion</span>
           <span class="arrow icofont-rounded-down ms-auto text-end fs-5"></span
         ></a>
         <!-- Menu: Sub menu ul -->
-        <ul class="sub-menu collapse" id="menu-sale">
+        <ul class="sub-menu collapse" id="menu-sale" [collapse]="menus[4].isCollapsed" [isAnimated]="true">
           <li><a class="ms-link" href="coupons-list.html">Coupons List</a></li>
           <li><a class="ms-link" href="coupon-add.html">Coupons Add</a></li>
           <li><a class="ms-link" href="coupon-edit.html">Coupons Edit</a></li>
@@ -130,15 +124,13 @@
       <li class="collapsed">
         <a
           class="m-link"
-          data-bs-toggle="collapse"
-          data-bs-target="#menu-inventory"
-          href="#"
+          (click)="toggleMenu(5)"
         >
           <i class="icofont-chart-histogram fs-5"></i> <span>Inventory</span>
           <span class="arrow icofont-rounded-down ms-auto text-end fs-5"></span
         ></a>
         <!-- Menu: Sub menu ul -->
-        <ul class="sub-menu collapse" id="menu-inventory">
+        <ul class="sub-menu collapse" id="menu-inventory" [collapse]="menus[5].isCollapsed" [isAnimated]="true">
           <li><a class="ms-link" href="inventory-info.html">Stock List</a></li>
           <li><a class="ms-link" href="purchase.html">Purchase</a></li>
           <li><a class="ms-link" href="supplier.html">Supplier</a></li>
@@ -149,14 +141,12 @@
       <li class="collapsed">
         <a
           class="m-link"
-          data-bs-toggle="collapse"
-          data-bs-target="#menu-Componentsone"
-          href="#"
+          (click)="toggleMenu(6)"
           ><i class="icofont-ui-calculator"></i> <span>Accounts</span>
           <span class="arrow icofont-rounded-down ms-auto text-end fs-5"></span
         ></a>
         <!-- Menu: Sub menu ul -->
-        <ul class="sub-menu collapse" id="menu-Componentsone">
+        <ul class="sub-menu collapse" id="menu-Componentsone" [collapse]="menus[6].isCollapsed" [isAnimated]="true">
           <li><a class="ms-link" href="invoices.html">Invoices </a></li>
           <li><a class="ms-link" href="expenses.html">Expenses </a></li>
           <li><a class="ms-link" href="salaryslip.html">Salary Slip </a></li>
@@ -168,15 +158,13 @@
       <li class="collapsed">
         <a
           class="m-link"
-          data-bs-toggle="collapse"
-          data-bs-target="#app"
-          href="#"
+          (click)="toggleMenu(7)"
         >
           <i class="icofont-code-alt fs-5"></i> <span>App</span>
           <span class="arrow icofont-rounded-down ms-auto text-end fs-5"></span
         ></a>
         <!-- Menu: Sub menu ul -->
-        <ul class="sub-menu collapse" id="app">
+        <ul class="sub-menu collapse" id="app" [collapse]="menus[7].isCollapsed" [isAnimated]="true">
           <li><a class="ms-link" href="calendar.html">Calandar</a></li>
           <li><a class="ms-link" href="chat.html"> Chat App</a></li>
         </ul>
@@ -194,15 +182,13 @@
       <li class="collapsed">
         <a
           class="m-link"
-          data-bs-toggle="collapse"
-          data-bs-target="#page"
-          href="#"
+          (click)="toggleMenu(8)"
         >
           <i class="icofont-page fs-5"></i> <span>Other Pages</span>
           <span class="arrow icofont-rounded-down ms-auto text-end fs-5"></span
         ></a>
         <!-- Menu: Sub menu ul -->
-        <ul class="sub-menu collapse" id="page">
+        <ul class="sub-menu collapse" id="page" [collapse]="menus[8].isCollapsed" [isAnimated]="true">
           <li><a class="ms-link" href="admin-profile.html">Profile Page</a></li>
           <li>
             <a class="ms-link" href="purchase-plan.html">Price Plan Example</a>

@@ -7,5 +7,42 @@ import { Component } from '@angular/core';
   styleUrl: './sidebar.component.css',
 })
 export class SidebarComponent {
-  isCollapsed = true;
+  menus: any[] = [
+    {
+      isCollapsed: true,
+    },
+    {
+      isCollapsed: true,
+    },
+    {
+      isCollapsed: true,
+    },
+    {
+      isCollapsed: true,
+    },
+    {
+      isCollapsed: true,
+    },
+    {
+      isCollapsed: true,
+    },
+    {
+      isCollapsed: true,
+    },
+    {
+      isCollapsed: true,
+    },
+    {
+      isCollapsed: true,
+    },
+  ];
+
+  toggleMenu(index: number) {
+    this.menus.forEach((menu, i) => {
+      if (i !== index) {
+        menu.isCollapsed = true;
+      }
+    });
+    this.menus[index].isCollapsed = !this.menus[index].isCollapsed;
+  }
 }
