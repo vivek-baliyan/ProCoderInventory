@@ -15,14 +15,14 @@ export class CategoryService {
   constructor(private httpClient: HttpClient) {}
 
   createCategory(create: CreateCategory) {
-    return this.httpClient.post<ApiResponse<Category>>(
+    return this.httpClient.post<ApiResponse<boolean>>(
       `${environment.apiBaseUrl}/category/create`,
       create
     );
   }
 
   updateCategory(update: UpdateCategory) {
-    return this.httpClient.put<ApiResponse<Category>>(
+    return this.httpClient.put<ApiResponse<boolean>>(
       `${environment.apiBaseUrl}/category/update`,
       update
     );

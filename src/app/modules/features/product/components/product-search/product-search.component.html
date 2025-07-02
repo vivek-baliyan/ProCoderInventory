@@ -1,0 +1,404 @@
+<div class="body d-flex py-3">
+  <div class="container-xxl">
+    <div class="row align-items-center">
+      <div class="border-0 mb-4">
+        <div
+          class="card-header py-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between border-bottom flex-wrap"
+        >
+          <h3 class="fw-bold mb-0">Products</h3>
+          <div class="btn-group group-link btn-set-task w-sm-100">
+            <a
+              class="btn d-inline-flex align-items-center"
+              [class.active]="showGridView"
+              (click)="showGridView = true"
+              ><i class="icofont-wall px-2 fs-5"></i>Grid View</a
+            >
+            <a
+              class="btn d-inline-flex align-items-center"
+              [class.active]="!showGridView"
+              (click)="showGridView = false"
+              ><i class="icofont-listing-box px-2 fs-5"></i> List View</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row g-3 mb-3">
+      <div class="col-md-12 col-lg-4 col-xl-4 col-xxl-3">
+        <div class="sticky-lg-top">
+          <div class="card mb-3">
+            <div class="reset-block">
+              <div class="filter-title">
+                <h4 class="title">Filter</h4>
+              </div>
+              <div class="filter-btn">
+                <a class="btn btn-primary" href="#">Reset</a>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-3">
+            <div class="categories">
+              <div class="filter-title">
+                <a
+                  class="title"
+                  (click)="filterCollapsed.category = !filterCollapsed.category"
+                  role="button"
+                  >Categories</a
+                >
+              </div>
+              <div
+                id="category"
+                [collapse]="filterCollapsed.category"
+                [isAnimated]="true"
+              >
+                <div class="filter-search">
+                  <form action="#">
+                    <input
+                      type="text"
+                      placeholder="Search"
+                      class="form-control"
+                    />
+                    <button><i class="lni lni-search-alt"></i></button>
+                  </form>
+                </div>
+                <div class="filter-category">
+                  <div class="accordion-container">
+                    <accordion [closeOthers]="false" class="category-list">
+                      <accordion-group
+                        *ngFor="let category of categories; let i = index"
+                        [isOpen]="category.isOpen"
+                        (isOpenChange)="category.isOpen = $event"
+                      >
+                        <div accordion-heading class="category-heading">
+                          {{ category.name }}
+                          <i
+                            class="fa"
+                            [ngClass]="
+                              category.isOpen
+                                ? 'fa-chevron-up'
+                                : 'fa-chevron-down'
+                            "
+                          ></i>
+                        </div>
+                        <ul class="sub-category">
+                          <li *ngFor="let item of category.items">
+                            <a [href]="item.link">{{ item.name }}</a>
+                          </li>
+                        </ul>
+                      </accordion-group>
+                    </accordion>
+                  </div>
+                  <ul class="category-list">
+                    <li>
+                      <a
+                        href="#"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseOne"
+                        aria-expanded="false"
+                        class="collapsed"
+                        >Game accessories</a
+                      >
+                      <ul
+                        id="collapseOne"
+                        class="sub-category collapse"
+                        data-parent="#category"
+                      >
+                        <li><a href="#">PlayStation 4</a></li>
+                        <li><a href="#">Oculus VR</a></li>
+                        <li><a href="#">Remote</a></li>
+                        <li><a href="#">Lighting Keyborad</a></li>
+                      </ul>
+                    </li>
+                    <li>
+                      <a
+                        class="collapsed"
+                        href="#"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseTwo"
+                        >Bags</a
+                      >
+                      <ul
+                        id="collapseTwo"
+                        class="sub-category collapse"
+                        data-parent="#category"
+                      >
+                        <li><a href="#">School Bags</a></li>
+                        <li><a href="#">Traveling Bags</a></li>
+                      </ul>
+                    </li>
+                    <li>
+                      <a
+                        class="collapsed"
+                        href="#"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseThree"
+                        >Flower Port</a
+                      >
+                      <ul
+                        id="collapseThree"
+                        class="sub-category collapse"
+                        data-parent="#category"
+                      >
+                        <li><a href="#">Woodan Port</a></li>
+                        <li><a href="#">Pattern Port</a></li>
+                      </ul>
+                    </li>
+                    <li>
+                      <a
+                        class="collapsed"
+                        href="#"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseFour"
+                        >Watch</a
+                      >
+                      <ul
+                        id="collapseFour"
+                        class="sub-category collapse"
+                        data-parent="#category"
+                      >
+                        <li><a href="#">Wall Clock</a></li>
+                        <li><a href="#">Smart Watch</a></li>
+                        <li><a href="#">Rado Watch</a></li>
+                        <li><a href="#">Fasttrack Watch</a></li>
+                        <li><a href="#">Noise Watch</a></li>
+                      </ul>
+                    </li>
+                    <li>
+                      <a
+                        class="collapsed"
+                        href="#"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseFive"
+                        >Accessories</a
+                      >
+                      <ul
+                        id="collapseFive"
+                        class="sub-category collapse"
+                        data-parent="#category"
+                      >
+                        <li><a href="#">Note Diaries</a></li>
+                        <li><a href="#">Fold Diaries</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-3">
+            <div class="size-block">
+              <div class="filter-title">
+                <a
+                  class="title"
+                  (click)="filterCollapsed.size = !filterCollapsed.size"
+                  role="button"
+                  >Select Size</a
+                >
+              </div>
+              <div
+                id="size"
+                [collapse]="filterCollapsed.size"
+                [isAnimated]="true"
+              >
+                <div class="filter-size" id="filter-size-1">
+                  <ul>
+                    <li>XS</li>
+                    <li>S</li>
+                    <li class="">M</li>
+                    <li>L</li>
+                    <li>XL</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-3">
+            <div class="color-block">
+              <div class="filter-title">
+                <a
+                  class="title"
+                  (click)="filterCollapsed.color = !filterCollapsed.color"
+                  role="button"
+                  >Select Color</a
+                >
+              </div>
+              <div
+                id="color"
+                [collapse]="filterCollapsed.color"
+                [isAnimated]="true"
+              >
+                <div class="filter-color">
+                  <ul>
+                    <li>
+                      <div class="color-check">
+                        <p>
+                          <span style="background-color: #4114e4"></span>
+                          <strong>Blue</strong>
+                        </p>
+
+                        <input type="checkbox" id="color-1" />
+                        <label for="color-1"><span></span></label>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="color-check">
+                        <p>
+                          <span style="background-color: #e14c7b"></span>
+                          <strong>Red</strong>
+                        </p>
+
+                        <input type="checkbox" id="color-2" />
+                        <label for="color-2"><span></span></label>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="color-check">
+                        <p>
+                          <span style="background-color: #7cb637"></span>
+                          <strong>Green</strong>
+                        </p>
+
+                        <input type="checkbox" id="color-3" />
+                        <label for="color-3"><span></span></label>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="color-check">
+                        <p>
+                          <span style="background-color: #161359"></span>
+                          <strong>Dark</strong>
+                        </p>
+
+                        <input type="checkbox" id="color-4" />
+                        <label for="color-4"><span></span></label>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-3">
+            <div class="price-range-block">
+              <div class="filter-title">
+                <a
+                  class="title"
+                  (click)="filterCollapsed.price = !filterCollapsed.price"
+                  role="button"
+                  >Pricing Range</a
+                >
+              </div>
+              <div
+                class="collapse show"
+                id="pricingTwo"
+                [collapse]="filterCollapsed.price"
+                [isAnimated]="true"
+              >
+                <div class="price-range">
+                  <div class="price-amount flex-wrap">
+                    <div class="amount-input mt-1">
+                      <label class="fw-bold">Minimum Price</label>
+                      <input type="text" id="minAmount2" class="form-control" />
+                    </div>
+                    <div class="amount-input mt-1">
+                      <label class="fw-bold">Maximum Price</label>
+                      <input type="text" id="maxAmount2" class="form-control" />
+                    </div>
+                  </div>
+                  <div
+                    id="slider-range2"
+                    class="slider-range noUi-target noUi-ltr noUi-horizontal noUi-txt-dir-ltr"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="rating-block">
+              <div class="filter-title">
+                <a
+                  class="title"
+                  (click)="filterCollapsed.rating = !filterCollapsed.rating"
+                  role="button"
+                  >Select Rating</a
+                >
+              </div>
+              <div
+                id="rating"
+                [collapse]="filterCollapsed.rating"
+                [isAnimated]="true"
+              >
+                <div class="filter-rating">
+                  <ul>
+                    <li>
+                      <div class="rating-check">
+                        <input type="checkbox" id="rating-5" />
+                        <label for="rating-5"><span></span> </label>
+                        <p>
+                          <i class="icofont-star"></i>
+                          <i class="icofont-star"></i>
+                          <i class="icofont-star"></i>
+                          <i class="icofont-star"></i>
+                          <i class="icofont-star"></i>
+                        </p>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="rating-check">
+                        <input type="checkbox" id="rating-4" />
+                        <label for="rating-4"><span></span></label>
+                        <p>
+                          <i class="icofont-star"></i>
+                          <i class="icofont-star"></i>
+                          <i class="icofont-star"></i>
+                          <i class="icofont-star"></i>
+                        </p>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="rating-check">
+                        <input type="checkbox" id="rating-3" />
+                        <label for="rating-3"><span></span></label>
+                        <p>
+                          <i class="icofont-star"></i>
+                          <i class="icofont-star"></i>
+                          <i class="icofont-star"></i>
+                        </p>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="rating-check">
+                        <input type="checkbox" id="rating-2" />
+                        <label for="rating-2"><span></span></label>
+                        <p>
+                          <i class="icofont-star"></i>
+                          <i class="icofont-star"></i>
+                        </p>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="rating-check">
+                        <input type="checkbox" id="rating-1" />
+                        <label for="rating-1"><span></span></label>
+                        <p>
+                          <i class="icofont-star"></i>
+                        </p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 col-lg-8 col-xl-8 col-xxl-9">
+        @if(showGridView){
+        <app-product-grid [products]="products"></app-product-grid>
+        } @else {
+        <app-product-list [products]="products"></app-product-list>
+        }
+      </div>
+    </div>
+  </div>
+</div>

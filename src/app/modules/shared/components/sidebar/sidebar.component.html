@@ -57,15 +57,16 @@
           [collapse]="isCollapsed"
           [isAnimated]="true"
         >
-          <li><a class="ms-link" href="product-grid.html">Product Grid</a></li>
-          <li><a class="ms-link" href="product-list.html">Product List</a></li>
-          <li><a class="ms-link" href="product-edit.html">Product Edit</a></li>
           <li>
-            <a class="ms-link" href="product-detail.html">Product Details</a>
+            <a class="ms-link" routerLink="products/list">Product List</a>
           </li>
           <li><a class="ms-link" routerLink="products/add">Product Add</a></li>
-          <li><a class="ms-link" href="product-cart.html">Shopping Cart</a></li>
-          <li><a class="ms-link" href="checkout.html">Checkout</a></li>
+          <li>
+            <a class="ms-link" routerLink="products/cart">Shopping Cart</a>
+          </li>
+          <li>
+            <a class="ms-link" routerLink="products/checkout">Checkout</a>
+          </li>
         </ul>
       </li>
 
