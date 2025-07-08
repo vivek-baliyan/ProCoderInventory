@@ -4,6 +4,7 @@ import { environment } from '../../../../../environments/environment';
 import { ApiResponse } from '../../../../core/models/api-response';
 import { CreateProduct } from '../../../../core/models/product/create-product';
 import { ProductListItem } from '../../../../core/models/product/product-list-item';
+import { ProductFilter } from '../../../../core/models/product/product-filter';
 
 @Injectable({
   providedIn: 'root',
@@ -18,9 +19,10 @@ export class ProductService {
     );
   }
 
-  getProducts(pageIndex: number, pageSize: number) {
-    return this.httpClient.get<ApiResponse<ProductListItem[]>>(
-      `${environment.apiBaseUrl}/product/all/${pageIndex}/${pageSize}`
+  searchProducts(filter: ProductFilter) {
+    return this.httpClient.post<ApiResponse<ProductListItem[]>>(
+      `${environment.apiBaseUrl}/product/search`,
+      filter
     );
   }
 }

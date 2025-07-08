@@ -3,6 +3,9 @@ import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../../category/services/category.service';
 import { ProductListItem } from '../../../../../core/models/product/product-list-item';
 import { CategoryDropdown } from '../../../../../core/models/category/categoryDropdown';
+import { filter } from 'rxjs';
+import { ProductFilter } from '../../../../../core/models/product/product-filter';
+import { Sizes } from '../../../../../core/enums/sizes.enum';
 
 @Component({
   selector: 'app-product-search',
@@ -12,57 +15,7 @@ import { CategoryDropdown } from '../../../../../core/models/category/categoryDr
 })
 export class ProductSearchComponent implements OnInit {
   showGridView: boolean = false;
-
-  // categories: CategoryDropdown[] = [];
-  childCategories: CategoryDropdown[] = [];
-
-  categories: any = [
-    {
-      name: 'Game accessories',
-      isOpen: false,
-      items: [
-        { name: 'PlayStation 4', link: '#' },
-        { name: 'Oculus VR', link: '#' },
-        { name: 'Remote', link: '#' },
-        { name: 'Lighting Keyboard', link: '#' },
-      ],
-    },
-    {
-      name: 'Bags',
-      isOpen: false,
-      items: [
-        { name: 'School Bags', link: '#' },
-        { name: 'Traveling Bags', link: '#' },
-      ],
-    },
-    {
-      name: 'Flower Port',
-      isOpen: false,
-      items: [
-        { name: 'Woodan Port', link: '#' },
-        { name: 'Pattern Port', link: '#' },
-      ],
-    },
-    {
-      name: 'Watch',
-      isOpen: false,
-      items: [
-        { name: 'Wall Clock', link: '#' },
-        { name: 'Smart Watch', link: '#' },
-        { name: 'Rado Watch', link: '#' },
-        { name: 'Fasttrack Watch', link: '#' },
-        { name: 'Noise Watch', link: '#' },
-      ],
-    },
-    {
-      name: 'Accessories',
-      isOpen: false,
-      items: [
-        { name: 'Note Diaries', link: '#' },
-        { name: 'Fold Diaries', link: '#' },
-      ],
-    },
-  ];
+  categories: any = [];
 
   filterCollapsed: any = {
     category: false,
@@ -71,7 +24,19 @@ export class ProductSearchComponent implements OnInit {
     pricing: false,
     rating: false,
   };
+
+  sizeOptions = Object.entries(Sizes).map(([key, value]) => ({
+    label: key,
+    value: value,
+  }));
+
   products: ProductListItem[] = [];
+
+  selectedCategory: number = 0;
+  selectedSizes: string[] = [];
+  selectedColors: string[] = [];
+  selectedPriceRange: { min: number; max: number } = { min: 0, max: 0 };
+  selectedRatings: number = 0;
 
   constructor(
     private productService: ProductService,
@@ -86,20 +51,60 @@ export class ProductSearchComponent implements OnInit {
   getCategories() {
     this.categoryService.getCategoriesForDropdown().subscribe({
       next: (response) => {
-        this.categories = response.data;
-        this.childCategories = this.categories.filter(
-          (category: any) => category.parentCategoryId !== 0
-        );
+        response.data.forEach((category: CategoryDropdown) => {
+          this.categories.push({
+            name: category.name,
+            isCollapsed: true,
+            childCategories: response.data
+              .filter((item: CategoryDropdown) => {
+                return item.parentCategoryId === category.id;
+              })
+              .map((item: CategoryDropdown) => {
+                return { name: item.name, id: item.id };
+              }),
+          });
+        });
       },
     });
   }
 
   getProducts() {
-    return this.productService.getProducts(1, 10).subscribe({
+    let filter: ProductFilter = {
+      categoryIds: [],
+      size: [],
+      color: [],
+      priceRange: {
+        min: 0,
+        max: 0,
+      },
+      rating: 0,
+      pageIndex: 1,
+      pageSize: 10,
+    };
+
+    return this.productService.searchProducts(filter).subscribe({
       next: (response) => {
         this.products = response.data;
         console.log(response);
       },
     });
+  }
+
+  onSizeSelection(size: Sizes) {
+    const index = this.selectedSizes.indexOf(size);
+    if (index > -1) {
+      this.selectedSizes.splice(index, 1);
+    } else {
+      this.selectedSizes.push(size);
+    }
+  }
+
+  toggleMenu(index: number) {
+    this.categories.forEach((category: any, i: number) => {
+      if (i !== index) {
+        category.isCollapsed = true;
+      }
+    });
+    this.categories[index].isCollapsed = !this.categories[index].isCollapsed;
   }
 }

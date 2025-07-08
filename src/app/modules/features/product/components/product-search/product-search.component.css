@@ -2,3 +2,9 @@
   padding: 8px 0;
   padding-left: 34px;
 }
+
+.size-block .filter-size ul li.selected {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+}
