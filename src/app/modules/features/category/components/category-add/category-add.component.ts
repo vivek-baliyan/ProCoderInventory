@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CategoryService } from '../../services/category.service';
 import { CreateCategory } from '../../../../../core/models/category/create-category';
 import { NotificationService } from '../../../../../core/services/notification.service';
-import { CategoryDropdown } from '../../../../../core/models/category/categoryDropdown';
+import { CategoryDropdown } from '../../../../../core/models/category/category-dropdown';
 import { VisibilityStatuses } from '../../../../../core/enums/visibility-status.enum';
 
 @Component({

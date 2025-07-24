@@ -2,8 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { AccordionComponent, AccordionPanelComponent } from 'ngx-bootstrap/accordion';
+import {
+  AccordionComponent,
+  AccordionPanelComponent,
+} from 'ngx-bootstrap/accordion';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { TabsModule } from 'ngx-bootstrap/tabs';
 
 import { ProductRoutingModule } from './product-routing.module';
 import { SharedModule } from '../../shared/shared.module';
@@ -13,7 +17,7 @@ import { ProductVariantAddComponent } from './components/product-variant-add/pro
 import { ProductListComponent } from './components/product-list/product-list.component';
 import { ProductSearchComponent } from './components/product-search/product-search.component';
 import { ProductGridComponent } from './components/product-grid/product-grid.component';
-
+import { ProductViewComponent } from './components/product-view/product-view.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +26,7 @@ import { ProductGridComponent } from './components/product-grid/product-grid.com
     ProductSearchComponent,
     ProductListComponent,
     ProductGridComponent,
+    ProductViewComponent,
   ],
   imports: [
     CommonModule,
@@ -30,6 +35,7 @@ import { ProductGridComponent } from './components/product-grid/product-grid.com
     ProductRoutingModule,
     SharedModule,
     CollapseModule,
+    TabsModule,
     AccordionComponent,
     AccordionPanelComponent,
   ],

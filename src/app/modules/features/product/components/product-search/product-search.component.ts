@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../../category/services/category.service';
 import { ProductListItem } from '../../../../../core/models/product/product-list-item';
-import { CategoryDropdown } from '../../../../../core/models/category/categoryDropdown';
-import { filter } from 'rxjs';
+import { CategoryDropdown } from '../../../../../core/models/category/category-dropdown';
 import { ProductFilter } from '../../../../../core/models/product/product-filter';
 import { Sizes } from '../../../../../core/enums/sizes.enum';
 
@@ -74,8 +73,8 @@ export class ProductSearchComponent implements OnInit {
       size: [],
       color: [],
       priceRange: {
-        min: 0,
-        max: 0,
+        minPrice: 0,
+        maxPrice: 0,
       },
       rating: 0,
       pageIndex: 1,

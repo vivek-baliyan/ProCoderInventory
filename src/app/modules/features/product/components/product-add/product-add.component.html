@@ -31,38 +31,40 @@
               <div class="card-body">
                 <div class="row g-3 align-items-center">
                   <div class="col-md-12">
-                    <label class="form-label">Product Price Old</label>
+                    <label class="form-label">Cost Price</label>
                     <input
-                      type="text"
+                      type="number"
                       class="form-control"
-                      formControlName="oldPrice"
+                      formControlName="costPrice"
+                      [class.is-invalid]="isCostPriceValid"
+                      min="0"
+                      step="0.01"
                     />
+                    @if(isCostPriceValid) {
+                    <div class="invalid-feedback">
+                      Cost Price must be 0 or greater
+                    </div>
+                    }
                   </div>
 
                   <div class="col-md-12">
                     <label class="form-label"
-                      >Product Price New
+                      >Selling Price
                       <span class="text-danger">*</span></label
                     >
                     <input
-                      type="text"
+                      type="number"
                       class="form-control"
-                      formControlName="price"
-                      [class.is-invalid]="isPriceValid"
+                      formControlName="sellingPrice"
+                      [class.is-invalid]="isSellingPriceValid"
+                      min="0"
+                      step="0.01"
                     />
-                    @if(isPriceValid) {
+                    @if(isSellingPriceValid) {
                     <div class="invalid-feedback">
-                      Price must be greater than 0
+                      Selling Price must be 0 or greater
                     </div>
                     }
-                  </div>
-                  <div class="col-md-12">
-                    <label class="form-label">Product Coupon</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      formControlName="coupon"
-                    />
                   </div>
                 </div>
               </div>
@@ -74,7 +76,7 @@
                 <h6 class="m-0 fw-bold">Visibility Status</h6>
               </div>
               <div class="card-body">
-                <div class="form-check" *ngFor="let option of statusOptions">
+                <div class="form-check" *ngFor="let option of productStatusOptions">
                   <input
                     class="form-check-input"
                     type="radio"
@@ -94,23 +96,22 @@
               <div
                 class="card-header py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom-0"
               >
-                <h6 class="m-0 fw-bold">Size</h6>
+                <h6 class="m-0 fw-bold">Product Type</h6>
               </div>
               <div class="card-body">
-                <div
-                  class="form-check"
-                  *ngFor="let size of sizeOptions; let i = index"
-                >
+                <div class="form-check" *ngFor="let option of productTypeOptions">
                   <input
                     class="form-check-input"
-                    type="checkbox"
-                    [id]="'sizechek' + (i + 1)"
-                    formArrayName="sizes"
-                    [name]="'size' + size.label"
+                    type="radio"
+                    [id]="'productType-' + option.value"
+                    [value]="option.value"
+                    formControlName="productType"
                   />
-                  <label class="form-check-label" [for]="'sizechek' + (i + 1)">
-                    {{ size.label }}
-                  </label>
+                  <label
+                    class="form-check-label"
+                    [for]="'productType-' + option.value"
+                    >{{ option.label }}</label
+                  >
                 </div>
               </div>
             </div>
@@ -118,25 +119,48 @@
               <div
                 class="card-header py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom-0"
               >
-                <h6 class="m-0 fw-bold">Publish Schedule</h6>
+                <h6 class="m-0 fw-bold">Product Options</h6>
               </div>
               <div class="card-body">
                 <div class="row g-3 align-items-center">
                   <div class="col-md-12">
-                    <label class="form-label">Publish Date</label>
-                    <input
-                      type="date"
-                      class="form-control w-100"
-                      formControlName="publishDate"
-                    />
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="isActive"
+                        formControlName="isActive"
+                      />
+                      <label class="form-check-label" for="isActive">
+                        Is Active
+                      </label>
+                    </div>
                   </div>
                   <div class="col-md-12">
-                    <label class="form-label">Publish Time</label>
-                    <input
-                      type="time"
-                      class="form-control w-100"
-                      formControlName="publishTime"
-                    />
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="isTaxable"
+                        formControlName="isTaxable"
+                      />
+                      <label class="form-check-label" for="isTaxable">
+                        Is Taxable
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="trackInventory"
+                        formControlName="trackInventory"
+                      />
+                      <label class="form-check-label" for="trackInventory">
+                        Track Inventory
+                      </label>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -153,7 +177,8 @@
                     <input
                       type="text"
                       class="form-control"
-                      formControlName="tags"
+                      placeholder="Enter tags separated by commas"
+                      (input)="onTagsChange($event)"
                     />
                   </div>
                 </div>
@@ -162,62 +187,80 @@
             <div class="card mb-3">
               <div class="card-body">
                 <label class="form-label"
-                  >Select Category <span class="text-danger">*</span></label
+                  >Select Categories</label
                 >
-                <select
-                  class="form-select"
-                  [class.is-invalid]="isCategoryValid"
-                  size="3"
-                  formControlName="categoryId"
-                >
-                  <option [value]="0">-- Select --</option>
-                  @for (category of categories; track $index) {
-                  <option [value]="category.id">{{ category.name }}</option>
-                  }
-                </select>
-                @if(isCategoryValid) {
-                <div class="invalid-feedback">Please select a category</div>
-                }
+                <div class="form-check" *ngFor="let category of categories">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    [id]="'category-' + category.id"
+                    [value]="category.id"
+                    (change)="onCategoryChange(category.id, $any($event.target).checked)"
+                  />
+                  <label
+                    class="form-check-label"
+                    [for]="'category-' + category.id"
+                    >{{ category.name }}</label
+                  >
+                </div>
               </div>
             </div>
             <div class="card">
               <div
                 class="card-header py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom-0"
               >
-                <h6 class="m-0 fw-bold">Inventory Info</h6>
+                <h6 class="m-0 fw-bold">Product Codes</h6>
               </div>
               <div class="card-body">
                 <div class="row g-3 align-items-center">
                   <div class="col-md-12">
-                    <label class="form-label"
-                      >SKU <span class="text-danger">*</span></label
-                    >
+                    <label class="form-label">SKU</label>
                     <input
                       type="text"
                       class="form-control"
                       formControlName="sku"
                       [class.is-invalid]="isSkuValid"
+                      maxlength="100"
                     />
                     @if (isSkuValid) {
                     <div class="invalid-feedback">Please enter a valid SKU</div>
                     }
                   </div>
                   <div class="col-md-12">
-                    <label class="form-label"
-                      >Total Stock Quantity
-                      <span class="text-danger">*</span></label
-                    >
+                    <label class="form-label">UPC</label>
                     <input
                       type="text"
                       class="form-control"
-                      formControlName="stockQuantity"
-                      [class.is-invalid]="isStockQuantityValid"
+                      formControlName="upc"
+                      maxlength="50"
                     />
-                    @if(isStockQuantityValid) {
-                    <div class="invalid-feedback">
-                      Stock Quantity must be greater than 0
-                    </div>
-                    }
+                  </div>
+                  <div class="col-md-12">
+                    <label class="form-label">EAN</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="ean"
+                      maxlength="50"
+                    />
+                  </div>
+                  <div class="col-md-12">
+                    <label class="form-label">ISBN</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="isbn"
+                      maxlength="50"
+                    />
+                  </div>
+                  <div class="col-md-12">
+                    <label class="form-label">Manufacturer Part Number</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="manufacturerPartNumber"
+                      maxlength="100"
+                    />
                   </div>
                 </div>
               </div>
@@ -249,42 +292,30 @@
                   }
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label"
-                    >Page Title <span class="text-danger">*</span></label
-                  >
+                  <label class="form-label">Product Type</label>
+                  <select class="form-select" formControlName="productType">
+                    <option *ngFor="let option of productTypeOptions" [value]="option.value">
+                      {{ option.label }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Unit of Measurement</label>
                   <input
                     type="text"
                     class="form-control"
-                    name="pageTitle"
-                    formControlName="pageTitle"
-                    [class.is-invalid]="isPageTitleValid"
+                    formControlName="unitOfMeasurement"
+                    placeholder="e.g., Pieces, Kg, Liters"
                   />
-                  @if(isPageTitleValid) {
-                  <div class="invalid-feedback">
-                    Please enter a valid page title
-                  </div>
-                  }
                 </div>
-                <div class="col-md-12">
-                  <label class="form-label"
-                    >Product Identifier URL
-                    <span class="text-danger">*</span></label
-                  >
-                  <div class="input-group mb-3">
-                    <span class="input-group-text">https://eBazar.com/</span>
-                    <input
-                      type="text"
-                      class="form-control"
-                      name="urlIdentifier"
-                      formControlName="urlIdentifier"
-                      [class.is-invalid]="isUrlIdentifierValid"
-                    />
-                    @if(isUrlIdentifierValid) {
-                    <div class="invalid-feedback">
-                      Please enter a valid URL identifier
-                    </div>
-                    }
-                  </div>
+                <div class="col-md-6">
+                  <label class="form-label">HSN/SAC Code</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="hsnSacCode"
+                    placeholder="Enter HSN or SAC code"
+                  />
                 </div>
                 <div class="col-md-12">
                   <label class="form-label">Product Description</label>
@@ -292,11 +323,144 @@
                     class="form-control"
                     name="description"
                     formControlName="description"
+                    maxlength="1000"
+                    rows="4"
+                  ></textarea>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">Custom Fields</label>
+                  <textarea
+                    class="form-control"
+                    formControlName="customFields"
+                    maxlength="2000"
+                    rows="3"
+                    placeholder="Enter custom fields as JSON or text"
                   ></textarea>
                 </div>
               </div>
             </div>
           </div>
+          
+          <!-- Sales Information Card -->
+          <div class="card mb-3">
+            <div
+              class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0"
+            >
+              <h6 class="mb-0 fw-bold">Sales Information</h6>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Sales Account ID</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    formControlName="salesAccountId"
+                    placeholder="Enter sales account ID"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Purchase Account ID</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    formControlName="purchaseAccountId"
+                    placeholder="Enter purchase account ID"
+                  />
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">Sales Description</label>
+                  <textarea
+                    class="form-control"
+                    formControlName="salesDescription"
+                    rows="2"
+                    placeholder="Description for sales documents"
+                  ></textarea>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">Purchase Description</label>
+                  <textarea
+                    class="form-control"
+                    formControlName="purchaseDescription"
+                    rows="2"
+                    placeholder="Description for purchase documents"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Inventory Management Card -->
+          <div class="card mb-3">
+            <div
+              class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0"
+            >
+              <h6 class="mb-0 fw-bold">Inventory Management</h6>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Opening Stock</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    formControlName="openingStock"
+                    min="0"
+                    placeholder="Initial stock quantity"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Opening Stock Value</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    formControlName="openingStockValue"
+                    min="0"
+                    step="0.01"
+                    placeholder="Initial stock value"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Reorder Level</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    formControlName="reorderLevel"
+                    min="0"
+                    placeholder="Minimum stock level"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Preferred Vendor ID</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    formControlName="preferredVendorId"
+                    placeholder="Primary supplier ID"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Warehouse ID</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    formControlName="warehouseId"
+                    placeholder="Default warehouse ID"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Inventory Account ID</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    formControlName="inventoryAccountId"
+                    placeholder="Inventory tracking account"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          
           <app-product-variant-add></app-product-variant-add>
         </div>
       </div>

@@ -21,7 +21,7 @@
           <span class="rating mb-2 d-block"
             ><i class="icofont-star text-warning"></i> 4.5 (98)</span
           >
-          <a href="product-detail.html" class="fw-bold">{{ product.name }}</a>
+          <a [routerLink]="['/app/products/view', product.id]" class="fw-bold">{{ product.name }}</a>
           <p class="text-muted">{{ product.sku }}</p>
           <span class="d-block fw-bold fs-5 text-secondary">{{
             product.price | currency : "INR" : "symbol-narrow" : "4.2-2"

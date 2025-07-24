@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { ResolveFn, Router } from '@angular/router';
-import { EMPTY, Observable, catchError, of } from 'rxjs';
+import { EMPTY, catchError } from 'rxjs';
 import { CategoryService } from '../../modules/features/category/services/category.service';
 import { Category } from '../models/category/category';
 import { ApiResponse } from '../models/api-response';

@@ -1,6 +1,5 @@
-
 export interface ProductImage {
-    id: number;
-    imagePath: string;
-    isMain: boolean;
+  id: number;
+  imagePath: string;
+  isMain: boolean;
 }

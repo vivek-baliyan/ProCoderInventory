@@ -4,7 +4,7 @@ import { environment } from '../../../../../environments/environment';
 import { CreateCategory } from '../../../../core/models/category/create-category';
 import { ApiResponse } from '../../../../core/models/api-response';
 import { Category } from '../../../../core/models/category/category';
-import { CategoryDropdown } from '../../../../core/models/category/categoryDropdown';
+import { CategoryDropdown } from '../../../../core/models/category/category-dropdown';
 import { CategoryListItem } from '../../../../core/models/category/category-list-item';
 import { UpdateCategory } from '../../../../core/models/category/update-category';
 

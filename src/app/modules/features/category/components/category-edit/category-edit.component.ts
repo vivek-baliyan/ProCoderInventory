@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { VisibilityStatuses } from '../../../../../core/enums/visibility-status.enum';
-import { CategoryDropdown } from '../../../../../core/models/category/categoryDropdown';
+import { CategoryDropdown } from '../../../../../core/models/category/category-dropdown';
 import { NotificationService } from '../../../../../core/services/notification.service';
 import { CategoryService } from '../../services/category.service';
 import { Category } from '../../../../../core/models/category/category';

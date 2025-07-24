@@ -5,6 +5,7 @@ import { ApiResponse } from '../../../../core/models/api-response';
 import { CreateProduct } from '../../../../core/models/product/create-product';
 import { ProductListItem } from '../../../../core/models/product/product-list-item';
 import { ProductFilter } from '../../../../core/models/product/product-filter';
+import { Product } from '../../../../core/models/product/product';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +24,12 @@ export class ProductService {
     return this.httpClient.post<ApiResponse<ProductListItem[]>>(
       `${environment.apiBaseUrl}/product/search`,
       filter
+    );
+  }
+
+  getProductById(productId: number) {
+    return this.httpClient.get<ApiResponse<Product>>(
+      `${environment.apiBaseUrl}/product/getById/${productId}`
     );
   }
 }
