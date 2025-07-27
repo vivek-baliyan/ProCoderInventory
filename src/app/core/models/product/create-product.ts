@@ -23,18 +23,27 @@ export interface CreateProduct {
   salesAccountId: number | null;
   purchaseAccountId: number | null;
   inventoryAccountId: number | null;
-  categoryIds: number[] | null;
-  tags: string[] | null;
-  customFields: string | null;
-  
-  // Additional Zoho Inventory inspired fields
-  unitOfMeasurement: string | null;
-  hsnSacCode: string | null;
-  salesDescription: string | null;
-  purchaseDescription: string | null;
+  unitOfMeasureId: number | null;
+  reorderLevel: number | null;
+  reorderQuantity: number | null;
+  minimumStock: number | null;
+  maximumStock: number | null;
   openingStock: number | null;
   openingStockValue: number | null;
-  reorderLevel: number | null;
-  preferredVendorId: number | null;
-  warehouseId: number | null;
+  isSaleable: boolean;
+  isPurchasable: boolean;
+  isReturnable: boolean;
+  vendorId: number | null;
+  weight: number | null;
+  weightUnitId: number | null;
+  length: number | null;
+  width: number | null;
+  height: number | null;
+  dimensionUnitId: number | null;
+  taxClassificationId: number | null;
+  taxMasterId: number | null;
+  isTaxExempt: boolean;
+  taxExemptReason: string | null;
+  tagIds: number[] | null;
+  imageUrls: string[] | null;
 }

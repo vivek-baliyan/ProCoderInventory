@@ -1,13 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ProductService } from '../../services/product.service';
-import { VisibilityStatuses } from '../../../../../core/enums/visibility-status.enum';
+import { NotificationService } from '../../../../../core/services/notification.service';
 import { ProductType } from '../../../../../core/enums/product-type.enum';
 import { ProductStatus } from '../../../../../core/enums/product-status.enum';
-import { Sizes } from '../../../../../core/enums/sizes.enum';
-import { Category } from '../../../../../core/models/category/category';
-import { CategoryService } from '../../../category/services/category.service';
-import { CategoryDropdown } from '../../../../../core/models/category/category-dropdown';
 import { CreateProduct } from '../../../../../core/models/product/create-product';
 
 @Component({
@@ -17,9 +14,8 @@ import { CreateProduct } from '../../../../../core/models/product/create-product
   styleUrl: './product-add.component.css',
 })
 export class ProductAddComponent implements OnInit {
-  categories: CategoryDropdown[] = []; // Array of categories
-
   addProductForm!: FormGroup;
+  uploadedImages: string[] = [];
 
   productTypeOptions = Object.entries(ProductType)
     .filter(([key, value]) => typeof value === 'number')
@@ -35,35 +31,24 @@ export class ProductAddComponent implements OnInit {
       value: value as number,
     }));
 
-  visibilityStatusOptions = Object.entries(VisibilityStatuses).map(([key, value]) => ({
-    label: key,
-    value: value,
-  }));
 
-  sizeOptions = Object.entries(Sizes).map(([key, value]) => ({
-    label: key,
-    value: value,
-  }));
-
-  selectedCategories: number[] = [];
-  tags: string[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
-    private categoryService: CategoryService,
-    private productService: ProductService
+    private productService: ProductService,
+    private notificationService: NotificationService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.getCategories();
     this.initializeForm();
   }
 
   initializeForm() {
     this.addProductForm = this.formBuilder.group({
-      sku: [''],
-      name: ['', Validators.required],
-      description: [''],
+      sku: ['', [Validators.maxLength(100)]],
+      name: ['', [Validators.required, Validators.maxLength(200)]],
+      description: ['', [Validators.maxLength(1000)]],
       productType: [ProductType.SimpleProduct, Validators.required],
       status: [ProductStatus.Draft, Validators.required],
       isActive: [true],
@@ -73,37 +58,41 @@ export class ProductAddComponent implements OnInit {
       batchTracking: [false],
       itemGroupId: [null],
       brandId: [null],
-      manufacturerPartNumber: [''],
-      upc: [''],
-      ean: [''],
-      isbn: [''],
-      sellingPrice: [null, [Validators.min(0)]],
-      costPrice: [null, [Validators.min(0)]],
+      manufacturerPartNumber: ['', [Validators.maxLength(100)]],
+      upc: ['', [Validators.maxLength(50)]],
+      ean: ['', [Validators.maxLength(50)]],
+      isbn: ['', [Validators.maxLength(50)]],
+      sellingPrice: [null, [Validators.min(0), Validators.max(999999999.99)]],
+      costPrice: [null, [Validators.min(0), Validators.max(999999999.99)]],
       salesAccountId: [null],
       purchaseAccountId: [null],
       inventoryAccountId: [null],
-      categoryIds: [[]],
-      tags: [[]],
-      customFields: [''],
-      
-      // Additional Zoho Inventory inspired fields
-      unitOfMeasurement: [''],
-      hsnSacCode: [''],
-      salesDescription: [''],
-      purchaseDescription: [''],
+      unitOfMeasureId: [null],
+      reorderLevel: [null, [Validators.min(0)]],
+      reorderQuantity: [null, [Validators.min(0)]],
+      minimumStock: [null, [Validators.min(0)]],
+      maximumStock: [null, [Validators.min(0)]],
       openingStock: [null, [Validators.min(0)]],
       openingStockValue: [null, [Validators.min(0)]],
-      reorderLevel: [null, [Validators.min(0)]],
-      preferredVendorId: [null],
-      warehouseId: [null],
+      isSaleable: [true],
+      isPurchasable: [true],
+      isReturnable: [true],
+      vendorId: [null],
+      weight: [null, [Validators.min(0)]],
+      weightUnitId: [null],
+      length: [null, [Validators.min(0)]],
+      width: [null, [Validators.min(0)]],
+      height: [null, [Validators.min(0)]],
+      dimensionUnitId: [null],
+      taxClassificationId: [null],
+      taxMasterId: [null],
+      isTaxExempt: [false],
+      taxExemptReason: [''],
+      tagIds: [[]],
+      imageUrls: [[]]
     });
   }
 
-  getCategories() {
-    this.categoryService.getCategoriesForDropdown().subscribe((response) => {
-      this.categories = response.data;
-    });
-  }
 
   get isNameValid() {
     const nameInput = this.addProductForm.controls['name'];
@@ -125,22 +114,34 @@ export class ProductAddComponent implements OnInit {
     return skuInput.invalid && (skuInput.dirty || skuInput.touched);
   }
 
-  onCategoryChange(categoryId: number, isChecked: boolean) {
-    if (isChecked) {
-      this.selectedCategories.push(categoryId);
+  onTagsInput(event: any) {
+    const value = event.target.value;
+    if (value) {
+      const tagIds = value.split(',').map((tag: string) => parseInt(tag.trim())).filter((id: number) => !isNaN(id));
+      this.addProductForm.patchValue({ tagIds });
     } else {
-      const index = this.selectedCategories.indexOf(categoryId);
-      if (index > -1) {
-        this.selectedCategories.splice(index, 1);
-      }
+      this.addProductForm.patchValue({ tagIds: [] });
     }
-    this.addProductForm.patchValue({ categoryIds: this.selectedCategories });
   }
 
-  onTagsChange(event: any) {
-    const tagString = event.target.value;
-    this.tags = tagString ? tagString.split(',').map((tag: string) => tag.trim()) : [];
-    this.addProductForm.patchValue({ tags: this.tags });
+  onImageUrlsInput(event: any) {
+    const value = event.target.value;
+    if (value) {
+      const imageUrls = value.split('\n').map((url: string) => url.trim()).filter((url: string) => url.length > 0);
+      this.addProductForm.patchValue({ imageUrls });
+    } else {
+      this.addProductForm.patchValue({ imageUrls: [] });
+    }
+  }
+
+  onImageUpload(imageBase64: string) {
+    this.uploadedImages.push(imageBase64);
+    this.addProductForm.patchValue({ imageUrls: this.uploadedImages });
+  }
+
+  removeImage(index: number) {
+    this.uploadedImages.splice(index, 1);
+    this.addProductForm.patchValue({ imageUrls: this.uploadedImages });
   }
 
   saveProduct() {
@@ -170,31 +171,48 @@ export class ProductAddComponent implements OnInit {
         salesAccountId: formData.salesAccountId,
         purchaseAccountId: formData.purchaseAccountId,
         inventoryAccountId: formData.inventoryAccountId,
-        categoryIds: this.selectedCategories.length > 0 ? this.selectedCategories : null,
-        tags: this.tags.length > 0 ? this.tags : null,
-        customFields: formData.customFields || null,
-        
-        // Additional Zoho Inventory inspired fields
-        unitOfMeasurement: formData.unitOfMeasurement || null,
-        hsnSacCode: formData.hsnSacCode || null,
-        salesDescription: formData.salesDescription || null,
-        purchaseDescription: formData.purchaseDescription || null,
+        unitOfMeasureId: formData.unitOfMeasureId,
+        reorderLevel: formData.reorderLevel,
+        reorderQuantity: formData.reorderQuantity,
+        minimumStock: formData.minimumStock,
+        maximumStock: formData.maximumStock,
         openingStock: formData.openingStock,
         openingStockValue: formData.openingStockValue,
-        reorderLevel: formData.reorderLevel,
-        preferredVendorId: formData.preferredVendorId,
-        warehouseId: formData.warehouseId,
+        isSaleable: formData.isSaleable,
+        isPurchasable: formData.isPurchasable,
+        isReturnable: formData.isReturnable,
+        vendorId: formData.vendorId,
+        weight: formData.weight,
+        weightUnitId: formData.weightUnitId,
+        length: formData.length,
+        width: formData.width,
+        height: formData.height,
+        dimensionUnitId: formData.dimensionUnitId,
+        taxClassificationId: formData.taxClassificationId,
+        taxMasterId: formData.taxMasterId,
+        isTaxExempt: formData.isTaxExempt,
+        taxExemptReason: formData.taxExemptReason || null,
+        tagIds: formData.tagIds,
+        imageUrls: formData.imageUrls
       };
 
-      this.productService.createProduct(createProduct).subscribe((response) => {
-        console.log('Product created successfully:', response);
-        this.addProductForm.reset();
-        this.selectedCategories = [];
-        this.tags = [];
+      this.productService.createProduct(createProduct).subscribe({
+        next: (response) => {
+          console.log('Product created successfully:', response);
+          this.notificationService.showSuccess('Product created successfully!');
+          this.addProductForm.reset();
+          this.uploadedImages = [];
+          this.router.navigate(['/app/products/list']);
+        },
+        error: (error) => {
+          console.error('Error creating product:', error);
+          this.notificationService.showError('Failed to create product. Please try again.');
+        }
       });
     } else {
       console.log('Form is invalid');
       this.addProductForm.markAllAsTouched();
+      this.notificationService.showWarning('Please fill in all required fields correctly.');
     }
   }
 }

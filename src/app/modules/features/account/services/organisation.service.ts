@@ -29,7 +29,7 @@ export class OrganisationService {
 
   getUserOrganisation(userId: string) {
     return this.httpClient.get<ApiResponse<Organisation>>(
-      `${environment.apiBaseUrl}/Organisation/${userId}`
+      `${environment.apiBaseUrl}/Organisation/getByUserId/${userId}`
     );
   }
 }

@@ -22,7 +22,7 @@ export class ErrorHandlerService {
 
       if (apiError.hasOwnProperty('errors')) {
         if (apiError.errors && apiError.errors.length > 0) {
-          errorMessage = apiError.errors[0].description;
+          errorMessage = apiError.errors[0].message;
         } else if (apiError.message && apiError.message.trim() !== '') {
           errorMessage = apiError.message;
         }

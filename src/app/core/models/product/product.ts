@@ -1,30 +1,24 @@
-import { Category } from '../category/category';
 import { ProductImage } from './product-image';
-import { ProductVariant } from './product-variant';
+import { ProductTag } from './product-tag';
 
 export interface Product {
   id: number;
+  sku?: string;
   name: string;
-  pageTitle: string;
-  urlIdentifier: string;
-  description: string;
-  oldPrice?: number;
-  price: number;
-  coupon: string;
-  status: string;
-  publishDate?: Date;
-  publishTime?: Date;
-  sku: string;
-  stockQuantity: number;
-  categories: Category[];
-  tags: string[];
-  hasSizeXS: boolean;
-  hasSizeS: boolean;
-  hasSizeM: boolean;
-  hasSizeL: boolean;
-  hasSizeXL: boolean;
-  variants: ProductVariant[];
-  images: ProductImage[];
-  createdAt: Date;
-  updatedAt?: Date | null;
+  description?: string;
+  productType: number;
+  status: number;
+  isActive: boolean;
+  isTaxable: boolean;
+  trackInventory: boolean;
+  serialNumberTracking: boolean;
+  batchTracking: boolean;
+  manufacturerPartNumber?: string;
+  upc?: string;
+  ean?: string;
+  isbn?: string;
+  sellingPrice?: number;
+  costPrice?: number;
+  images?: ProductImage[];
+  tags?: ProductTag[];
 }

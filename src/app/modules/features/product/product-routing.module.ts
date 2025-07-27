@@ -5,6 +5,7 @@ import { ProductListComponent } from './components/product-list/product-list.com
 import { ProductSearchComponent } from './components/product-search/product-search.component';
 import { ProductViewComponent } from './components/product-view/product-view.component';
 import { productResolver } from '../../../core/resolvers/product.resolver';
+import { ProductEditComponent } from './components/product-edit/product-edit.component';
 
 const routes: Routes = [
   {
@@ -18,6 +19,11 @@ const routes: Routes = [
   {
     path: 'view/:id',
     component: ProductViewComponent,
+    resolve: { product: productResolver },
+  },
+  {
+    path: 'edit/:id',
+    component: ProductEditComponent,
     resolve: { product: productResolver },
   },
 ];

@@ -1,297 +1,134 @@
-<div class="body d-flex py-3">
-  <div class="container-xxl">
-    <div class="row align-items-center">
-      <div class="border-0 mb-4">
-        <div
-          class="card-header py-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between border-bottom flex-wrap"
-        >
-          <h3 class="fw-bold mb-0">Products</h3>
-          <div class="btn-group group-link btn-set-task w-sm-100">
-            <a
-              class="btn d-inline-flex align-items-center"
-              [class.active]="showGridView"
-              (click)="showGridView = true"
-              ><i class="icofont-wall px-2 fs-5"></i>Grid View</a
-            >
-            <a
-              class="btn d-inline-flex align-items-center"
-              [class.active]="!showGridView"
-              (click)="showGridView = false"
-              ><i class="icofont-listing-box px-2 fs-5"></i> List View</a
-            >
+<!-- main body area -->
+<div class="main px-lg-4 px-md-4">
+  <!-- Body: Body -->
+  <div class="body d-flex py-3">
+    <div class="container-xxl">
+      <div class="row align-items-center">
+        <div class="border-0 mb-4">
+          <div
+            class="card-header py-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between border-bottom flex-wrap"
+          >
+            <h3 class="fw-bold mb-0">Products</h3>
+            <div class="btn-group group-link btn-set-task w-sm-100">
+              <a
+                class="btn d-inline-flex align-items-center"
+                [class.active]="showGridView"
+                (click)="showGridView = true"
+                ><i class="icofont-wall px-2 fs-5"></i>Grid View</a
+              >
+              <a
+                class="btn d-inline-flex align-items-center"
+                [class.active]="!showGridView"
+                (click)="showGridView = false"
+                ><i class="icofont-listing-box px-2 fs-5"></i> List View</a
+              >
+            </div>
           </div>
         </div>
       </div>
-    </div>
     <div class="row g-3 mb-3">
       <div class="col-md-12 col-lg-4 col-xl-4 col-xxl-3">
         <div class="sticky-lg-top">
           <div class="card mb-3">
-            <div class="reset-block">
-              <div class="filter-title">
-                <h4 class="title">Filter</h4>
-              </div>
-              <div class="filter-btn">
-                <a class="btn btn-primary" href="#">Reset</a>
-              </div>
+            <div
+              class="card-header py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom-0"
+            >
+              <h6 class="m-0 fw-bold">Filter</h6>
+              <button class="btn btn-primary btn-sm" (click)="resetFilters()">Reset</button>
             </div>
           </div>
+          
+          <!-- Search Filter -->
           <div class="card mb-3">
-            <div class="categories">
-              <div class="filter-title">
-                <a
-                  class="title"
-                  (click)="filterCollapsed.category = !filterCollapsed.category"
-                  role="button"
-                  >Categories</a
-                >
-              </div>
-              <div
-                id="category"
-                [collapse]="filterCollapsed.category"
-                [isAnimated]="true"
-              >
-                <div class="filter-search">
-                  <form action="#">
-                    <input
-                      type="text"
-                      placeholder="Search"
-                      class="form-control"
-                    />
-                    <button><i class="lni lni-search-alt"></i></button>
-                  </form>
-                </div>
-                <div class="filter-category">
-                  <ul class="category-list">
-                    @for (category of categories; track $index) {
-                    <li>
-                      <a class="collapsed" (click)="toggleMenu($index)">{{
-                        category.name
-                      }}</a>
-                      <ul
-                        id="collapse{{ $index }}"
-                        class="sub-category collapse"
-                        [collapse]="category.isCollapsed"
-                      >
-                        @for (item of category.childCategories; track $index) {
-                        <li>
-                          <a>{{ item.name }}</a>
-                        </li>
-                        }
-                      </ul>
-                    </li>
-                    }
-                  </ul>
+            <div
+              class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0"
+            >
+              <h6 class="mb-0 fw-bold">Search Products</h6>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-12">
+                  <input
+                    type="text"
+                    placeholder="Search by name or SKU"
+                    class="form-control"
+                    [(ngModel)]="searchTerm"
+                    (input)="onSearchChange()"
+                    name="searchTerm"
+                  />
                 </div>
               </div>
             </div>
           </div>
+
+          <!-- Price Range Filter -->
           <div class="card mb-3">
-            <div class="size-block">
-              <div class="filter-title">
-                <a
-                  class="title"
-                  (click)="filterCollapsed.size = !filterCollapsed.size"
-                  role="button"
-                  >Select Size</a
-                >
-              </div>
-              <div
-                id="size"
-                [collapse]="filterCollapsed.size"
-                [isAnimated]="true"
-              >
-                <div class="filter-size" id="filter-size-1">
-                  <ul>
-                    @for (size of sizeOptions; track $index) {
-                    <li
-                      (click)="onSizeSelection(size.value)"
-                      [className]="
-                        selectedSizes.includes(size.value) ? 'selected' : ''
-                      "
-                    >
-                      {{ size.label }}
-                    </li>
-                    }
-                  </ul>
+            <div
+              class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0"
+            >
+              <h6 class="mb-0 fw-bold">Pricing Range</h6>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Minimum Price</label>
+                  <input 
+                    type="number" 
+                    class="form-control" 
+                    [(ngModel)]="selectedPriceRange.min"
+                    (ngModelChange)="onPriceRangeChange()"
+                    name="minPrice" 
+                    placeholder="0" />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Maximum Price</label>
+                  <input 
+                    type="number" 
+                    class="form-control" 
+                    [(ngModel)]="selectedPriceRange.max"
+                    (ngModelChange)="onPriceRangeChange()"
+                    name="maxPrice" 
+                    placeholder="0" />
                 </div>
               </div>
             </div>
           </div>
+
+          <!-- Status Filter -->
           <div class="card mb-3">
-            <div class="color-block">
-              <div class="filter-title">
-                <a
-                  class="title"
-                  (click)="filterCollapsed.color = !filterCollapsed.color"
-                  role="button"
-                  >Select Color</a
-                >
-              </div>
-              <div
-                id="color"
-                [collapse]="filterCollapsed.color"
-                [isAnimated]="true"
-              >
-                <div class="filter-color">
-                  <ul>
-                    <li>
-                      <div class="color-check">
-                        <p>
-                          <span style="background-color: #4114e4"></span>
-                          <strong>Blue</strong>
-                        </p>
-
-                        <input type="checkbox" id="color-1" />
-                        <label for="color-1"><span></span></label>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="color-check">
-                        <p>
-                          <span style="background-color: #e14c7b"></span>
-                          <strong>Red</strong>
-                        </p>
-
-                        <input type="checkbox" id="color-2" />
-                        <label for="color-2"><span></span></label>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="color-check">
-                        <p>
-                          <span style="background-color: #7cb637"></span>
-                          <strong>Green</strong>
-                        </p>
-
-                        <input type="checkbox" id="color-3" />
-                        <label for="color-3"><span></span></label>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="color-check">
-                        <p>
-                          <span style="background-color: #161359"></span>
-                          <strong>Dark</strong>
-                        </p>
-
-                        <input type="checkbox" id="color-4" />
-                        <label for="color-4"><span></span></label>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+            <div
+              class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0"
+            >
+              <h6 class="mb-0 fw-bold">Product Status</h6>
             </div>
-          </div>
-          <div class="card mb-3">
-            <div class="price-range-block">
-              <div class="filter-title">
-                <a
-                  class="title"
-                  (click)="filterCollapsed.price = !filterCollapsed.price"
-                  role="button"
-                  >Pricing Range</a
-                >
-              </div>
-              <div
-                class="collapse show"
-                id="pricingTwo"
-                [collapse]="filterCollapsed.price"
-                [isAnimated]="true"
-              >
-                <div class="price-range">
-                  <div class="price-amount flex-wrap">
-                    <div class="amount-input mt-1">
-                      <label class="fw-bold">Minimum Price</label>
-                      <input type="text" id="minAmount2" class="form-control" />
-                    </div>
-                    <div class="amount-input mt-1">
-                      <label class="fw-bold">Maximum Price</label>
-                      <input type="text" id="maxAmount2" class="form-control" />
-                    </div>
-                  </div>
-                  <div
-                    id="slider-range2"
-                    class="slider-range noUi-target noUi-ltr noUi-horizontal noUi-txt-dir-ltr"
-                  ></div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-12">
+                  <label class="form-label">Status</label>
+                  <select 
+                    class="form-select" 
+                    [(ngModel)]="selectedStatus"
+                    (ngModelChange)="onStatusChange()"
+                    name="status">
+                    <option [value]="null">All Statuses</option>
+                    <option [value]="1">Draft</option>
+                    <option [value]="2">Active</option>
+                    <option [value]="3">Inactive</option>
+                    <option [value]="4">Discontinued</option>
+                    <option [value]="5">Out of Stock</option>
+                  </select>
                 </div>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="rating-block">
-              <div class="filter-title">
-                <a
-                  class="title"
-                  (click)="filterCollapsed.rating = !filterCollapsed.rating"
-                  role="button"
-                  >Select Rating</a
-                >
-              </div>
-              <div
-                id="rating"
-                [collapse]="filterCollapsed.rating"
-                [isAnimated]="true"
-              >
-                <div class="filter-rating">
-                  <ul>
-                    <li>
-                      <div class="rating-check">
-                        <input type="checkbox" id="rating-5" />
-                        <label for="rating-5"><span></span> </label>
-                        <p>
-                          <i class="icofont-star"></i>
-                          <i class="icofont-star"></i>
-                          <i class="icofont-star"></i>
-                          <i class="icofont-star"></i>
-                          <i class="icofont-star"></i>
-                        </p>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="rating-check">
-                        <input type="checkbox" id="rating-4" />
-                        <label for="rating-4"><span></span></label>
-                        <p>
-                          <i class="icofont-star"></i>
-                          <i class="icofont-star"></i>
-                          <i class="icofont-star"></i>
-                          <i class="icofont-star"></i>
-                        </p>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="rating-check">
-                        <input type="checkbox" id="rating-3" />
-                        <label for="rating-3"><span></span></label>
-                        <p>
-                          <i class="icofont-star"></i>
-                          <i class="icofont-star"></i>
-                          <i class="icofont-star"></i>
-                        </p>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="rating-check">
-                        <input type="checkbox" id="rating-2" />
-                        <label for="rating-2"><span></span></label>
-                        <p>
-                          <i class="icofont-star"></i>
-                          <i class="icofont-star"></i>
-                        </p>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="rating-check">
-                        <input type="checkbox" id="rating-1" />
-                        <label for="rating-1"><span></span></label>
-                        <p>
-                          <i class="icofont-star"></i>
-                        </p>
-                      </div>
-                    </li>
-                  </ul>
+                <div class="col-md-12">
+                  <label class="form-label">Active Status</label>
+                  <select 
+                    class="form-select" 
+                    [(ngModel)]="selectedActiveStatus"
+                    (ngModelChange)="onActiveStatusChange()"
+                    name="activeStatus">
+                    <option [value]="null">All</option>
+                    <option [value]="true">Active</option>
+                    <option [value]="false">Inactive</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -304,6 +141,7 @@
         } @else {
         <app-product-list [products]="products"></app-product-list>
         }
+      </div>
       </div>
     </div>
   </div>

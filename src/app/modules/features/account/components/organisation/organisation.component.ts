@@ -91,7 +91,7 @@ export class OrganisationComponent implements OnInit {
         next: (response) => {
           this.organisationData = response.data;
           this.patchFormValues();
-        }
+        },
       });
   }
 
@@ -100,7 +100,10 @@ export class OrganisationComponent implements OnInit {
 
     if (this.organisationForm.valid) {
       const organisation: Organisation = {
-        organisationId: this.organisationData?.organisationId ?? 0,
+        organisationId:
+           this.organisationData?.organisationId > 0
+            ? this.organisationData?.organisationId
+            : 0,
         companyName: this.organisationForm.value.organisationName,
         contactPerson: this.organisationForm.value.contactPerson,
         websiteUrl: this.organisationForm.value.websiteUrl,
@@ -113,7 +116,7 @@ export class OrganisationComponent implements OnInit {
         country: this.organisationForm.value.country,
       };
 
-      if (this.organisationData.organisationId > 0) {
+      if (organisation.organisationId > 0) {
         this.organisationService.updateOrganisation(organisation).subscribe({
           next: (response) => {
             this.organisationData = response.data;

@@ -22,7 +22,7 @@ export class ProductService {
 
   searchProducts(filter: ProductFilter) {
     return this.httpClient.post<ApiResponse<ProductListItem[]>>(
-      `${environment.apiBaseUrl}/product/search`,
+      `${environment.apiBaseUrl}/product/filter`,
       filter
     );
   }

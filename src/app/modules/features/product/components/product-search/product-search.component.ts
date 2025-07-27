@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductService } from '../../services/product.service';
-import { CategoryService } from '../../../category/services/category.service';
 import { ProductListItem } from '../../../../../core/models/product/product-list-item';
-import { CategoryDropdown } from '../../../../../core/models/category/category-dropdown';
 import { ProductFilter } from '../../../../../core/models/product/product-filter';
-import { Sizes } from '../../../../../core/enums/sizes.enum';
 
 @Component({
   selector: 'app-product-search',
@@ -14,71 +11,31 @@ import { Sizes } from '../../../../../core/enums/sizes.enum';
 })
 export class ProductSearchComponent implements OnInit {
   showGridView: boolean = false;
-  categories: any = [];
-
-  filterCollapsed: any = {
-    category: false,
-    size: false,
-    color: false,
-    pricing: false,
-    rating: false,
-  };
-
-  sizeOptions = Object.entries(Sizes).map(([key, value]) => ({
-    label: key,
-    value: value,
-  }));
-
   products: ProductListItem[] = [];
 
-  selectedCategory: number = 0;
-  selectedSizes: string[] = [];
-  selectedColors: string[] = [];
+  searchTerm: string = '';
+  selectedTagIds: number[] = [];
   selectedPriceRange: { min: number; max: number } = { min: 0, max: 0 };
-  selectedRatings: number = 0;
+  selectedStatus: number | null = null;
+  selectedActiveStatus: boolean | null = null;
 
-  constructor(
-    private productService: ProductService,
-    private categoryService: CategoryService
-  ) {}
+  constructor(private productService: ProductService) {}
 
   ngOnInit(): void {
-    this.getCategories();
     this.getProducts();
-  }
-
-  getCategories() {
-    this.categoryService.getCategoriesForDropdown().subscribe({
-      next: (response) => {
-        response.data.forEach((category: CategoryDropdown) => {
-          this.categories.push({
-            name: category.name,
-            isCollapsed: true,
-            childCategories: response.data
-              .filter((item: CategoryDropdown) => {
-                return item.parentCategoryId === category.id;
-              })
-              .map((item: CategoryDropdown) => {
-                return { name: item.name, id: item.id };
-              }),
-          });
-        });
-      },
-    });
   }
 
   getProducts() {
     let filter: ProductFilter = {
-      categoryIds: [],
-      size: [],
-      color: [],
-      priceRange: {
-        minPrice: 0,
-        maxPrice: 0,
-      },
-      rating: 0,
+      searchTerm: this.searchTerm || undefined,
+      minPrice: this.selectedPriceRange.min || undefined,
+      maxPrice: this.selectedPriceRange.max || undefined,
+      status: this.selectedStatus || undefined,
+      isActive: this.selectedActiveStatus || undefined,
+      tagIds: this.selectedTagIds.length > 0 ? this.selectedTagIds : undefined,
       pageIndex: 1,
       pageSize: 10,
+      sortDescending: false,
     };
 
     return this.productService.searchProducts(filter).subscribe({
@@ -89,21 +46,38 @@ export class ProductSearchComponent implements OnInit {
     });
   }
 
-  onSizeSelection(size: Sizes) {
-    const index = this.selectedSizes.indexOf(size);
+  onTagSelection(tagId: number) {
+    const index = this.selectedTagIds.indexOf(tagId);
     if (index > -1) {
-      this.selectedSizes.splice(index, 1);
+      this.selectedTagIds.splice(index, 1);
     } else {
-      this.selectedSizes.push(size);
+      this.selectedTagIds.push(tagId);
     }
+    this.getProducts();
   }
 
-  toggleMenu(index: number) {
-    this.categories.forEach((category: any, i: number) => {
-      if (i !== index) {
-        category.isCollapsed = true;
-      }
-    });
-    this.categories[index].isCollapsed = !this.categories[index].isCollapsed;
+  onStatusChange() {
+    this.getProducts();
+  }
+
+  onActiveStatusChange() {
+    this.getProducts();
+  }
+
+  onSearchChange() {
+    this.getProducts();
+  }
+
+  onPriceRangeChange() {
+    this.getProducts();
+  }
+
+  resetFilters() {
+    this.searchTerm = '';
+    this.selectedTagIds = [];
+    this.selectedPriceRange = { min: 0, max: 0 };
+    this.selectedStatus = null;
+    this.selectedActiveStatus = null;
+    this.getProducts();
   }
 }
