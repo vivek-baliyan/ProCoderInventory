@@ -1,0 +1,63 @@
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.sortable-header:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+.sortable-header.sorted {
+  background-color: rgba(0, 123, 255, 0.05);
+  font-weight: 600;
+}
+
+.sortable-header i {
+  opacity: 0.3;
+  transition: opacity 0.2s ease;
+}
+
+.sortable-header:hover i,
+.sortable-header.sorted i {
+  opacity: 1;
+}
+
+.table-active {
+  background-color: rgba(0, 123, 255, 0.05) !important;
+}
+
+.form-check-input:checked {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-group-sm > .btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.card.border-primary {
+  border-left: 4px solid #0d6efd !important;
+}
+
+.w120 {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+}
+
+.position-absolute {
+  z-index: 10;
+}
+
+@media (max-width: 768px) {
+  .table-responsive {
+    font-size: 0.875rem;
+  }
+  
+  .btn-group-sm > .btn {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.8rem;
+  }
+}

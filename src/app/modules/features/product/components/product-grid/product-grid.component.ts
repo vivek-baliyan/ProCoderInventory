@@ -1,6 +1,11 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { ProductListItem } from '../../../../../core/models/product/product-list-item';
 
+export interface BulkAction {
+  action: 'edit' | 'delete' | 'activate' | 'deactivate';
+  products: ProductListItem[];
+}
+
 @Component({
   selector: 'app-product-grid',
   standalone: false,
@@ -20,7 +25,10 @@ export class ProductGridComponent implements OnInit {
   @Output() viewProduct = new EventEmitter<ProductListItem>();
   @Output() duplicateProduct = new EventEmitter<ProductListItem>();
   @Output() deleteProduct = new EventEmitter<ProductListItem>();
+  @Output() toggleStatus = new EventEmitter<ProductListItem>();
+  @Output() bulkAction = new EventEmitter<BulkAction>();
 
+  selectedProducts: number[] = [];
   Math = Math;
 
   ngOnInit(): void {}
@@ -45,6 +53,27 @@ export class ProductGridComponent implements OnInit {
     this.deleteProduct.emit(product);
   }
 
+  onToggleStatus(product: ProductListItem): void {
+    this.toggleStatus.emit(product);
+  }
+
+  getProductStatus(product: ProductListItem): { status: string; class: string } {
+    if (!product.isActive) {
+      return { status: 'Inactive', class: 'bg-secondary' };
+    }
+    
+    switch (product.status) {
+      case 0:
+        return { status: 'Draft', class: 'bg-warning' };
+      case 1:
+        return { status: 'Active', class: 'bg-success' };
+      case 2:
+        return { status: 'Discontinued', class: 'bg-danger' };
+      default:
+        return { status: 'Unknown', class: 'bg-secondary' };
+    }
+  }
+
   getStockStatus(product: ProductListItem): { status: string; class: string } {
     if (!product.isActive) {
       return { status: 'Inactive', class: 'bg-secondary' };
@@ -54,14 +83,72 @@ export class ProductGridComponent implements OnInit {
       return { status: 'No Price Set', class: 'bg-warning' };
     }
     
-    return { status: 'Available', class: 'bg-success' };
+    return { status: 'In Stock', class: 'bg-success' };
   }
 
   getBusinessFlags(product: ProductListItem): string[] {
     const flags: string[] = [];
+    
     if (product.sellingPrice) flags.push('Saleable');
     if (product.costPrice) flags.push('Purchasable');
+    if (product.sellingPrice && product.costPrice && product.sellingPrice > product.costPrice) {
+      flags.push('Profitable');
+    }
+    if (!product.sellingPrice && !product.costPrice) flags.push('Draft');
+    
     return flags;
+  }
+
+  getMarginPercentage(product: ProductListItem): number {
+    if (!product.costPrice || !product.sellingPrice) return 0;
+    return Math.round(((product.sellingPrice - product.costPrice) / product.costPrice) * 100);
+  }
+
+  getMarginClass(product: ProductListItem): string {
+    const margin = this.getMarginPercentage(product);
+    if (margin > 30) return 'text-success fw-bold';
+    if (margin > 10) return 'text-primary fw-medium';
+    if (margin > 0) return 'text-warning';
+    return 'text-danger fw-bold';
+  }
+
+  // Selection methods
+  isSelected(productId: number): boolean {
+    return this.selectedProducts.includes(productId);
+  }
+
+  toggleSelection(productId: number): void {
+    const index = this.selectedProducts.indexOf(productId);
+    if (index > -1) {
+      this.selectedProducts.splice(index, 1);
+    } else {
+      this.selectedProducts.push(productId);
+    }
+  }
+
+  clearSelection(): void {
+    this.selectedProducts = [];
+  }
+
+  // Bulk actions
+  bulkEdit(): void {
+    const selectedProductsData = this.products.filter(p => this.selectedProducts.includes(p.id));
+    this.bulkAction.emit({ action: 'edit', products: selectedProductsData });
+  }
+
+  bulkDelete(): void {
+    const selectedProductsData = this.products.filter(p => this.selectedProducts.includes(p.id));
+    this.bulkAction.emit({ action: 'delete', products: selectedProductsData });
+  }
+
+  bulkActivate(): void {
+    const selectedProductsData = this.products.filter(p => this.selectedProducts.includes(p.id));
+    this.bulkAction.emit({ action: 'activate', products: selectedProductsData });
+  }
+
+  bulkDeactivate(): void {
+    const selectedProductsData = this.products.filter(p => this.selectedProducts.includes(p.id));
+    this.bulkAction.emit({ action: 'deactivate', products: selectedProductsData });
   }
 
   onPageChange(page: number): void {
