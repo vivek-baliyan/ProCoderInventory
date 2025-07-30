@@ -1,0 +1,342 @@
+<!-- Body: Body -->
+<div class="body d-flex py-3">
+  <div class="container-xxl">
+    <div class="row align-items-center">
+      <div class="border-0 mb-4">
+        <div
+          class="card-header py-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between border-bottom flex-wrap"
+        >
+          <h3 class="fw-bold mb-0">Add New Customer</h3>
+          <button
+            type="button"
+            class="btn btn-primary py-2 px-4"
+            (click)="saveCustomer()"
+            [disabled]="isSaving || isLoading"
+          >
+            <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2" role="status"></span>
+            <i *ngIf="!isSaving" class="icofont-save me-2"></i>
+            {{ isSaving ? 'Creating...' : 'Create Customer' }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Row end  -->
+    
+    <form [formGroup]="customerForm">
+      <!-- Basic Information -->
+      <div class="row g-3 mb-3">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header py-3 bg-transparent border-bottom-0">
+              <h6 class="mb-0 fw-bold">Basic Information</h6>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Customer Type <span class="text-danger">*</span></label>
+                  <div class="mt-2">
+                    <div class="form-check form-check-inline">
+                      <input 
+                        class="form-check-input" 
+                        type="radio" 
+                        id="customerTypeIndividual"
+                        formControlName="customerType" 
+                        value="Individual"
+                      />
+                      <label class="form-check-label" for="customerTypeIndividual">
+                        Individual
+                      </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input 
+                        class="form-check-input" 
+                        type="radio" 
+                        id="customerTypeBusiness"
+                        formControlName="customerType" 
+                        value="Business"
+                      />
+                      <label class="form-check-label" for="customerTypeBusiness">
+                        Business
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Customer Name <span class="text-danger">*</span></label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="customerName"
+                    [class.is-invalid]="isFieldInvalid('customerName')"
+                    placeholder="Enter customer name"
+                  />
+                  <div class="invalid-feedback" *ngIf="isFieldInvalid('customerName')">
+                    Please enter a customer name
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Display Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="displayName"
+                    placeholder="Display name for reports"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Company Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="companyName"
+                    placeholder="Company name (if business)"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Information -->
+      <div class="row g-3 mb-3">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header py-3 bg-transparent border-bottom-0">
+              <h6 class="mb-0 fw-bold">Contact Information</h6>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Email <span class="text-danger">*</span></label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    formControlName="email"
+                    [class.is-invalid]="isFieldInvalid('email')"
+                    placeholder="customer@example.com"
+                  />
+                  <div class="invalid-feedback" *ngIf="isFieldInvalid('email')">
+                    Please enter a valid email address
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Phone</label>
+                  <input
+                    type="tel"
+                    class="form-control"
+                    formControlName="phone"
+                    placeholder="+1 (555) 123-4567"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Mobile</label>
+                  <input
+                    type="tel"
+                    class="form-control"
+                    formControlName="mobile"
+                    placeholder="+1 (555) 987-6543"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Website</label>
+                  <input
+                    type="url"
+                    class="form-control"
+                    formControlName="website"
+                    placeholder="https://www.example.com"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Address Information -->
+      <div class="row g-3 mb-3">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header py-3 bg-transparent border-bottom-0">
+              <h6 class="mb-0 fw-bold">Address Information</h6>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label">Address Line 1</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="addressLine1"
+                    placeholder="Street address"
+                  />
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Address Line 2</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="addressLine2"
+                    placeholder="Apartment, suite, unit, building, floor, etc."
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">City</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="city"
+                    placeholder="City"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">State/Province</label>
+                  <select class="form-select" formControlName="stateId">
+                    <option value="">Select State</option>
+                    <option *ngFor="let state of stateOptions" [value]="state.value">
+                      {{ state.label }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Country</label>
+                  <select class="form-select" formControlName="countryId" (change)="onCountryChange($event)">
+                    <option value="">Select Country</option>
+                    <option *ngFor="let country of countryOptions" [value]="country.value">
+                      {{ country.label }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Postal/ZIP Code</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="postalCode"
+                    placeholder="Postal code"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Business Settings -->
+      <div class="row g-3 mb-3">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header py-3 bg-transparent border-bottom-0">
+              <h6 class="mb-0 fw-bold">Business Settings</h6>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label class="form-label">Credit Limit</label>
+                  <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input
+                      type="number"
+                      class="form-control"
+                      formControlName="creditLimit"
+                      min="0"
+                      step="0.01"
+                      placeholder="0.00"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Payment Terms</label>
+                  <select class="form-select" formControlName="paymentTerms">
+                    <option value="">Select Terms</option>
+                    <option value="NET_15">Net 15</option>
+                    <option value="NET_30">Net 30</option>
+                    <option value="NET_45">Net 45</option>
+                    <option value="NET_60">Net 60</option>
+                    <option value="COD">Cash on Delivery</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Status</label>
+                  <select class="form-select" formControlName="status">
+                    <option value="ACTIVE">Active</option>
+                    <option value="INACTIVE">Inactive</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Tax ID/VAT Number</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="taxId"
+                    placeholder="Tax identification number"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Currency</label>
+                  <select class="form-select" formControlName="currencyId">
+                    <option value="">Select Currency</option>
+                    <option *ngFor="let currency of currencyOptions" [value]="currency.value">
+                      {{ currency.label }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional Information -->
+      <div class="row g-3 mb-3">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header py-3 bg-transparent border-bottom-0">
+              <h6 class="mb-0 fw-bold">Additional Information</h6>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label">Notes</label>
+                  <textarea
+                    class="form-control"
+                    formControlName="notes"
+                    rows="3"
+                    placeholder="Additional notes about the customer"
+                  ></textarea>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check mt-3">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="allowBackOrders"
+                      formControlName="allowBackOrders"
+                    />
+                    <label class="form-check-label fw-medium" for="allowBackOrders">
+                      Allow Back Orders
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check mt-3">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="sendStatements"
+                      formControlName="sendStatements"
+                    />
+                    <label class="form-check-label fw-medium" for="sendStatements">
+                      Send Statements
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <!-- Row end  -->
+  </div>
+</div>

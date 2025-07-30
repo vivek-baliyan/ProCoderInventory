@@ -42,6 +42,13 @@ const routes: Routes = [
             (m) => m.CategoryModule
           ),
       },
+      {
+        path: 'customers',
+        loadChildren: () =>
+          import('../features/customer/customer.module').then(
+            (m) => m.CustomerModule
+          ),
+      },
     ],
   },
 ];
