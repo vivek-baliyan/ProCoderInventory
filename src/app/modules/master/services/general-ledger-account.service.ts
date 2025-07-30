@@ -12,7 +12,7 @@ export class GeneralLedgerAccountService {
 
   getGLAccountsDropdown() {
     return this.httpClient.get<ApiResponse<Dropdown[]>>(
-      `${environment.apiBaseUrl}/Brand/dropdown`
+      `${environment.apiBaseUrl}/GLAccount/dropdown`
     );
   }
 }
