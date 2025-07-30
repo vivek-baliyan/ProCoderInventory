@@ -161,7 +161,7 @@
                     />
                     <select class="form-select" formControlName="dimensionUnitId" style="max-width: 80px;">
                       <option *ngFor="let unit of dimensionUnitOptions" [value]="unit.value">
-                        {{ unit.label }}
+                        {{ unit.code | lowercase }}
                       </option>
                     </select>
                   </div>
@@ -179,7 +179,7 @@
                     />
                     <select class="form-select" formControlName="weightUnitId" style="max-width: 80px;">
                       <option *ngFor="let unit of weightUnitOptions" [value]="unit.value">
-                        {{ unit.label }}
+                        {{ unit.code | lowercase }}
                       </option>
                     </select>
                   </div>

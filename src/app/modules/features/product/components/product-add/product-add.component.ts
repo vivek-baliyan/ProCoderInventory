@@ -6,6 +6,10 @@ import { NotificationService } from '../../../../../core/services/notification.s
 import { ProductType } from '../../../../../core/enums/product-type.enum';
 import { ProductStatus } from '../../../../../core/enums/product-status.enum';
 import { CreateProduct } from '../../../../../core/models/product/create-product';
+import { UnitOfMeasureService } from '../../../../master/services/unit-of-measure.service';
+import { UnitType } from '../../../../../core/enums/unit-type';
+import { Dropdown } from '../../../../../core/models/master/dropdown';
+import { BrandService } from '../../../../master/services/brand.service';
 
 @Component({
   selector: 'app-product-add',
@@ -31,33 +35,21 @@ export class ProductAddComponent implements OnInit {
       value: value as number,
     }));
 
-  dimensionUnitOptions = [
-    { label: 'cm', value: 1 },
-    { label: 'inch', value: 2 },
-    { label: 'ft', value: 3 },
-    { label: 'm', value: 4 },
-    { label: 'mm', value: 5 }
-  ];
+  dimensionUnitOptions: Dropdown[] = [];
 
-  weightUnitOptions = [
-    { label: 'kg', value: 1 },
-    { label: 'g', value: 2 },
-    { label: 'lb', value: 3 },
-    { label: 'oz', value: 4 },
-    { label: 'ton', value: 5 }
-  ];
+  weightUnitOptions: Dropdown[] = [];
 
-  brandOptions: { label: string; value: number }[] = [];
-  unitOfMeasureOptions: { label: string; value: number }[] = [];
-  salesAccountOptions: { label: string; value: number }[] = [];
-  purchaseAccountOptions: { label: string; value: number }[] = [];
-  inventoryAccountOptions: { label: string; value: number }[] = [];
-  vendorOptions: { label: string; value: number }[] = [];
-
-
+  brandOptions: Dropdown[] = [];
+  unitOfMeasureOptions: Dropdown[] = [];
+  salesAccountOptions: Dropdown[] = [];
+  purchaseAccountOptions: Dropdown[] = [];
+  inventoryAccountOptions: Dropdown[] = [];
+  vendorOptions: Dropdown[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
+    private unitOfMeasureService: UnitOfMeasureService,
+    private brandService: BrandService,
     private productService: ProductService,
     private notificationService: NotificationService,
     private router: Router
@@ -78,9 +70,9 @@ export class ProductAddComponent implements OnInit {
       length: [null, [Validators.min(0)]],
       width: [null, [Validators.min(0)]],
       height: [null, [Validators.min(0)]],
-      dimensionUnitId: [1],
+      dimensionUnitId: [31],
       weight: [null, [Validators.min(0)]],
-      weightUnitId: [1],
+      weightUnitId: [11],
       brandId: [null],
       manufacturerPartNumber: ['', [Validators.maxLength(100)]],
       upc: ['', [Validators.maxLength(50)]],
@@ -96,10 +88,9 @@ export class ProductAddComponent implements OnInit {
       openingStock: [null, [Validators.min(0)]],
       openingStockValue: [null, [Validators.min(0)]],
       reorderLevel: [null, [Validators.min(0)]],
-      imageUrls: [[]]
+      imageUrls: [[]],
     });
   }
-
 
   get isNameValid() {
     const nameInput = this.addProductForm.controls['name'];
@@ -120,7 +111,6 @@ export class ProductAddComponent implements OnInit {
     const skuInput = this.addProductForm.controls['sku'];
     return skuInput.invalid && (skuInput.dirty || skuInput.touched);
   }
-
 
   saveProduct() {
     if (this.addProductForm.valid) {
@@ -167,13 +157,17 @@ export class ProductAddComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error creating product:', error);
-          this.notificationService.showError('Failed to create product. Please try again.');
-        }
+          this.notificationService.showError(
+            'Failed to create product. Please try again.'
+          );
+        },
       });
     } else {
       console.log('Form is invalid');
       this.addProductForm.markAllAsTouched();
-      this.notificationService.showWarning('Please fill in all required fields correctly.');
+      this.notificationService.showWarning(
+        'Please fill in all required fields correctly.'
+      );
     }
   }
 
@@ -190,47 +184,58 @@ export class ProductAddComponent implements OnInit {
   private loadDropdownData() {
     // TODO: Replace with actual API calls
     // For now, using placeholder data
-    this.brandOptions = [
-      { label: 'Select Brand', value: 0 },
-      { label: 'Apple', value: 1 },
-      { label: 'Samsung', value: 2 },
-      { label: 'Sony', value: 3 }
-    ];
 
-    this.unitOfMeasureOptions = [
-      { label: 'Select Unit', value: 0 },
-      { label: 'Piece', value: 1 },
-      { label: 'Box', value: 2 },
-      { label: 'Pack', value: 3 },
-      { label: 'Set', value: 4 }
-    ];
+    this.unitOfMeasureService.getUnitsDropdown().subscribe((response) => {
+      this.unitOfMeasureOptions = response.data.filter(
+        (u) => u.additionalData.unitType == UnitType.Quantity
+      );
 
-    this.salesAccountOptions = [
-      { label: 'Select Sales Account', value: 0 },
-      { label: 'Sales Revenue', value: 1 },
-      { label: 'Product Sales', value: 2 },
-      { label: 'Service Revenue', value: 3 }
-    ];
+      this.dimensionUnitOptions = response.data.filter(
+        (u) => u.additionalData.unitType == UnitType.Length
+      );
 
-    this.purchaseAccountOptions = [
-      { label: 'Select Purchase Account', value: 0 },
-      { label: 'Cost of Goods Sold', value: 1 },
-      { label: 'Purchases', value: 2 },
-      { label: 'Inventory Purchases', value: 3 }
-    ];
+      this.weightUnitOptions = response.data.filter(
+        (u) => u.additionalData.unitType == UnitType.Weight
+      );
+    });
 
-    this.inventoryAccountOptions = [
-      { label: 'Select Inventory Account', value: 0 },
-      { label: 'Finished Goods', value: 1 },
-      { label: 'Raw Materials', value: 2 },
-      { label: 'Work in Progress', value: 3 }
-    ];
+    this.brandService.getBrandsDropdown().subscribe((response) => {
+      this.brandOptions = response.data;
+    });
 
-    this.vendorOptions = [
-      { label: 'Select Vendor', value: 0 },
-      { label: 'ABC Suppliers', value: 1 },
-      { label: 'XYZ Distributors', value: 2 },
-      { label: 'Global Trade Co.', value: 3 }
-    ];
+    // this.brandOptions = [
+    //   { label: 'Select Brand', value: 0 },
+    //   { label: 'Apple', value: 1 },
+    //   { label: 'Samsung', value: 2 },
+    //   { label: 'Sony', value: 3 },
+    // ];
+
+    // this.salesAccountOptions = [
+    //   { label: 'Select Sales Account', value: 0 },
+    //   { label: 'Sales Revenue', value: 1 },
+    //   { label: 'Product Sales', value: 2 },
+    //   { label: 'Service Revenue', value: 3 },
+    // ];
+
+    // this.purchaseAccountOptions = [
+    //   { label: 'Select Purchase Account', value: 0 },
+    //   { label: 'Cost of Goods Sold', value: 1 },
+    //   { label: 'Purchases', value: 2 },
+    //   { label: 'Inventory Purchases', value: 3 },
+    // ];
+
+    // this.inventoryAccountOptions = [
+    //   { label: 'Select Inventory Account', value: 0 },
+    //   { label: 'Finished Goods', value: 1 },
+    //   { label: 'Raw Materials', value: 2 },
+    //   { label: 'Work in Progress', value: 3 },
+    // ];
+
+    // this.vendorOptions = [
+    //   { label: 'Select Vendor', value: 0 },
+    //   { label: 'ABC Suppliers', value: 1 },
+    //   { label: 'XYZ Distributors', value: 2 },
+    //   { label: 'Global Trade Co.', value: 3 },
+    // ];
   }
 }
