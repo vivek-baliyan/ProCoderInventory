@@ -13,6 +13,7 @@ import { ProductRoutingModule } from './product-routing.module';
 import { SharedModule } from '../../shared/shared.module';
 
 import { ProductAddComponent } from './components/product-add/product-add.component';
+import { ProductEditComponent } from './components/product-edit/product-edit.component';
 import { ProductVariantAddComponent } from './components/product-variant-add/product-variant-add.component';
 import { ProductListComponent } from './components/product-list/product-list.component';
 import { ProductSearchComponent } from './components/product-search/product-search.component';
@@ -22,6 +23,7 @@ import { ProductViewComponent } from './components/product-view/product-view.com
 @NgModule({
   declarations: [
     ProductAddComponent,
+    ProductEditComponent,
     ProductVariantAddComponent,
     ProductSearchComponent,
     ProductListComponent,

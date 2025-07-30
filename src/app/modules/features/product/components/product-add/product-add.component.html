@@ -6,99 +6,223 @@
         <div
           class="card-header py-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between border-bottom flex-wrap"
         >
-          <h3 class="fw-bold mb-0">Products Add</h3>
+          <h3 class="fw-bold mb-0">Add New Product</h3>
           <button
             type="button"
-            class="btn btn-primary btn-set-task w-sm-100 py-2 px-5 text-uppercase"
+            class="btn btn-primary py-2 px-4"
             (click)="saveProduct()"
           >
-            Save
+            <i class="icofont-save me-2"></i>Create Product
           </button>
         </div>
       </div>
     </div>
     <!-- Row end  -->
+    
     <form [formGroup]="addProductForm">
-      <!-- Top Row: Basic Information and Product Images -->
+      <!-- Basic Information -->
       <div class="row g-3 mb-3">
-        <!-- Basic Information Card -->
-        <div class="col-lg-8">
-          <div class="card h-100">
-            <div
-              class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0"
-            >
-              <h6 class="mb-0 fw-bold">Basic information</h6>
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header py-3 bg-transparent border-bottom-0">
+              <h6 class="mb-0 fw-bold">Basic Information</h6>
             </div>
             <div class="card-body">
               <div class="row g-3">
-                <div class="col-md-12">
-                  <label class="form-label"
-                    >Name <span class="text-danger">*</span></label
-                  >
+                <div class="col-md-6">
+                  <label class="form-label">Product Type <span class="text-danger">*</span></label>
+                  <div class="mt-2">
+                    <div class="form-check form-check-inline" *ngFor="let option of productTypeOptions">
+                      <input 
+                        class="form-check-input" 
+                        type="radio" 
+                        [id]="'productType' + option.value"
+                        formControlName="productType" 
+                        [value]="option.value"
+                      />
+                      <label class="form-check-label" [for]="'productType' + option.value">
+                        {{ option.label }}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Product Name <span class="text-danger">*</span></label>
                   <input
                     type="text"
                     class="form-control"
-                    name="productName"
                     formControlName="name"
                     [class.is-invalid]="isNameValid"
+                    placeholder="Enter product name"
                   />
                   @if(isNameValid) {
-                  <div class="invalid-feedback">Please enter a valid name</div>
+                  <div class="invalid-feedback">Please enter a product name</div>
                   }
                 </div>
-                <div class="col-md-12">
-                  <label class="form-label">Product Type</label>
-                  <select class="form-select" formControlName="productType">
-                    <option
-                      *ngFor="let option of productTypeOptions"
-                      [value]="option.value"
-                    >
+                <div class="col-md-4">
+                  <label class="form-label">SKU</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="sku"
+                    [class.is-invalid]="isSkuValid"
+                    placeholder="Product SKU"
+                  />
+                  @if(isSkuValid) {
+                  <div class="invalid-feedback">Please enter a valid SKU</div>
+                  }
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Unit of Measure</label>
+                  <select class="form-select" formControlName="unitOfMeasureId">
+                    <option *ngFor="let option of unitOfMeasureOptions" [value]="option.value">
                       {{ option.label }}
                     </option>
                   </select>
                 </div>
+                <div class="col-md-4">
+                  <label class="form-label">Brand</label>
+                  <select class="form-select" formControlName="brandId">
+                    <option *ngFor="let option of brandOptions" [value]="option.value">
+                      {{ option.label }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check mt-4 pt-2">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="isReturnable"
+                      formControlName="isReturnable"
+                    />
+                    <label class="form-check-label fw-medium" for="isReturnable">
+                      Returnable Item
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check mt-4 pt-2">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="trackInventory"
+                      formControlName="trackInventory"
+                    />
+                    <label class="form-check-label fw-medium" for="trackInventory">
+                      Track Inventory
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Physical Properties & Images -->
+      <div class="row g-3 mb-3">
+        <!-- Physical Properties -->
+        <div class="col-lg-8">
+          <div class="card">
+            <div class="card-header py-3 bg-transparent border-bottom-0">
+              <h6 class="mb-0 fw-bold">Physical Properties</h6>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
                 <div class="col-md-12">
-                  <label class="form-label">Product Description</label>
-                  <textarea
+                  <label class="form-label">Dimensions (L × W × H)</label>
+                  <div class="input-group">
+                    <input
+                      type="number"
+                      class="form-control"
+                      formControlName="length"
+                      min="0"
+                      step="0.01"
+                      placeholder="Length"
+                    />
+                    <span class="input-group-text px-2">×</span>
+                    <input
+                      type="number"
+                      class="form-control"
+                      formControlName="width"
+                      min="0"
+                      step="0.01"
+                      placeholder="Width"
+                    />
+                    <span class="input-group-text px-2">×</span>
+                    <input
+                      type="number"
+                      class="form-control"
+                      formControlName="height"
+                      min="0"
+                      step="0.01"
+                      placeholder="Height"
+                    />
+                    <select class="form-select" formControlName="dimensionUnitId" style="max-width: 80px;">
+                      <option *ngFor="let unit of dimensionUnitOptions" [value]="unit.value">
+                        {{ unit.label }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Weight</label>
+                  <div class="input-group">
+                    <input
+                      type="number"
+                      class="form-control"
+                      formControlName="weight"
+                      min="0"
+                      step="0.01"
+                      placeholder="0.00"
+                    />
+                    <select class="form-select" formControlName="weightUnitId" style="max-width: 80px;">
+                      <option *ngFor="let unit of weightUnitOptions" [value]="unit.value">
+                        {{ unit.label }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Manufacturer Part Number</label>
+                  <input
+                    type="text"
                     class="form-control"
-                    name="description"
-                    formControlName="description"
-                    maxlength="1000"
-                    rows="4"
-                  ></textarea>
+                    formControlName="manufacturerPartNumber"
+                    placeholder="MPN"
+                  />
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Product Images Card -->
+        <!-- Product Images -->
         <div class="col-lg-4">
           <div class="card h-100">
-            <div
-              class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0"
-            >
+            <div class="card-header py-3 bg-transparent border-bottom-0">
               <h6 class="mb-0 fw-bold">Product Images</h6>
             </div>
             <div class="card-body">
               <div class="row g-3">
-                <div class="col-md-12">
+                <div class="col-12">
                   <app-image-uploader
                     (onFileSelection)="onImageUpload($event)"
                   ></app-image-uploader>
                 </div>
-                <div class="col-md-12" *ngIf="uploadedImages.length > 0">
-                  <label class="form-label">Uploaded Images</label>
+                <div class="col-12" *ngIf="uploadedImages.length > 0">
+                  <label class="form-label">Uploaded Images ({{ uploadedImages.length }})</label>
                   <div class="uploaded-images-list">
                     <div 
                       *ngFor="let image of uploadedImages; let i = index" 
-                      class="d-flex align-items-center justify-content-between mb-2 p-2 border rounded"
+                      class="d-flex align-items-center justify-content-between mb-2 p-2 border rounded bg-light"
                     >
                       <div class="d-flex align-items-center">
                         <img 
                           [src]="image" 
-                          class="me-2" 
-                          style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;"
+                          class="me-2 rounded" 
+                          style="width: 40px; height: 40px; object-fit: cover;"
                           alt="Product image"
                         />
                         <span class="text-muted small">Image {{ i + 1 }}</span>
@@ -107,8 +231,9 @@
                         type="button" 
                         class="btn btn-sm btn-outline-danger"
                         (click)="removeImage(i)"
+                        title="Remove image"
                       >
-                        <i class="fa fa-trash"></i>
+                        <i class="icofont-ui-delete"></i>
                       </button>
                     </div>
                   </div>
@@ -119,48 +244,31 @@
         </div>
       </div>
 
-      <!-- Bottom Section: All Other Cards -->
+      <!-- Product Codes -->
       <div class="row g-3 mb-3">
-        <!-- Product Codes Card -->
-        <div class="col-lg-8">
-          <div class="card mb-3">
-            <div
-              class="card-header py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom-0"
-            >
-              <h6 class="m-0 fw-bold">Product Codes</h6>
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header py-3 bg-transparent border-bottom-0">
+              <h6 class="mb-0 fw-bold">Product Codes</h6>
             </div>
             <div class="card-body">
               <div class="row g-3">
-                <div class="col-md-6">
-                  <label class="form-label">SKU</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    formControlName="sku"
-                    [class.is-invalid]="isSkuValid"
-                    maxlength="100"
-                  />
-                  @if (isSkuValid) {
-                  <div class="invalid-feedback">Please enter a valid SKU</div>
-                  }
-                </div>
-                <div class="col-md-6">
+                <div class="col-md-3">
                   <label class="form-label">UPC</label>
                   <input
                     type="text"
                     class="form-control"
                     formControlName="upc"
-                    maxlength="50"
+                    placeholder="UPC code"
                   />
                 </div>
-
-                <div class="col-md-6">
+                <div class="col-md-3">
                   <label class="form-label">EAN</label>
                   <input
                     type="text"
                     class="form-control"
                     formControlName="ean"
-                    maxlength="50"
+                    placeholder="EAN code"
                   />
                 </div>
                 <div class="col-md-6">
@@ -169,85 +277,8 @@
                     type="text"
                     class="form-control"
                     formControlName="isbn"
-                    maxlength="50"
+                    placeholder="ISBN code"
                   />
-                </div>
-
-                <div class="col-md-6">
-                  <label class="form-label">Manufacturer</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    formControlName="manufacturerPartNumber"
-                    maxlength="100"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-4">
-          <!-- Product Options Card -->
-          <div class="card mb-3">
-            <div
-              class="card-header py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom-0"
-            >
-              <h6 class="m-0 fw-bold">Product Options</h6>
-            </div>
-            <div class="card-body">
-              <div class="row g-3 align-items-center">
-                <div class="col-md-12">
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="isTaxable"
-                      formControlName="isTaxable"
-                    />
-                    <label class="form-check-label" for="isTaxable">
-                      Is Taxable
-                    </label>
-                  </div>
-                </div>
-                <div class="col-md-12">
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="trackInventory"
-                      formControlName="trackInventory"
-                    />
-                    <label class="form-check-label" for="trackInventory">
-                      Track Inventory
-                    </label>
-                  </div>
-                </div>
-                <div class="col-md-12">
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="serialNumberTracking"
-                      formControlName="serialNumberTracking"
-                    />
-                    <label class="form-check-label" for="serialNumberTracking">
-                      Serial Number Tracking
-                    </label>
-                  </div>
-                </div>
-                <div class="col-md-12">
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="batchTracking"
-                      formControlName="batchTracking"
-                    />
-                    <label class="form-check-label" for="batchTracking">
-                      Batch Tracking
-                    </label>
-                  </div>
                 </div>
               </div>
             </div>
@@ -255,132 +286,86 @@
         </div>
       </div>
 
-      <!-- Sales and Purchase Information Row -->
+      <!-- Pricing & Financial Information -->
       <div class="row g-3 mb-3">
-        <!-- Sales Information Card -->
-        <div class="col-lg-6">
-          <div class="card mb-3">
-            <div
-              class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0"
-            >
-              <h6 class="mb-0 fw-bold">Sales Information</h6>
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header py-3 bg-transparent border-bottom-0">
+              <h6 class="mb-0 fw-bold">Pricing & Financial Information</h6>
             </div>
             <div class="card-body">
               <div class="row g-3">
-                <div class="col-md-6">
+                <div class="col-md-3">
                   <label class="form-label">Selling Price</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    formControlName="sellingPrice"
-                    [class.is-invalid]="isSellingPriceValid"
-                    min="0"
-                    step="0.01"
-                    placeholder="Enter selling price"
-                  />
+                  <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input
+                      type="number"
+                      class="form-control"
+                      formControlName="sellingPrice"
+                      [class.is-invalid]="isSellingPriceValid"
+                      min="0"
+                      step="0.01"
+                      placeholder="0.00"
+                    />
+                  </div>
                   @if(isSellingPriceValid) {
                   <div class="invalid-feedback">
                     Selling Price must be 0 or greater
                   </div>
                   }
                 </div>
-                <div class="col-md-6">
-                  <label class="form-label">Sales Account ID</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    formControlName="salesAccountId"
-                    placeholder="Enter sales account ID"
-                  />
-                </div>
-                <div class="col-md-12">
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="isSaleable"
-                      formControlName="isSaleable"
-                    />
-                    <label class="form-check-label" for="isSaleable">
-                      Is Saleable
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Purchase Information Card -->
-        <div class="col-lg-6">
-          <div class="card mb-3">
-            <div
-              class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0"
-            >
-              <h6 class="mb-0 fw-bold">Purchase Information</h6>
-            </div>
-            <div class="card-body">
-              <div class="row g-3">
-                <div class="col-md-6">
+                <div class="col-md-3">
                   <label class="form-label">Cost Price</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    formControlName="costPrice"
-                    [class.is-invalid]="isCostPriceValid"
-                    min="0"
-                    step="0.01"
-                    placeholder="Enter cost price"
-                  />
+                  <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input
+                      type="number"
+                      class="form-control"
+                      formControlName="costPrice"
+                      [class.is-invalid]="isCostPriceValid"
+                      min="0"
+                      step="0.01"
+                      placeholder="0.00"
+                    />
+                  </div>
                   @if(isCostPriceValid) {
                   <div class="invalid-feedback">
                     Cost Price must be 0 or greater
                   </div>
                   }
                 </div>
-                <div class="col-md-6">
-                  <label class="form-label">Purchase Account ID</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    formControlName="purchaseAccountId"
-                    placeholder="Enter purchase account ID"
-                  />
+                <div class="col-md-3">
+                  <label class="form-label">Sales Account</label>
+                  <select class="form-select" formControlName="salesAccountId">
+                    <option *ngFor="let option of salesAccountOptions" [value]="option.value">
+                      {{ option.label }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Purchase Account</label>
+                  <select class="form-select" formControlName="purchaseAccountId">
+                    <option *ngFor="let option of purchaseAccountOptions" [value]="option.value">
+                      {{ option.label }}
+                    </option>
+                  </select>
                 </div>
                 <div class="col-md-6">
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="isPurchasable"
-                      formControlName="isPurchasable"
-                    />
-                    <label class="form-check-label" for="isPurchasable">
-                      Is Purchasable
-                    </label>
-                  </div>
+                  <label class="form-label">Preferred Vendor</label>
+                  <select class="form-select" formControlName="vendorId">
+                    <option *ngFor="let option of vendorOptions" [value]="option.value">
+                      {{ option.label }}
+                    </option>
+                  </select>
                 </div>
                 <div class="col-md-6">
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="isReturnable"
-                      formControlName="isReturnable"
-                    />
-                    <label class="form-check-label" for="isReturnable">
-                      Is Returnable
-                    </label>
-                  </div>
-                </div>
-                <div class="col-md-12">
-                  <label class="form-label">Vendor ID</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    formControlName="vendorId"
-                    placeholder="Enter vendor ID"
-                  />
+                  <label class="form-label">Inventory Account</label>
+                  <select class="form-select" formControlName="inventoryAccountId">
+                    <option *ngFor="let option of inventoryAccountOptions" [value]="option.value">
+                      {{ option.label }}
+                    </option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -388,345 +373,48 @@
         </div>
       </div>
 
-      <!-- Inventory Management Row -->
+      <!-- Inventory Management -->
       <div class="row g-3 mb-3">
-        <!-- Inventory Tracking Card -->
-        <div class="col-lg-6">
-          <div class="card mb-3">
-            <div
-              class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0"
-            >
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header py-3 bg-transparent border-bottom-0">
               <h6 class="mb-0 fw-bold">Inventory Management</h6>
             </div>
             <div class="card-body">
               <div class="row g-3">
-                <div class="col-md-6">
-                  <label class="form-label">Unit of Measure ID</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    formControlName="unitOfMeasureId"
-                    placeholder="Enter unit ID"
-                  />
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label">Inventory Account ID</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    formControlName="inventoryAccountId"
-                    placeholder="Inventory tracking account"
-                  />
-                </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <label class="form-label">Opening Stock</label>
                   <input
                     type="number"
                     class="form-control"
                     formControlName="openingStock"
                     min="0"
-                    placeholder="Initial stock quantity"
+                    placeholder="Quantity"
                   />
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <label class="form-label">Opening Stock Value</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    formControlName="openingStockValue"
-                    min="0"
-                    step="0.01"
-                    placeholder="Initial stock value"
-                  />
+                  <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input
+                      type="number"
+                      class="form-control"
+                      formControlName="openingStockValue"
+                      min="0"
+                      step="0.01"
+                      placeholder="0.00"
+                    />
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Stock Levels Card -->
-        <div class="col-lg-6">
-          <div class="card mb-3">
-            <div
-              class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0"
-            >
-              <h6 class="mb-0 fw-bold">Stock Levels</h6>
-            </div>
-            <div class="card-body">
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <label class="form-label">Minimum Stock</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    formControlName="minimumStock"
-                    min="0"
-                    placeholder="Minimum stock level"
-                  />
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label">Maximum Stock</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    formControlName="maximumStock"
-                    min="0"
-                    placeholder="Maximum stock level"
-                  />
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label">Reorder Level</label>
+                <div class="col-md-4">
+                  <label class="form-label">Reorder Point</label>
                   <input
                     type="number"
                     class="form-control"
                     formControlName="reorderLevel"
                     min="0"
-                    placeholder="Reorder point"
+                    placeholder="Minimum quantity"
                   />
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label">Reorder Quantity</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    formControlName="reorderQuantity"
-                    min="0"
-                    placeholder="Reorder quantity"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Physical Properties and Tax Information Row -->
-      <div class="row g-3 mb-3">
-        <!-- Physical Properties Card -->
-        <div class="col-lg-6">
-          <div class="card mb-3">
-            <div
-              class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0"
-            >
-              <h6 class="mb-0 fw-bold">Physical Properties</h6>
-            </div>
-            <div class="card-body">
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <label class="form-label">Weight</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    formControlName="weight"
-                    min="0"
-                    step="0.01"
-                    placeholder="Product weight"
-                  />
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label">Weight Unit ID</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    formControlName="weightUnitId"
-                    placeholder="Weight unit"
-                  />
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">Length</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    formControlName="length"
-                    min="0"
-                    step="0.01"
-                    placeholder="Length"
-                  />
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">Width</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    formControlName="width"
-                    min="0"
-                    step="0.01"
-                    placeholder="Width"
-                  />
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">Height</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    formControlName="height"
-                    min="0"
-                    step="0.01"
-                    placeholder="Height"
-                  />
-                </div>
-                <div class="col-md-12">
-                  <label class="form-label">Dimension Unit ID</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    formControlName="dimensionUnitId"
-                    placeholder="Dimension unit"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tax Information Card -->
-        <div class="col-lg-6">
-          <div class="card mb-3">
-            <div
-              class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0"
-            >
-              <h6 class="mb-0 fw-bold">Tax Information</h6>
-            </div>
-            <div class="card-body">
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <label class="form-label">Tax Classification ID</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    formControlName="taxClassificationId"
-                    placeholder="Tax classification"
-                  />
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label">Tax Master ID</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    formControlName="taxMasterId"
-                    placeholder="Tax master"
-                  />
-                </div>
-                <div class="col-md-12">
-                  <div class="form-check mb-2">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="isTaxExempt"
-                      formControlName="isTaxExempt"
-                    />
-                    <label class="form-check-label" for="isTaxExempt">
-                      Is Tax Exempt
-                    </label>
-                  </div>
-                </div>
-                <div class="col-md-12">
-                  <label class="form-label">Tax Exempt Reason</label>
-                  <textarea
-                    class="form-control"
-                    formControlName="taxExemptReason"
-                    rows="2"
-                    placeholder="Reason for tax exemption"
-                  ></textarea>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Product Status and Additional Information Row -->
-      <div class="row g-3 mb-3">
-        <!-- Product Status Card -->
-        <div class="col-lg-6">
-          <div class="card mb-3">
-            <div
-              class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0"
-            >
-              <h6 class="mb-0 fw-bold">Product Status</h6>
-            </div>
-            <div class="card-body">
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <label class="form-label">Status</label>
-                  <select class="form-select" formControlName="status">
-                    <option
-                      *ngFor="let option of productStatusOptions"
-                      [value]="option.value"
-                    >
-                      {{ option.label }}
-                    </option>
-                  </select>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-check mt-4">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="isActive"
-                      formControlName="isActive"
-                    />
-                    <label class="form-check-label" for="isActive">
-                      Is Active
-                    </label>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label">Item Group ID</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    formControlName="itemGroupId"
-                    placeholder="Item group"
-                  />
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label">Brand ID</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    formControlName="brandId"
-                    placeholder="Brand"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tags and Additional Info Card -->
-        <div class="col-lg-6">
-          <div class="card mb-3">
-            <div
-              class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0"
-            >
-              <h6 class="mb-0 fw-bold">Tags & Additional Info</h6>
-            </div>
-            <div class="card-body">
-              <div class="row g-3">
-                <div class="col-md-12">
-                  <label class="form-label">Product Tags</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Enter tag IDs separated by commas"
-                    (input)="onTagsInput($event)"
-                  />
-                  <small class="form-text text-muted">
-                    Enter tag IDs separated by commas (e.g., 1,2,3)
-                  </small>
-                </div>
-                <div class="col-md-12">
-                  <label class="form-label">Image URLs</label>
-                  <textarea
-                    class="form-control"
-                    rows="3"
-                    placeholder="Enter image URLs separated by new lines"
-                    (input)="onImageUrlsInput($event)"
-                  ></textarea>
-                  <small class="form-text text-muted">
-                    Enter image URLs, one per line
-                  </small>
                 </div>
               </div>
             </div>

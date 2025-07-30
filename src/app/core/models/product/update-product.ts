@@ -1,7 +1,8 @@
 import { ProductType } from '../../enums/product-type.enum';
 import { ProductStatus } from '../../enums/product-status.enum';
 
-export interface CreateProduct {
+export interface UpdateProduct {
+  id: number;
   sku: string | null;
   name: string;
   productType: ProductType;
