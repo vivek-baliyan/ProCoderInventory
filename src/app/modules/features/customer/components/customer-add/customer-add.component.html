@@ -509,7 +509,7 @@
               </button>
             </div>
             <div class="card-body">
-              <div class="table-responsive" *ngIf="contactPersons.length > 0">
+              <div class="table-responsive" *ngIf="customerContacts.length > 0">
                 <table class="table table-bordered">
                   <thead class="table-light">
                     <tr>
@@ -523,7 +523,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let contact of contactPersons; let i = index">
+                    <tr *ngFor="let contact of customerContacts; let i = index">
                       <td>
                         <select class="form-select form-select-sm" [(ngModel)]="contact.salutation" [ngModelOptions]="{standalone: true}">
                           <option value="">Select</option>
@@ -542,10 +542,10 @@
                         <input type="email" class="form-control form-control-sm" [(ngModel)]="contact.email" [ngModelOptions]="{standalone: true}" placeholder="Email">
                       </td>
                       <td>
-                        <input type="tel" class="form-control form-control-sm" [(ngModel)]="contact.workPhone" [ngModelOptions]="{standalone: true}" placeholder="Work Phone">
+                        <input type="tel" class="form-control form-control-sm" [(ngModel)]="contact.phoneNumber" [ngModelOptions]="{standalone: true}" placeholder="Work Phone">
                       </td>
                       <td>
-                        <input type="tel" class="form-control form-control-sm" [(ngModel)]="contact.mobile" [ngModelOptions]="{standalone: true}" placeholder="Mobile">
+                        <input type="tel" class="form-control form-control-sm" [(ngModel)]="contact.mobileNumber" [ngModelOptions]="{standalone: true}" placeholder="Mobile">
                       </td>
                       <td>
                         <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeContactPerson(i)">
@@ -556,7 +556,7 @@
                   </tbody>
                 </table>
               </div>
-              <div *ngIf="contactPersons.length === 0" class="text-center text-muted py-4">
+              <div *ngIf="customerContacts.length === 0" class="text-center text-muted py-4">
                 <i class="icofont-users fs-1 mb-3 d-block"></i>
                 <p>No contact persons added yet. Click "Add Contact Person" to get started.</p>
               </div>

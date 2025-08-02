@@ -7,9 +7,13 @@ import { CountryService } from '../../../../master/services/country.service';
 import { StateService } from '../../../../master/services/state.service';
 import { CurrencyService } from '../../../../master/services/currency.service';
 import { CreateCustomer } from '../../../../../core/models/customer/create-customer';
+import { CustomerAddress } from '../../../../../core/models/customer/customer-address';
 import { Dropdown } from '../../../../../core/models/master/dropdown';
 import { forkJoin } from 'rxjs';
 import { CustomerType } from '../../enums/customer-type.enum';
+import { AddressType } from '../../../../../core/enums/address-type';
+import { CustomerContact } from '../../../../../core/models/customer/customer-contact';
+import { ContactType } from '../../../../../core/enums/contact-type';
 
 @Component({
   selector: 'app-customer-add',
@@ -35,7 +39,7 @@ export class CustomerAddComponent implements OnInit {
   isLoading = false;
   isSaving = false;
   uploadedDocuments: File[] = [];
-  contactPersons: any[] = [];
+  customerContacts: CustomerContact[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -195,18 +199,22 @@ export class CustomerAddComponent implements OnInit {
   }
 
   addContactPerson(): void {
-    this.contactPersons.push({
+    this.customerContacts.push({
+      customerId: 0,
+      contactType: ContactType.Secondary,
       salutation: '',
       firstName: '',
       lastName: '',
       email: '',
-      workPhone: '',
-      mobile: ''
+      phoneNumber: '',
+      mobileNumber: '',
+      isPrimary: false,
+      isActive: true
     });
   }
 
   removeContactPerson(index: number): void {
-    this.contactPersons.splice(index, 1);
+    this.customerContacts.splice(index, 1);
   }
 
   onFileSelected(event: any): void {
@@ -234,6 +242,37 @@ export class CustomerAddComponent implements OnInit {
       this.isSaving = true;
       const formData = this.customerForm.value;
       
+      const billingAddress: CustomerAddress = {
+        id: 0,
+        customerId: 0,
+        addressType: AddressType.Billing,
+        addressLine1: formData.billingAddressLine1,
+        addressLine2: formData.billingAddressLine2,
+        city: formData.billingCity,
+        stateId: formData.billingStateId ? parseInt(formData.billingStateId) : undefined,
+        countryId: formData.billingCountryId ? parseInt(formData.billingCountryId) : undefined,
+        postalCode: formData.billingPostalCode,
+        isPrimary: true,
+        isActive: true
+      };
+
+      let shippingAddress: CustomerAddress | undefined;
+      if (formData.shippingAddressLine1 || formData.shippingCity || formData.shippingPostalCode) {
+        shippingAddress = {
+          id: 0,
+          customerId: 0,
+          addressType: AddressType.Shipping,
+          addressLine1: formData.shippingAddressLine1,
+          addressLine2: formData.shippingAddressLine2,
+          city: formData.shippingCity,
+          stateId: formData.shippingStateId ? parseInt(formData.shippingStateId) : undefined,
+          countryId: formData.shippingCountryId ? parseInt(formData.shippingCountryId) : undefined,
+          postalCode: formData.shippingPostalCode,
+          isPrimary: false,
+          isActive: true
+        };
+      }
+
       const customerData: CreateCustomer = {
         customerType: parseInt(formData.customerType),
         salutation: formData.salutation,
@@ -245,18 +284,8 @@ export class CustomerAddComponent implements OnInit {
         phone: formData.phone,
         mobile: formData.mobile,
         website: formData.website,
-        billingAddressLine1: formData.billingAddressLine1,
-        billingAddressLine2: formData.billingAddressLine2,
-        billingCity: formData.billingCity,
-        billingStateId: formData.billingStateId ? parseInt(formData.billingStateId) : undefined,
-        billingCountryId: formData.billingCountryId ? parseInt(formData.billingCountryId) : undefined,
-        billingPostalCode: formData.billingPostalCode,
-        shippingAddressLine1: formData.shippingAddressLine1,
-        shippingAddressLine2: formData.shippingAddressLine2,
-        shippingCity: formData.shippingCity,
-        shippingStateId: formData.shippingStateId ? parseInt(formData.shippingStateId) : undefined,
-        shippingCountryId: formData.shippingCountryId ? parseInt(formData.shippingCountryId) : undefined,
-        shippingPostalCode: formData.shippingPostalCode,
+        billingAddress: billingAddress,
+        shippingAddress: shippingAddress,
         creditLimit: formData.creditLimit || 0,
         paymentTerms: formData.paymentTerms,
         status: formData.status,
@@ -265,7 +294,7 @@ export class CustomerAddComponent implements OnInit {
         priceListId: formData.priceListId ? parseInt(formData.priceListId) : undefined,
         allowBackOrders: formData.allowBackOrders || false,
         sendStatements: formData.sendStatements !== false,
-        contactPersons: this.contactPersons,
+        contactPersons: this.customerContacts,
         documents: this.uploadedDocuments
       };
       

@@ -1,5 +1,5 @@
 import { CustomerType } from "../../../modules/features/customer/enums/customer-type.enum";
-import { ContactPerson } from "./contact-person";
+import { CustomerContact } from "./customer-contact";
 import { CustomerAddress } from "./customer-address";
 
 export interface CreateCustomer {
@@ -31,7 +31,7 @@ export interface CreateCustomer {
   sendStatements?: boolean;
   
   // Contact Persons
-  contactPersons?: ContactPerson[];
+  contactPersons?: CustomerContact[];
   
   // Documents
   documents?: File[];
