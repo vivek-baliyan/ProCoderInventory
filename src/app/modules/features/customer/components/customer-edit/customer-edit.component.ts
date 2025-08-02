@@ -10,23 +10,34 @@ import { UpdateCustomer } from '../../../../../core/models/customer/update-custo
 import { Customer } from '../../../../../core/models/customer/customer';
 import { Dropdown } from '../../../../../core/models/master/dropdown';
 import { forkJoin } from 'rxjs';
+import { CustomerType } from '../../enums/customer-type.enum';
 
 @Component({
   selector: 'app-customer-edit',
   standalone: false,
   templateUrl: './customer-edit.component.html',
-  styleUrl: './customer-edit.component.css'
+  styleUrl: './customer-edit.component.css',
 })
 export class CustomerEditComponent implements OnInit {
-
   customerForm: FormGroup;
   countryOptions: Dropdown[] = [];
-  stateOptions: Dropdown[] = [];
+  billingStateOptions: Dropdown[] = [];
+  shippingStateOptions: Dropdown[] = [];
   currencyOptions: Dropdown[] = [];
+  priceListOptions: Dropdown[] = [];
+  salutationOptions: { value: string; label: string }[] = [
+    { value: 'Mr', label: 'Mr.' },
+    { value: 'Ms', label: 'Ms.' },
+    { value: 'Mrs', label: 'Mrs.' },
+    { value: 'Dr', label: 'Dr.' },
+    { value: 'Prof', label: 'Prof.' },
+  ];
   isLoading = false;
   isSaving = false;
   customerId: number = 0;
   customer: Customer | null = null;
+  uploadedDocuments: File[] = [];
+  contactPersons: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -53,28 +64,37 @@ export class CustomerEditComponent implements OnInit {
 
   private createForm(): FormGroup {
     return this.fb.group({
-      customerType: ['Individual', [Validators.required]],
-      customerName: ['', [Validators.required, Validators.minLength(2)]],
-      displayName: [''],
+      customerType: [CustomerType.Individual.toString(), [Validators.required]],
+      salutation: ['', [Validators.required]],
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
+      displayName: ['', [Validators.required]],
       companyName: [''],
       email: ['', [Validators.required, Validators.email]],
       phone: [''],
       mobile: [''],
       website: [''],
-      addressLine1: [''],
-      addressLine2: [''],
-      city: [''],
-      stateId: [''],
-      countryId: [''],
-      postalCode: [''],
+      billingAddressLine1: [''],
+      billingAddressLine2: [''],
+      billingCity: [''],
+      billingStateId: [''],
+      billingCountryId: [''],
+      billingPostalCode: [''],
+      shippingAddressLine1: [''],
+      shippingAddressLine2: [''],
+      shippingCity: [''],
+      shippingStateId: [''],
+      shippingCountryId: [''],
+      shippingPostalCode: [''],
+      copyBillingAddress: [false],
       creditLimit: [0, [Validators.min(0)]],
       paymentTerms: [''],
       status: ['ACTIVE', [Validators.required]],
-      taxId: [''],
+      pan: [''],
       currencyId: [''],
-      notes: [''],
+      priceListId: [''],
       allowBackOrders: [false],
-      sendStatements: [true]
+      sendStatements: [true],
     });
   }
 
@@ -95,86 +115,172 @@ export class CustomerEditComponent implements OnInit {
         console.error('Error loading customer:', error);
         this.isLoading = false;
         this.router.navigate(['/app/customers/list']);
-      }
+      },
     });
   }
 
   private populateForm(customer: Customer): void {
     this.customerForm.patchValue({
-      customerType: customer.customerType,
-      customerName: customer.customerName,
-      displayName: customer.displayName,
+      customerType: customer.customerType?.toString(),
+      salutation: customer.salutation,
+      firstName: customer.firstName,
+      lastName: customer.lastName,
+      displayName: customer.customerName,
       companyName: customer.companyName,
       email: customer.email,
-      phone: customer.phone,
+      phone: customer.workPhone,
       mobile: customer.mobile,
-      website: customer.website,
-      addressLine1: customer.addressLine1,
-      addressLine2: customer.addressLine2,
-      city: customer.city,
-      stateId: customer.stateId,
-      countryId: customer.countryId,
-      postalCode: customer.postalCode,
-      creditLimit: customer.creditLimit,
-      paymentTerms: customer.paymentTerms,
-      status: customer.status,
-      taxId: customer.taxId,
+      website: customer.websiteUrl,
+      billingAddressLine1: customer.billingAddress,
+      billingAddressLine2: '',
+      billingCity: customer.city,
+      billingStateId: customer.stateId,
+      billingCountryId: customer.countryId,
+      billingPostalCode: customer.postalCode,
+      shippingAddressLine1: customer.shippingAddress || customer.billingAddress,
+      shippingAddressLine2: '',
+      shippingCity: customer.city,
+      shippingStateId: customer.stateId,
+      shippingCountryId: customer.countryId,
+      shippingPostalCode: customer.postalCode,
+      creditLimit: customer.creditLimit || 0,
+      paymentTerms: customer.paymentTermDays,
+      status: customer.isActive ? 'ACTIVE' : 'INACTIVE',
+      pan: customer.panNumber,
       currencyId: customer.currencyId,
-      notes: customer.notes,
-      allowBackOrders: customer.allowBackOrders,
-      sendStatements: customer.sendStatements
+      priceListId: customer.priceListId,
+      allowBackOrders: customer.allowBackOrders || false,
+      sendStatements: customer.sendStatements !== false,
     });
 
-    // Load states for the selected country
+    // Load states for the selected countries
     if (customer.countryId) {
-      this.loadStatesForCountry(customer.countryId);
+      this.loadStatesForCountry(customer.countryId, 'billing');
+      this.loadStatesForCountry(customer.countryId, 'shipping');
     }
   }
 
   private loadDropdownData(): void {
     forkJoin({
       countries: this.countryService.getCountriesDropdown(),
-      currencies: this.currencyService.getCurrenciesDropdown()
+      currencies: this.currencyService.getCurrenciesDropdown(),
     }).subscribe({
       next: (response) => {
         if (response.countries.success && response.countries.data) {
           this.countryOptions = response.countries.data;
         }
-        
+
         if (response.currencies.success && response.currencies.data) {
           this.currencyOptions = response.currencies.data;
         }
       },
       error: (error) => {
         console.error('Error loading dropdown data:', error);
-      }
+      },
     });
   }
 
-  onCountryChange(event: any): void {
+  onCountryChange(event: any, addressType: 'billing' | 'shipping'): void {
     const countryId = parseInt(event.target.value);
     if (countryId) {
-      this.loadStatesForCountry(countryId);
+      this.loadStatesForCountry(countryId, addressType);
     } else {
-      this.stateOptions = [];
+      if (addressType === 'billing') {
+        this.billingStateOptions = [];
+      } else {
+        this.shippingStateOptions = [];
+      }
     }
-    this.customerForm.patchValue({ stateId: '' });
+    this.customerForm.patchValue({
+      [`${addressType}StateId`]: '',
+    });
   }
 
-  private loadStatesForCountry(countryId: number): void {
+  private loadStatesForCountry(
+    countryId: number,
+    addressType: 'billing' | 'shipping'
+  ): void {
     this.stateService.getStatesDropdown(countryId).subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          this.stateOptions = response.data;
+          if (addressType === 'billing') {
+            this.billingStateOptions = response.data;
+          } else {
+            this.shippingStateOptions = response.data;
+          }
         } else {
-          this.stateOptions = [];
+          if (addressType === 'billing') {
+            this.billingStateOptions = [];
+          } else {
+            this.shippingStateOptions = [];
+          }
         }
       },
       error: (error) => {
         console.error('Error loading states:', error);
-        this.stateOptions = [];
-      }
+        if (addressType === 'billing') {
+          this.billingStateOptions = [];
+        } else {
+          this.shippingStateOptions = [];
+        }
+      },
     });
+  }
+
+  onCopyBillingAddress(): void {
+    const copyAddress = this.customerForm.get('copyBillingAddress')?.value;
+    if (copyAddress) {
+      const billingData = {
+        shippingAddressLine1: this.customerForm.get('billingAddressLine1')
+          ?.value,
+        shippingAddressLine2: this.customerForm.get('billingAddressLine2')
+          ?.value,
+        shippingCity: this.customerForm.get('billingCity')?.value,
+        shippingStateId: this.customerForm.get('billingStateId')?.value,
+        shippingCountryId: this.customerForm.get('billingCountryId')?.value,
+        shippingPostalCode: this.customerForm.get('billingPostalCode')?.value,
+      };
+      this.customerForm.patchValue(billingData);
+
+      // Copy states as well
+      const billingCountryId = this.customerForm.get('billingCountryId')?.value;
+      if (billingCountryId) {
+        this.loadStatesForCountry(parseInt(billingCountryId), 'shipping');
+      }
+    }
+  }
+
+  addContactPerson(): void {
+    this.contactPersons.push({
+      salutation: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+      workPhone: '',
+      mobile: '',
+    });
+  }
+
+  removeContactPerson(index: number): void {
+    this.contactPersons.splice(index, 1);
+  }
+
+  onFileSelected(event: any): void {
+    const files = event.target.files;
+    if (files) {
+      for (let file of files) {
+        if (
+          this.uploadedDocuments.length < 10 &&
+          file.size <= 5 * 1024 * 1024
+        ) {
+          this.uploadedDocuments.push(file);
+        }
+      }
+    }
+  }
+
+  removeDocument(index: number): void {
+    this.uploadedDocuments.splice(index, 1);
   }
 
   isFieldInvalid(fieldName: string): boolean {
@@ -186,33 +292,57 @@ export class CustomerEditComponent implements OnInit {
     if (this.customerForm.valid && this.customer) {
       this.isSaving = true;
       const formData = this.customerForm.value;
-      
+
       const customerData: UpdateCustomer = {
         id: this.customer.id,
-        customerType: formData.customerType,
-        customerName: formData.customerName,
-        displayName: formData.displayName || formData.customerName,
+        rowVersion: this.customer.rowVersion ?? 1,
+        customerType: parseInt(formData.customerType),
+        salutation: formData.salutation,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        customerName:
+          formData.displayName ||
+          `${formData.firstName} ${formData.lastName}`.trim(),
         companyName: formData.companyName,
         email: formData.email,
-        phone: formData.phone,
-        mobile: formData.mobile,
-        website: formData.website,
-        addressLine1: formData.addressLine1,
-        addressLine2: formData.addressLine2,
-        city: formData.city,
-        stateId: formData.stateId ? parseInt(formData.stateId) : undefined,
-        countryId: formData.countryId ? parseInt(formData.countryId) : undefined,
-        postalCode: formData.postalCode,
+        workPhone: formData.phone || null,
+        mobile: formData.mobile || null,
+        websiteUrl: formData.website,
+        billingAddress: formData.billingAddressLine1,
+        billingAddressLine2: formData.billingAddressLine2,
+        billingCity: formData.billingCity,
+        billingStateId: formData.billingStateId
+          ? parseInt(formData.billingStateId)
+          : undefined,
+        billingCountryId: formData.billingCountryId
+          ? parseInt(formData.billingCountryId)
+          : undefined,
+        billingPostalCode: formData.billingPostalCode,
+        shippingAddress: formData.shippingAddressLine1,
+        shippingAddressLine2: formData.shippingAddressLine2,
+        shippingCity: formData.shippingCity,
+        shippingStateId: formData.shippingStateId
+          ? parseInt(formData.shippingStateId)
+          : undefined,
+        shippingCountryId: formData.shippingCountryId
+          ? parseInt(formData.shippingCountryId)
+          : undefined,
+        shippingPostalCode: formData.shippingPostalCode,
         creditLimit: formData.creditLimit || 0,
-        paymentTerms: formData.paymentTerms,
-        status: formData.status,
-        taxId: formData.taxId,
-        currencyId: formData.currencyId ? parseInt(formData.currencyId) : undefined,
-        notes: formData.notes,
+        paymentTermDays: formData.paymentTerms,
+        isActive: formData.status === 'ACTIVE',
+        panNumber: formData.pan,
+        currencyId: formData.currencyId
+          ? parseInt(formData.currencyId)
+          : undefined,
+        priceListId: formData.priceListId
+          ? parseInt(formData.priceListId)
+          : undefined,
         allowBackOrders: formData.allowBackOrders || false,
-        sendStatements: formData.sendStatements !== false
+        sendStatements: formData.sendStatements !== false,
+        notes: '',
       };
-      
+
       this.customerService.updateCustomer(customerData).subscribe({
         next: (response) => {
           this.isSaving = false;
@@ -226,10 +356,10 @@ export class CustomerEditComponent implements OnInit {
         error: (error) => {
           this.isSaving = false;
           console.error('Error updating customer:', error);
-        }
+        },
       });
     } else {
-      Object.keys(this.customerForm.controls).forEach(key => {
+      Object.keys(this.customerForm.controls).forEach((key) => {
         this.customerForm.get(key)?.markAsTouched();
       });
     }

@@ -1,0 +1,15 @@
+.border-dashed {
+  border-style: dashed !important;
+}
+
+.form-select-sm, .form-control-sm {
+  min-width: 120px;
+}
+
+.table th {
+  white-space: nowrap;
+}
+
+.dropdown-toggle::after {
+  margin-left: 0.5em;
+}

@@ -1,279 +1,423 @@
-<!-- main body area -->
-<div class="main px-lg-4 px-md-4">
-  <!-- Body: Body -->
-  <div class="body d-flex py-lg-3 py-md-2">
-    <div class="container-xxl">
-      <div class="row align-items-center">
-        <div class="border-0 mb-4">
-          <div
-            class="card-header py-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between border-bottom flex-wrap"
-          >
-            <h3 class="fw-bold mb-0">Customers Information</h3>
-            <div class="col-auto d-flex w-sm-100">
-              <button
-                type="button"
-                class="btn btn-primary btn-set-task w-sm-100"
-                routerLink="/app/customers/add"
-              >
-                <i class="icofont-plus-circle me-2 fs-6"></i>Add Customers
-              </button>
+<!-- Body: Body -->
+<div class="body d-flex py-3">
+  <div class="container-xxl">
+    <div class="row align-items-center">
+      <div class="border-0 mb-4">
+        <div
+          class="card-header py-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between border-bottom flex-wrap"
+        >
+          <h3 class="fw-bold mb-0">Customers Information</h3>
+          <div class="col-auto d-flex w-sm-100">
+            <button
+              type="button"
+              class="btn btn-primary btn-set-task w-sm-100"
+              (click)="navigateToAdd()"
+            >
+              <i class="icofont-plus-circle me-2 fs-6"></i>Add Customer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Row end  -->
+
+    <!-- Search and Filters -->
+    <div class="row g-3 mb-3">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="row g-3 align-items-end">
+              <!-- Search -->
+              <div class="col-md-4">
+                <label class="form-label">Search Customers</label>
+                <div class="input-group">
+                  <span class="input-group-text"
+                    ><i class="icofont-search"></i
+                  ></span>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Search by name, email, company..."
+                    [formControl]="searchControl"
+                  />
+                </div>
+              </div>
+
+              <!-- Customer Type Filter -->
+              <div class="col-md-2">
+                <label class="form-label">Type</label>
+                <select
+                  class="form-select"
+                  [(ngModel)]="selectedCustomerType"
+                  (change)="onFilterChange()"
+                >
+                  <option value="0">All Types</option>
+                  <option value="1">Individual</option>
+                  <option value="2">Business</option>
+                </select>
+              </div>
+
+              <!-- Status Filter -->
+              <div class="col-md-2">
+                <label class="form-label">Status</label>
+                <select
+                  class="form-select"
+                  [(ngModel)]="selectedStatus"
+                  (change)="onFilterChange()"
+                >
+                  <option value="">All Status</option>
+                  <option value="ACTIVE">Active</option>
+                  <option value="INACTIVE">Inactive</option>
+                </select>
+              </div>
+
+              <!-- Country Filter -->
+              <div class="col-md-2">
+                <label class="form-label">Country</label>
+                <select
+                  class="form-select"
+                  [(ngModel)]="selectedCountry"
+                  (change)="onFilterChange()"
+                >
+                  <option value="">All Countries</option>
+                  <option
+                    *ngFor="let country of countryOptions"
+                    [value]="country.value"
+                  >
+                    {{ country.label }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Actions -->
+              <div class="col-md-2">
+                <div class="d-flex gap-2">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    (click)="refreshData()"
+                    [disabled]="loading"
+                  >
+                    <i class="icofont-refresh"></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-success"
+                    (click)="exportCustomers()"
+                  >
+                    <i class="icofont-download"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <!-- Row end  -->
-      <div class="row clearfix g-3">
-        <div class="col-sm-12">
-          <div class="card mb-3">
-            <div class="card-body">
-              <table
-                id="myProjectTable"
-                class="table table-hover align-middle mb-0"
-                style="width: 100%"
-              >
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3 mb-0">Loading customers...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && filteredCustomers.length === 0" class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body text-center py-5">
+            <i class="icofont-users fs-1 text-muted mb-3"></i>
+            <h5 class="text-muted">No customers found</h5>
+            <p class="text-muted">
+              Try adjusting your search criteria or add a new customer
+            </p>
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="navigateToAdd()"
+            >
+              <i class="icofont-plus-circle me-2"></i>Add Customer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bulk Actions Bar -->
+    <div *ngIf="showBulkActions" class="row mb-3">
+      <div class="col-12">
+        <div
+          class="alert alert-info d-flex justify-content-between align-items-center mb-0"
+        >
+          <span
+            ><strong>{{ selectedCustomers.length }}</strong> customer(s)
+            selected</span
+          >
+          <div class="btn-group btn-group-sm">
+            <button class="btn btn-outline-success" (click)="bulkActivate()">
+              <i class="icofont-check me-1"></i>Activate
+            </button>
+            <button class="btn btn-outline-warning" (click)="bulkDeactivate()">
+              <i class="icofont-pause me-1"></i>Deactivate
+            </button>
+            <button class="btn btn-outline-danger" (click)="bulkDelete()">
+              <i class="icofont-ui-delete me-1"></i>Delete
+            </button>
+            <button
+              class="btn btn-outline-secondary"
+              (click)="clearSelection()"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Customers Table -->
+    <div
+      *ngIf="!loading && filteredCustomers.length > 0"
+      class="row clearfix g-3"
+    >
+      <div class="col-sm-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
                 <thead>
                   <tr>
-                    <th>Id</th>
-                    <th>Customers</th>
-                    <th>Register Date</th>
-                    <th>Mail</th>
+                    <th width="40">
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        [checked]="isAllSelected()"
+                        (change)="onSelectAll($event)"
+                      />
+                    </th>
+                    <th
+                      class="sortable"
+                      (click)="onSort('customerCode')"
+                      [class.sorted]="sortColumn === 'customerCode'"
+                    >
+                      Code
+                      <i
+                        class="icofont-caret-up"
+                        *ngIf="
+                          sortColumn === 'customerCode' &&
+                          sortDirection === 'asc'
+                        "
+                      ></i>
+                      <i
+                        class="icofont-caret-down"
+                        *ngIf="
+                          sortColumn === 'customerCode' &&
+                          sortDirection === 'desc'
+                        "
+                      ></i>
+                    </th>
+                    <th
+                      class="sortable"
+                      (click)="onSort('customerName')"
+                      [class.sorted]="sortColumn === 'customerName'"
+                    >
+                      Customer
+                      <i
+                        class="icofont-caret-up"
+                        *ngIf="
+                          sortColumn === 'customerName' &&
+                          sortDirection === 'asc'
+                        "
+                      ></i>
+                      <i
+                        class="icofont-caret-down"
+                        *ngIf="
+                          sortColumn === 'customerName' &&
+                          sortDirection === 'desc'
+                        "
+                      ></i>
+                    </th>
+                    <th>Type</th>
+                    <th
+                      class="sortable"
+                      (click)="onSort('email')"
+                      [class.sorted]="sortColumn === 'email'"
+                    >
+                      Email
+                      <i
+                        class="icofont-caret-up"
+                        *ngIf="
+                          sortColumn === 'email' && sortDirection === 'asc'
+                        "
+                      ></i>
+                      <i
+                        class="icofont-caret-down"
+                        *ngIf="
+                          sortColumn === 'email' && sortDirection === 'desc'
+                        "
+                      ></i>
+                    </th>
                     <th>Phone</th>
-                    <th>Country</th>
-                    <th>Total Order</th>
-                    <th>Actions</th>
+                    <th>Location</th>
+                    <th
+                      class="sortable"
+                      (click)="onSort('creditLimit')"
+                      [class.sorted]="sortColumn === 'creditLimit'"
+                    >
+                      Credit Limit
+                      <i
+                        class="icofont-caret-up"
+                        *ngIf="
+                          sortColumn === 'creditLimit' &&
+                          sortDirection === 'asc'
+                        "
+                      ></i>
+                      <i
+                        class="icofont-caret-down"
+                        *ngIf="
+                          sortColumn === 'creditLimit' &&
+                          sortDirection === 'desc'
+                        "
+                      ></i>
+                    </th>
+                    <th>Status</th>
+                    <th width="120">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td><strong>#CS-00002</strong></td>
+                  <tr *ngFor="let customer of filteredCustomers">
                     <td>
-                      <a href="customer-detail.html">
-                        <img
-                          class="avatar rounded"
-                          src="assets/images/xs/avatar1.svg"
-                          alt=""
-                        />
-                        <span class="fw-bold ms-1">Joan Dyer</span>
-                      </a>
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        [checked]="isSelected(customer.id)"
+                        (change)="onCustomerSelect(customer.id, $event)"
+                      />
                     </td>
-                    <td>12/03/2021</td>
-                    <td>JoanDyer&#64;gmail.com</td>
-                    <td>202-555-0983</td>
-                    <td>South Africa</td>
-                    <td>18</td>
                     <td>
-                      <div
-                        class="btn-group"
-                        role="group"
-                        aria-label="Basic outlined example"
-                      >
-                        <button
-                          type="button"
-                          class="btn btn-outline-secondary"
-                          (click)="navigateToEdit()"
+                      <strong>{{
+                        customer.customerCode ||
+                          "#CS-" + customer.id.toString().padStart(5, "0")
+                      }}</strong>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div
+                          class="avatar rounded me-2 bg-light d-flex align-items-center justify-content-center"
+                          style="width: 32px; height: 32px"
                         >
-                          <i class="icofont-edit text-success"></i>
-                        </button>
-                        <button
-                          type="button"
-                          class="btn btn-outline-secondary deleterow"
-                        >
-                          <i class="icofont-ui-delete text-danger"></i>
-                        </button>
+                          <i
+                            [class]="getCustomerTypeIcon(customer.customerType)"
+                            class="text-primary"
+                          ></i>
+                        </div>
+                        <div>
+                          <div class="fw-bold">
+                            {{ customer.displayName || customer.customerName }}
+                          </div>
+                          <small
+                            class="text-muted"
+                            *ngIf="customer.companyName"
+                            >{{ customer.companyName }}</small
+                          >
+                          <small
+                            class="text-muted d-block"
+                            *ngIf="customer.contactPerson"
+                            >Contact: {{ customer.contactPerson }}</small
+                          >
+                        </div>
                       </div>
                     </td>
-                  </tr>
-                  <tr>
-                    <td><strong>#CS-00006</strong></td>
                     <td>
-                      <a href="customer-detail.html">
-                        <img
-                          class="avatar rounded"
-                          src="assets/images/xs/avatar2.svg"
-                          alt=""
-                        />
-                        <span class="fw-bold ms-1">Ryan Randall</span>
-                      </a>
-                    </td>
-                    <td>12/03/2021</td>
-                    <td>RyanRandall&#64;gmail.com</td>
-                    <td>303-555-0151</td>
-                    <td>Australia</td>
-                    <td>4568</td>
-                    <td>
-                      <div
-                        class="btn-group"
-                        role="group"
-                        aria-label="Basic outlined example"
+                      <span
+                        [class]="
+                          getCustomerTypeBadgeClass(customer.customerType)
+                        "
                       >
-                        <button
-                          type="button"
-                          class="btn btn-outline-secondary"
-                          (click)="navigateToEdit()"
+                        {{ customer.customerType }}
+                      </span>
+                    </td>
+                    <td>{{ customer.email }}</td>
+                    <td>{{ customer.phoneNumber || "-" }}</td>
+                    <td>
+                      <div>
+                        <div *ngIf="customer.city">{{ customer.city }}</div>
+                        <small class="text-muted" *ngIf="customer.state">{{
+                          customer.state
+                        }}</small>
+                        <small
+                          class="text-muted d-block"
+                          *ngIf="customer.country"
+                          >{{ customer.country }}</small
                         >
-                          <i class="icofont-edit text-success"></i>
-                        </button>
-                        <button
-                          type="button"
-                          class="btn btn-outline-secondary deleterow"
-                        >
-                          <i class="icofont-ui-delete text-danger"></i>
-                        </button>
                       </div>
                     </td>
-                  </tr>
-                  <tr>
-                    <td><strong>#CS-00004</strong></td>
                     <td>
-                      <a href="customer-detail.html">
-                        <img
-                          class="avatar rounded"
-                          src="assets/images/xs/avatar3.svg"
-                          alt=""
-                        />
-                        <span class="fw-bold ms-1">Phil Glover</span>
-                      </a>
-                    </td>
-                    <td>16/03/2021</td>
-                    <td>PhilGlover&#64;gmail.com</td>
-                    <td>843-555-0175</td>
-                    <td>Sri Lanka</td>
-                    <td>05</td>
-                    <td>
-                      <div
-                        class="btn-group"
-                        role="group"
-                        aria-label="Basic outlined example"
-                      >
-                        <button
-                          type="button"
-                          class="btn btn-outline-secondary"
-                          (click)="navigateToEdit()"
+                      <div class="text-end">
+                        <div class="fw-bold" *ngIf="customer.creditLimit">
+                          {{ customer.currencyName || "$"
+                          }}{{ customer.creditLimit | number : "1.2-2" }}
+                        </div>
+                        <small class="text-muted" *ngIf="!customer.creditLimit"
+                          >No limit</small
                         >
-                          <i class="icofont-edit text-success"></i>
-                        </button>
-                        <button
-                          type="button"
-                          class="btn btn-outline-secondary deleterow"
-                        >
-                          <i class="icofont-ui-delete text-danger"></i>
-                        </button>
                       </div>
                     </td>
-                  </tr>
-                  <tr>
-                    <td><strong>#CS-00008</strong></td>
                     <td>
-                      <a href="customer-detail.html">
-                        <img
-                          class="avatar rounded"
-                          src="assets/images/xs/avatar4.svg"
-                          alt=""
-                        />
-                        <span class="fw-bold ms-1">Victor Rampling</span>
-                      </a>
+                      <span [class]="getStatusBadgeClass(customer.status)">
+                        {{ customer.status }}
+                      </span>
                     </td>
-                    <td>25/02/2021</td>
-                    <td>VictorRampling&#64;gmail.com</td>
-                    <td>404-555-0100</td>
-                    <td>Israel</td>
-                    <td>14</td>
                     <td>
-                      <div
-                        class="btn-group"
-                        role="group"
-                        aria-label="Basic outlined example"
-                      >
+                      <div class="btn-group btn-group-sm" role="group">
                         <button
                           type="button"
-                          class="btn btn-outline-secondary"
-                          (click)="navigateToEdit()"
+                          class="btn btn-outline-primary"
+                          (click)="navigateToView(customer)"
+                          title="View Details"
                         >
-                          <i class="icofont-edit text-success"></i>
+                          <i class="icofont-eye"></i>
                         </button>
                         <button
                           type="button"
-                          class="btn btn-outline-secondary deleterow"
+                          class="btn btn-outline-success"
+                          (click)="navigateToEdit(customer)"
+                          title="Edit Customer"
                         >
-                          <i class="icofont-ui-delete text-danger"></i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><strong>#CS-00018</strong></td>
-                    <td>
-                      <a href="customer-detail.html">
-                        <img
-                          class="avatar rounded"
-                          src="assets/images/xs/avatar5.svg"
-                          alt=""
-                        />
-                        <span class="fw-bold ms-1">Sally Graham</span>
-                      </a>
-                    </td>
-                    <td>16/02/2021</td>
-                    <td>SallyGraham&#64;gmail.com</td>
-                    <td>502-555-0118</td>
-                    <td>Indonesia</td>
-                    <td>03</td>
-                    <td>
-                      <div
-                        class="btn-group"
-                        role="group"
-                        aria-label="Basic outlined example"
-                      >
-                        <button
-                          type="button"
-                          class="btn btn-outline-secondary"
-                          (click)="navigateToEdit()"
-                        >
-                          <i class="icofont-edit text-success"></i>
+                          <i class="icofont-edit"></i>
                         </button>
                         <button
                           type="button"
-                          class="btn btn-outline-secondary deleterow"
+                          class="btn btn-outline-warning"
+                          (click)="toggleCustomerStatus(customer)"
+                          [title]="
+                            customer.status === 'ACTIVE'
+                              ? 'Deactivate'
+                              : 'Activate'
+                          "
                         >
-                          <i class="icofont-ui-delete text-danger"></i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><strong>#CS-00014</strong></td>
-                    <td>
-                      <a href="customer-detail.html">
-                        <img
-                          class="avatar rounded"
-                          src="assets/images/xs/avatar6.svg"
-                          alt=""
-                        />
-                        <span class="fw-bold ms-1">Robert Anderson</span>
-                      </a>
-                    </td>
-                    <td>18/01/2021</td>
-                    <td>RobertAnderson&#64;gmail.com</td>
-                    <td>502-555-0133</td>
-                    <td>Malaysia</td>
-                    <td>02</td>
-                    <td>
-                      <div
-                        class="btn-group"
-                        role="group"
-                        aria-label="Basic outlined example"
-                      >
-                        <button
-                          type="button"
-                          class="btn btn-outline-secondary"
-                          (click)="navigateToEdit()"
-                        >
-                          <i class="icofont-edit text-success"></i>
+                          <i
+                            [class]="
+                              customer.status === 'ACTIVE'
+                                ? 'icofont-pause'
+                                : 'icofont-play-alt-2'
+                            "
+                          ></i>
                         </button>
                         <button
                           type="button"
-                          class="btn btn-outline-secondary deleterow"
+                          class="btn btn-outline-danger"
+                          (click)="confirmDelete(customer, deleteModal)"
+                          title="Delete Customer"
                         >
-                          <i class="icofont-ui-delete text-danger"></i>
+                          <i class="icofont-ui-delete"></i>
                         </button>
                       </div>
                     </td>
@@ -284,8 +428,113 @@
           </div>
         </div>
       </div>
-      <!-- Row End -->
     </div>
-  </div>
 
+    <!-- Pagination -->
+    <div
+      *ngIf="!loading && filteredCustomers.length > 0 && totalPages > 1"
+      class="row"
+    >
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="text-muted">
+                Showing {{ (currentPage - 1) * pageSize + 1 }} to
+                {{ Math.min(currentPage * pageSize, totalItems) }} of
+                {{ totalItems }} customers
+              </div>
+              <nav>
+                <ul class="pagination mb-0">
+                  <li class="page-item" [class.disabled]="currentPage === 1">
+                    <button
+                      class="page-link"
+                      (click)="onPageChange(1)"
+                      [disabled]="currentPage === 1"
+                    >
+                      <i class="icofont-double-left"></i>
+                    </button>
+                  </li>
+                  <li class="page-item" [class.disabled]="currentPage === 1">
+                    <button
+                      class="page-link"
+                      (click)="onPageChange(currentPage - 1)"
+                      [disabled]="currentPage === 1"
+                    >
+                      <i class="icofont-caret-left"></i>
+                    </button>
+                  </li>
+                  <li
+                    *ngFor="let page of getPaginationArray()"
+                    class="page-item"
+                    [class.active]="page === currentPage"
+                  >
+                    <button class="page-link" (click)="onPageChange(page)">
+                      {{ page }}
+                    </button>
+                  </li>
+                  <li
+                    class="page-item"
+                    [class.disabled]="currentPage === totalPages"
+                  >
+                    <button
+                      class="page-link"
+                      (click)="onPageChange(currentPage + 1)"
+                      [disabled]="currentPage === totalPages"
+                    >
+                      <i class="icofont-caret-right"></i>
+                    </button>
+                  </li>
+                  <li
+                    class="page-item"
+                    [class.disabled]="currentPage === totalPages"
+                  >
+                    <button
+                      class="page-link"
+                      (click)="onPageChange(totalPages)"
+                      [disabled]="currentPage === totalPages"
+                    >
+                      <i class="icofont-double-right"></i>
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Row End -->
+  </div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<ng-template #deleteModal>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Confirm Delete</h4>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modalRef?.hide()"
+    >
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete this customer?</p>
+    <p class="text-muted">This action cannot be undone.</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modalRef?.hide()">
+      Cancel
+    </button>
+    <button
+      type="button"
+      class="btn btn-danger"
+      (click)="deleteCustomer(modalRef?.content?.customer?.id)"
+    >
+      Delete
+    </button>
+  </div>
+</ng-template>

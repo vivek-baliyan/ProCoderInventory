@@ -9,6 +9,7 @@ import { CurrencyService } from '../../../../master/services/currency.service';
 import { CreateCustomer } from '../../../../../core/models/customer/create-customer';
 import { Dropdown } from '../../../../../core/models/master/dropdown';
 import { forkJoin } from 'rxjs';
+import { CustomerType } from '../../enums';
 
 @Component({
   selector: 'app-customer-add',
@@ -20,10 +21,21 @@ export class CustomerAddComponent implements OnInit {
 
   customerForm: FormGroup;
   countryOptions: Dropdown[] = [];
-  stateOptions: Dropdown[] = [];
+  billingStateOptions: Dropdown[] = [];
+  shippingStateOptions: Dropdown[] = [];
   currencyOptions: Dropdown[] = [];
+  priceListOptions: Dropdown[] = [];
+  salutationOptions: { value: string; label: string }[] = [
+    { value: 'Mr', label: 'Mr.' },
+    { value: 'Ms', label: 'Ms.' },
+    { value: 'Mrs', label: 'Mrs.' },
+    { value: 'Dr', label: 'Dr.' },
+    { value: 'Prof', label: 'Prof.' }
+  ];
   isLoading = false;
   isSaving = false;
+  uploadedDocuments: File[] = [];
+  contactPersons: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -43,26 +55,35 @@ export class CustomerAddComponent implements OnInit {
 
   private createForm(): FormGroup {
     return this.fb.group({
-      customerType: ['Individual', [Validators.required]],
-      customerName: ['', [Validators.required, Validators.minLength(2)]],
-      displayName: [''],
+      customerType: [CustomerType.Individual.toString(), [Validators.required]],
+      salutation: ['', [Validators.required]],
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
+      displayName: ['', [Validators.required]],
       companyName: [''],
       email: ['', [Validators.required, Validators.email]],
       phone: [''],
       mobile: [''],
       website: [''],
-      addressLine1: [''],
-      addressLine2: [''],
-      city: [''],
-      stateId: [''],
-      countryId: [''],
-      postalCode: [''],
+      billingAddressLine1: [''],
+      billingAddressLine2: [''],
+      billingCity: [''],
+      billingStateId: [''],
+      billingCountryId: [''],
+      billingPostalCode: [''],
+      shippingAddressLine1: [''],
+      shippingAddressLine2: [''],
+      shippingCity: [''],
+      shippingStateId: [''],
+      shippingCountryId: [''],
+      shippingPostalCode: [''],
+      copyBillingAddress: [false],
       creditLimit: [0, [Validators.min(0)]],
       paymentTerms: [''],
       status: ['ACTIVE', [Validators.required]],
-      taxId: [''],
+      pan: [''],
       currencyId: [''],
-      notes: [''],
+      priceListId: [''],
       allowBackOrders: [false],
       sendStatements: [true]
     });
@@ -87,8 +108,12 @@ export class CustomerAddComponent implements OnInit {
         // Set first country and currency as default if available
         if (this.countryOptions.length > 0) {
           const defaultCountryId = this.countryOptions[0].value;
-          this.customerForm.patchValue({ countryId: defaultCountryId });
-          this.loadStatesForCountry(defaultCountryId);
+          this.customerForm.patchValue({ 
+            billingCountryId: defaultCountryId,
+            shippingCountryId: defaultCountryId 
+          });
+          this.loadStatesForCountry(defaultCountryId, 'billing');
+          this.loadStatesForCountry(defaultCountryId, 'shipping');
         }
         
         if (this.currencyOptions.length > 0) {
@@ -104,30 +129,99 @@ export class CustomerAddComponent implements OnInit {
     });
   }
 
-  onCountryChange(event: any): void {
+  onCountryChange(event: any, addressType: 'billing' | 'shipping'): void {
     const countryId = parseInt(event.target.value);
     if (countryId) {
-      this.loadStatesForCountry(countryId);
+      this.loadStatesForCountry(countryId, addressType);
     } else {
-      this.stateOptions = [];
+      if (addressType === 'billing') {
+        this.billingStateOptions = [];
+      } else {
+        this.shippingStateOptions = [];
+      }
     }
-    this.customerForm.patchValue({ stateId: '' });
+    this.customerForm.patchValue({ 
+      [`${addressType}StateId`]: '' 
+    });
   }
 
-  private loadStatesForCountry(countryId: number): void {
+  private loadStatesForCountry(countryId: number, addressType: 'billing' | 'shipping'): void {
     this.stateService.getStatesDropdown(countryId).subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          this.stateOptions = response.data;
+          if (addressType === 'billing') {
+            this.billingStateOptions = response.data;
+          } else {
+            this.shippingStateOptions = response.data;
+          }
         } else {
-          this.stateOptions = [];
+          if (addressType === 'billing') {
+            this.billingStateOptions = [];
+          } else {
+            this.shippingStateOptions = [];
+          }
         }
       },
       error: (error) => {
         console.error('Error loading states:', error);
-        this.stateOptions = [];
+        if (addressType === 'billing') {
+          this.billingStateOptions = [];
+        } else {
+          this.shippingStateOptions = [];
+        }
       }
     });
+  }
+
+  onCopyBillingAddress(): void {
+    const copyAddress = this.customerForm.get('copyBillingAddress')?.value;
+    if (copyAddress) {
+      const billingData = {
+        shippingAddressLine1: this.customerForm.get('billingAddressLine1')?.value,
+        shippingAddressLine2: this.customerForm.get('billingAddressLine2')?.value,
+        shippingCity: this.customerForm.get('billingCity')?.value,
+        shippingStateId: this.customerForm.get('billingStateId')?.value,
+        shippingCountryId: this.customerForm.get('billingCountryId')?.value,
+        shippingPostalCode: this.customerForm.get('billingPostalCode')?.value
+      };
+      this.customerForm.patchValue(billingData);
+      
+      // Copy states as well
+      const billingCountryId = this.customerForm.get('billingCountryId')?.value;
+      if (billingCountryId) {
+        this.loadStatesForCountry(parseInt(billingCountryId), 'shipping');
+      }
+    }
+  }
+
+  addContactPerson(): void {
+    this.contactPersons.push({
+      salutation: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+      workPhone: '',
+      mobile: ''
+    });
+  }
+
+  removeContactPerson(index: number): void {
+    this.contactPersons.splice(index, 1);
+  }
+
+  onFileSelected(event: any): void {
+    const files = event.target.files;
+    if (files) {
+      for (let file of files) {
+        if (this.uploadedDocuments.length < 10 && file.size <= 5 * 1024 * 1024) {
+          this.uploadedDocuments.push(file);
+        }
+      }
+    }
+  }
+
+  removeDocument(index: number): void {
+    this.uploadedDocuments.splice(index, 1);
   }
 
   isFieldInvalid(fieldName: string): boolean {
@@ -141,28 +235,38 @@ export class CustomerAddComponent implements OnInit {
       const formData = this.customerForm.value;
       
       const customerData: CreateCustomer = {
-        customerType: formData.customerType,
-        customerName: formData.customerName,
-        displayName: formData.displayName || formData.customerName,
+        customerType: parseInt(formData.customerType),
+        salutation: formData.salutation,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        displayName: formData.displayName,
         companyName: formData.companyName,
         email: formData.email,
         phone: formData.phone,
         mobile: formData.mobile,
         website: formData.website,
-        addressLine1: formData.addressLine1,
-        addressLine2: formData.addressLine2,
-        city: formData.city,
-        stateId: formData.stateId ? parseInt(formData.stateId) : undefined,
-        countryId: formData.countryId ? parseInt(formData.countryId) : undefined,
-        postalCode: formData.postalCode,
+        billingAddressLine1: formData.billingAddressLine1,
+        billingAddressLine2: formData.billingAddressLine2,
+        billingCity: formData.billingCity,
+        billingStateId: formData.billingStateId ? parseInt(formData.billingStateId) : undefined,
+        billingCountryId: formData.billingCountryId ? parseInt(formData.billingCountryId) : undefined,
+        billingPostalCode: formData.billingPostalCode,
+        shippingAddressLine1: formData.shippingAddressLine1,
+        shippingAddressLine2: formData.shippingAddressLine2,
+        shippingCity: formData.shippingCity,
+        shippingStateId: formData.shippingStateId ? parseInt(formData.shippingStateId) : undefined,
+        shippingCountryId: formData.shippingCountryId ? parseInt(formData.shippingCountryId) : undefined,
+        shippingPostalCode: formData.shippingPostalCode,
         creditLimit: formData.creditLimit || 0,
         paymentTerms: formData.paymentTerms,
         status: formData.status,
-        taxId: formData.taxId,
+        pan: formData.pan,
         currencyId: formData.currencyId ? parseInt(formData.currencyId) : undefined,
-        notes: formData.notes,
+        priceListId: formData.priceListId ? parseInt(formData.priceListId) : undefined,
         allowBackOrders: formData.allowBackOrders || false,
-        sendStatements: formData.sendStatements !== false
+        sendStatements: formData.sendStatements !== false,
+        contactPersons: this.contactPersons,
+        documents: this.uploadedDocuments
       };
       
       this.customerService.createCustomer(customerData).subscribe({

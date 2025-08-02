@@ -8,6 +8,7 @@ import { CreateCustomer } from '../../../../core/models/customer/create-customer
 import { UpdateCustomer } from '../../../../core/models/customer/update-customer';
 import { CustomerListItem } from '../../../../core/models/customer/customer-list-item';
 import { CustomerFilter } from '../../../../core/models/customer/customer-filter';
+import { PaginatedResult } from '../../../../core/models/common/paginated-result';
 
 @Injectable({
   providedIn: 'root'
@@ -46,9 +47,9 @@ export class CustomerService {
     );
   }
 
-  // Filter Customers (Advanced Search)
-  filterCustomers(filter: CustomerFilter): Observable<ApiResponse<CustomerListItem[]>> {
-    return this.httpClient.post<ApiResponse<CustomerListItem[]>>(
+  // Filter Customers
+  filterCustomers(filter: CustomerFilter): Observable<ApiResponse<PaginatedResult<CustomerListItem>>> {
+    return this.httpClient.post<ApiResponse<PaginatedResult<CustomerListItem>>>(
       `${environment.apiBaseUrl}/Customer/filter`,
       filter
     );
@@ -70,7 +71,7 @@ export class CustomerService {
   }
 
   // Search Customers (Simple search for dropdowns)
-  searchCustomers(searchTerm: string): Observable<ApiResponse<CustomerListItem[]>> {
+  searchCustomers(searchTerm: string): Observable<ApiResponse<PaginatedResult<CustomerListItem>>> {
     const filter: CustomerFilter = {
       searchTerm: searchTerm,
       pageIndex: 0,

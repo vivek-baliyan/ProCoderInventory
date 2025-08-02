@@ -1,15 +1,22 @@
+import { CustomerType } from "../../../modules/features/customer/enums";
+
 export interface CustomerListItem {
   id: number;
+  customerCode?: string;
   customerName: string;
   displayName?: string;
   companyName?: string;
-  customerType: 'Individual' | 'Business';
+  contactPerson?: string;
+  customerType: CustomerType;
   email: string;
-  phone?: string;
+  phoneNumber?: string;
   city?: string;
-  countryName?: string;
+  state?: string;
+  country?: string;
   status: 'ACTIVE' | 'INACTIVE';
+  isActive?: boolean;
   creditLimit?: number;
+  currencyName?: string;
   totalOrders?: number;
   totalSpent?: number;
   lastOrderDate?: Date;

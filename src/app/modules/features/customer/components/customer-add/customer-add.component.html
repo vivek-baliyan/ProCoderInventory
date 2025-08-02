@@ -32,7 +32,7 @@
             </div>
             <div class="card-body">
               <div class="row g-3">
-                <div class="col-md-6">
+                <div class="col-12">
                   <label class="form-label">Customer Type <span class="text-danger">*</span></label>
                   <div class="mt-2">
                     <div class="form-check form-check-inline">
@@ -41,7 +41,7 @@
                         type="radio" 
                         id="customerTypeIndividual"
                         formControlName="customerType" 
-                        value="Individual"
+                        value="1"
                       />
                       <label class="form-check-label" for="customerTypeIndividual">
                         Individual
@@ -53,7 +53,7 @@
                         type="radio" 
                         id="customerTypeBusiness"
                         formControlName="customerType" 
-                        value="Business"
+                        value="2"
                       />
                       <label class="form-check-label" for="customerTypeBusiness">
                         Business
@@ -61,27 +61,47 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-6">
-                  <label class="form-label">Customer Name <span class="text-danger">*</span></label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    formControlName="customerName"
-                    [class.is-invalid]="isFieldInvalid('customerName')"
-                    placeholder="Enter customer name"
-                  />
-                  <div class="invalid-feedback" *ngIf="isFieldInvalid('customerName')">
-                    Please enter a customer name
+                <div class="col-md-4">
+                  <label class="form-label">Salutation <span class="text-danger">*</span></label>
+                  <select 
+                    class="form-select" 
+                    formControlName="salutation"
+                    [class.is-invalid]="isFieldInvalid('salutation')"
+                  >
+                    <option value="">Select Salutation</option>
+                    <option *ngFor="let salutation of salutationOptions" [value]="salutation.value">
+                      {{ salutation.label }}
+                    </option>
+                  </select>
+                  <div class="invalid-feedback" *ngIf="isFieldInvalid('salutation')">
+                    Please select a salutation
                   </div>
                 </div>
-                <div class="col-md-6">
-                  <label class="form-label">Display Name</label>
+                <div class="col-md-4">
+                  <label class="form-label">First Name <span class="text-danger">*</span></label>
                   <input
                     type="text"
                     class="form-control"
-                    formControlName="displayName"
-                    placeholder="Display name for reports"
+                    formControlName="firstName"
+                    [class.is-invalid]="isFieldInvalid('firstName')"
+                    placeholder="Enter first name"
                   />
+                  <div class="invalid-feedback" *ngIf="isFieldInvalid('firstName')">
+                    Please enter a first name
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Last Name <span class="text-danger">*</span></label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="lastName"
+                    [class.is-invalid]="isFieldInvalid('lastName')"
+                    placeholder="Enter last name"
+                  />
+                  <div class="invalid-feedback" *ngIf="isFieldInvalid('lastName')">
+                    Please enter a last name
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Company Name</label>
@@ -89,8 +109,21 @@
                     type="text"
                     class="form-control"
                     formControlName="companyName"
-                    placeholder="Company name (if business)"
+                    placeholder="Enter company name"
                   />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Customer Display Name <span class="text-danger">*</span></label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="displayName"
+                    [class.is-invalid]="isFieldInvalid('displayName')"
+                    placeholder="Enter display name"
+                  />
+                  <div class="invalid-feedback" *ngIf="isFieldInvalid('displayName')">
+                    Please enter a display name
+                  </div>
                 </div>
               </div>
             </div>
@@ -114,7 +147,7 @@
                     class="form-control"
                     formControlName="email"
                     [class.is-invalid]="isFieldInvalid('email')"
-                    placeholder="customer@example.com"
+                    placeholder="Enter email address"
                   />
                   <div class="invalid-feedback" *ngIf="isFieldInvalid('email')">
                     Please enter a valid email address
@@ -126,7 +159,7 @@
                     type="tel"
                     class="form-control"
                     formControlName="phone"
-                    placeholder="+1 (555) 123-4567"
+                    placeholder="Enter phone number"
                   />
                 </div>
                 <div class="col-md-6">
@@ -135,7 +168,7 @@
                     type="tel"
                     class="form-control"
                     formControlName="mobile"
-                    placeholder="+1 (555) 987-6543"
+                    placeholder="Enter mobile number"
                   />
                 </div>
                 <div class="col-md-6">
@@ -144,7 +177,7 @@
                     type="url"
                     class="form-control"
                     formControlName="website"
-                    placeholder="https://www.example.com"
+                    placeholder="Enter website URL"
                   />
                 </div>
               </div>
@@ -153,12 +186,13 @@
         </div>
       </div>
 
-      <!-- Address Information -->
+      <!-- Address Information - Side by Side -->
       <div class="row g-3 mb-3">
-        <div class="col-12">
-          <div class="card">
+        <!-- Billing Address -->
+        <div class="col-lg-6">
+          <div class="card h-100">
             <div class="card-header py-3 bg-transparent border-bottom-0">
-              <h6 class="mb-0 fw-bold">Address Information</h6>
+              <h6 class="mb-0 fw-bold">Billing Address</h6>
             </div>
             <div class="card-body">
               <div class="row g-3">
@@ -167,8 +201,8 @@
                   <input
                     type="text"
                     class="form-control"
-                    formControlName="addressLine1"
-                    placeholder="Street address"
+                    formControlName="billingAddressLine1"
+                    placeholder="Enter street address"
                   />
                 </div>
                 <div class="col-12">
@@ -176,44 +210,123 @@
                   <input
                     type="text"
                     class="form-control"
-                    formControlName="addressLine2"
-                    placeholder="Apartment, suite, unit, building, floor, etc."
+                    formControlName="billingAddressLine2"
+                    placeholder="Enter address line 2"
                   />
                 </div>
-                <div class="col-md-4">
+                <div class="col-12">
                   <label class="form-label">City</label>
                   <input
                     type="text"
                     class="form-control"
-                    formControlName="city"
-                    placeholder="City"
+                    formControlName="billingCity"
+                    placeholder="Enter city"
                   />
                 </div>
-                <div class="col-md-4">
+                <div class="col-12">
                   <label class="form-label">State/Province</label>
-                  <select class="form-select" formControlName="stateId">
+                  <select class="form-select" formControlName="billingStateId">
                     <option value="">Select State</option>
-                    <option *ngFor="let state of stateOptions" [value]="state.value">
+                    <option *ngFor="let state of billingStateOptions" [value]="state.value">
                       {{ state.label }}
                     </option>
                   </select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-12">
                   <label class="form-label">Country</label>
-                  <select class="form-select" formControlName="countryId" (change)="onCountryChange($event)">
+                  <select class="form-select" formControlName="billingCountryId" (change)="onCountryChange($event, 'billing')">
                     <option value="">Select Country</option>
                     <option *ngFor="let country of countryOptions" [value]="country.value">
                       {{ country.label }}
                     </option>
                   </select>
                 </div>
-                <div class="col-md-6">
+                <div class="col-12">
                   <label class="form-label">Postal/ZIP Code</label>
                   <input
                     type="text"
                     class="form-control"
-                    formControlName="postalCode"
-                    placeholder="Postal code"
+                    formControlName="billingPostalCode"
+                    placeholder="Enter postal code"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shipping Address -->
+        <div class="col-lg-6">
+          <div class="card h-100">
+            <div class="card-header py-3 bg-transparent border-bottom-0 d-flex justify-content-between align-items-center">
+              <h6 class="mb-0 fw-bold">Shipping Address</h6>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="copyBillingAddress"
+                  formControlName="copyBillingAddress"
+                  (change)="onCopyBillingAddress()"
+                />
+                <label class="form-check-label text-primary fw-medium" for="copyBillingAddress">
+                  Copy billing address
+                </label>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label">Address Line 1</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="shippingAddressLine1"
+                    placeholder="Enter street address"
+                  />
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Address Line 2</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="shippingAddressLine2"
+                    placeholder="Enter address line 2"
+                  />
+                </div>
+                <div class="col-12">
+                  <label class="form-label">City</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="shippingCity"
+                    placeholder="Enter city"
+                  />
+                </div>
+                <div class="col-12">
+                  <label class="form-label">State/Province</label>
+                  <select class="form-select" formControlName="shippingStateId">
+                    <option value="">Select State</option>
+                    <option *ngFor="let state of shippingStateOptions" [value]="state.value">
+                      {{ state.label }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Country</label>
+                  <select class="form-select" formControlName="shippingCountryId" (change)="onCountryChange($event, 'shipping')">
+                    <option value="">Select Country</option>
+                    <option *ngFor="let country of countryOptions" [value]="country.value">
+                      {{ country.label }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Postal/ZIP Code</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="shippingPostalCode"
+                    placeholder="Enter postal code"
                   />
                 </div>
               </div>
@@ -241,7 +354,7 @@
                       formControlName="creditLimit"
                       min="0"
                       step="0.01"
-                      placeholder="0.00"
+                      placeholder="Enter credit limit"
                     />
                   </div>
                 </div>
@@ -264,12 +377,15 @@
                   </select>
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">Tax ID/VAT Number</label>
+                  <label class="form-label">
+                    PAN 
+                    <i class="icofont-info-circle text-muted" title="Permanent Account Number"></i>
+                  </label>
                   <input
                     type="text"
                     class="form-control"
-                    formControlName="taxId"
-                    placeholder="Tax identification number"
+                    formControlName="pan"
+                    placeholder="Enter PAN number"
                   />
                 </div>
                 <div class="col-md-6">
@@ -281,32 +397,17 @@
                     </option>
                   </select>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Additional Information -->
-      <div class="row g-3 mb-3">
-        <div class="col-12">
-          <div class="card">
-            <div class="card-header py-3 bg-transparent border-bottom-0">
-              <h6 class="mb-0 fw-bold">Additional Information</h6>
-            </div>
-            <div class="card-body">
-              <div class="row g-3">
-                <div class="col-12">
-                  <label class="form-label">Notes</label>
-                  <textarea
-                    class="form-control"
-                    formControlName="notes"
-                    rows="3"
-                    placeholder="Additional notes about the customer"
-                  ></textarea>
+                <div class="col-md-6">
+                  <label class="form-label">Price List</label>
+                  <select class="form-select" formControlName="priceListId">
+                    <option value="">Select Price List</option>
+                    <option *ngFor="let priceList of priceListOptions" [value]="priceList.value">
+                      {{ priceList.label }}
+                    </option>
+                  </select>
                 </div>
                 <div class="col-md-6">
-                  <div class="form-check mt-3">
+                  <div class="form-check mt-4">
                     <input
                       class="form-check-input"
                       type="checkbox"
@@ -319,7 +420,7 @@
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <div class="form-check mt-3">
+                  <div class="form-check mt-4">
                     <input
                       class="form-check-input"
                       type="checkbox"
@@ -336,6 +437,134 @@
           </div>
         </div>
       </div>
+
+      <!-- Documents -->
+      <div class="row g-3 mb-3">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header py-3 bg-transparent border-bottom-0">
+              <h6 class="mb-0 fw-bold">Documents</h6>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-12">
+                  <div class="border-dashed border-2 border-secondary rounded p-4 text-center">
+                    <div class="d-flex justify-content-center align-items-center mb-3">
+                      <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="icofont-upload me-2"></i>Upload File
+                      </button>
+                      <input type="file" class="d-none" #fileInput multiple (change)="onFileSelected($event)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                      <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#" (click)="fileInput.click()">
+                          <i class="icofont-file-document me-2"></i>Choose Files
+                        </a>
+                      </div>
+                    </div>
+                    <p class="text-muted mb-0">You can upload a maximum of 10 files, 5MB each</p>
+                  </div>
+                </div>
+                
+                <!-- Uploaded Files List -->
+                <div class="col-12" *ngIf="uploadedDocuments.length > 0">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>File Name</th>
+                          <th>Size</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let doc of uploadedDocuments; let i = index">
+                          <td>
+                            <i class="icofont-file-document text-primary me-2"></i>
+                            {{ doc.name }}
+                          </td>
+                          <td>{{ (doc.size / 1024 / 1024).toFixed(2) }} MB</td>
+                          <td>
+                            <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeDocument(i)">
+                              <i class="icofont-trash"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Persons -->
+      <div class="row g-3 mb-3">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header py-3 bg-transparent border-bottom-0 d-flex justify-content-between align-items-center">
+              <h6 class="mb-0 fw-bold">Contact Persons</h6>
+              <button type="button" class="btn btn-sm btn-primary" (click)="addContactPerson()">
+                <i class="icofont-plus me-1"></i>Add Contact Person
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive" *ngIf="contactPersons.length > 0">
+                <table class="table table-bordered">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Salutation</th>
+                      <th>First Name</th>
+                      <th>Last Name</th>
+                      <th>Email Address</th>
+                      <th>Work Phone</th>
+                      <th>Mobile</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let contact of contactPersons; let i = index">
+                      <td>
+                        <select class="form-select form-select-sm" [(ngModel)]="contact.salutation" [ngModelOptions]="{standalone: true}">
+                          <option value="">Select</option>
+                          <option *ngFor="let salutation of salutationOptions" [value]="salutation.value">
+                            {{ salutation.label }}
+                          </option>
+                        </select>
+                      </td>
+                      <td>
+                        <input type="text" class="form-control form-control-sm" [(ngModel)]="contact.firstName" [ngModelOptions]="{standalone: true}" placeholder="First Name">
+                      </td>
+                      <td>
+                        <input type="text" class="form-control form-control-sm" [(ngModel)]="contact.lastName" [ngModelOptions]="{standalone: true}" placeholder="Last Name">
+                      </td>
+                      <td>
+                        <input type="email" class="form-control form-control-sm" [(ngModel)]="contact.email" [ngModelOptions]="{standalone: true}" placeholder="Email">
+                      </td>
+                      <td>
+                        <input type="tel" class="form-control form-control-sm" [(ngModel)]="contact.workPhone" [ngModelOptions]="{standalone: true}" placeholder="Work Phone">
+                      </td>
+                      <td>
+                        <input type="tel" class="form-control form-control-sm" [(ngModel)]="contact.mobile" [ngModelOptions]="{standalone: true}" placeholder="Mobile">
+                      </td>
+                      <td>
+                        <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeContactPerson(i)">
+                          <i class="icofont-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div *ngIf="contactPersons.length === 0" class="text-center text-muted py-4">
+                <i class="icofont-users fs-1 mb-3 d-block"></i>
+                <p>No contact persons added yet. Click "Add Contact Person" to get started.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </form>
     <!-- Row end  -->
   </div>

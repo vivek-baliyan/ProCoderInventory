@@ -1,6 +1,8 @@
+import { CustomerType } from "../../../modules/features/customer/enums";
+
 export interface CustomerFilter {
   searchTerm?: string;
-  customerType?: 'Individual' | 'Business' | '';
+  customerType?: CustomerType;
   status?: 'ACTIVE' | 'INACTIVE' | '';
   countryId?: number;
   stateId?: number;

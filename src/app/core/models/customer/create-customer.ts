@@ -1,30 +1,57 @@
+import { CustomerType } from "../../../modules/features/customer/enums";
+
 export interface CreateCustomer {
-  customerName: string;
-  displayName?: string;
+  customerType: CustomerType;
+  salutation: string;
+  firstName: string;
+  lastName: string;
+  displayName: string;
   companyName?: string;
-  customerType: 'Individual' | 'Business';
   email: string;
   phone?: string;
   mobile?: string;
   website?: string;
   
-  // Address Information
-  addressLine1?: string;
-  addressLine2?: string;
-  city?: string;
-  stateId?: number;
-  countryId?: number;
-  postalCode?: string;
+  // Billing Address Information
+  billingAddressLine1?: string;
+  billingAddressLine2?: string;
+  billingCity?: string;
+  billingStateId?: number;
+  billingCountryId?: number;
+  billingPostalCode?: string;
+  
+  // Shipping Address Information
+  shippingAddressLine1?: string;
+  shippingAddressLine2?: string;
+  shippingCity?: string;
+  shippingStateId?: number;
+  shippingCountryId?: number;
+  shippingPostalCode?: string;
   
   // Business Settings
   creditLimit?: number;
   paymentTerms?: string;
   status: 'ACTIVE' | 'INACTIVE';
-  taxId?: string;
+  pan?: string;
   currencyId?: number;
+  priceListId?: number;
   
   // Additional Information
-  notes?: string;
   allowBackOrders?: boolean;
   sendStatements?: boolean;
+  
+  // Contact Persons
+  contactPersons?: ContactPerson[];
+  
+  // Documents
+  documents?: File[];
+}
+
+export interface ContactPerson {
+  salutation: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  workPhone: string;
+  mobile: string;
 }
