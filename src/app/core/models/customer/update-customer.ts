@@ -1,4 +1,4 @@
-import { CustomerType } from "../../../modules/features/customer/enums";
+import { CustomerType } from "../../../modules/features/customer/enums/customer-type.enum";
 
 export interface UpdateCustomer {
   id: number;

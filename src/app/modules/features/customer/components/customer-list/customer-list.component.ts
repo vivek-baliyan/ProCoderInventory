@@ -10,7 +10,7 @@ import { debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { NotificationService } from '../../../../../core/services/notification.service';
-import { CustomerType } from '../../enums';
+import { CustomerType } from '../../enums/customer-type.enum';
 
 export interface BulkAction {
   action: 'delete' | 'activate' | 'deactivate' | 'export';

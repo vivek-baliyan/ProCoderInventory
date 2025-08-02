@@ -265,28 +265,7 @@
                       ></i>
                     </th>
                     <th>Phone</th>
-                    <th>Location</th>
-                    <th
-                      class="sortable"
-                      (click)="onSort('creditLimit')"
-                      [class.sorted]="sortColumn === 'creditLimit'"
-                    >
-                      Credit Limit
-                      <i
-                        class="icofont-caret-up"
-                        *ngIf="
-                          sortColumn === 'creditLimit' &&
-                          sortDirection === 'asc'
-                        "
-                      ></i>
-                      <i
-                        class="icofont-caret-down"
-                        *ngIf="
-                          sortColumn === 'creditLimit' &&
-                          sortDirection === 'desc'
-                        "
-                      ></i>
-                    </th>
+                    
                     <th>Status</th>
                     <th width="120">Actions</th>
                   </tr>
@@ -346,30 +325,7 @@
                     </td>
                     <td>{{ customer.email }}</td>
                     <td>{{ customer.phoneNumber || "-" }}</td>
-                    <td>
-                      <div>
-                        <div *ngIf="customer.city">{{ customer.city }}</div>
-                        <small class="text-muted" *ngIf="customer.state">{{
-                          customer.state
-                        }}</small>
-                        <small
-                          class="text-muted d-block"
-                          *ngIf="customer.country"
-                          >{{ customer.country }}</small
-                        >
-                      </div>
-                    </td>
-                    <td>
-                      <div class="text-end">
-                        <div class="fw-bold" *ngIf="customer.creditLimit">
-                          {{ customer.currencyName || "$"
-                          }}{{ customer.creditLimit | number : "1.2-2" }}
-                        </div>
-                        <small class="text-muted" *ngIf="!customer.creditLimit"
-                          >No limit</small
-                        >
-                      </div>
-                    </td>
+                   
                     <td>
                       <span [class]="getStatusBadgeClass(customer.status)">
                         {{ customer.status }}

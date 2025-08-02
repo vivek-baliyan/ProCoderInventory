@@ -9,7 +9,7 @@ import { CurrencyService } from '../../../../master/services/currency.service';
 import { CreateCustomer } from '../../../../../core/models/customer/create-customer';
 import { Dropdown } from '../../../../../core/models/master/dropdown';
 import { forkJoin } from 'rxjs';
-import { CustomerType } from '../../enums';
+import { CustomerType } from '../../enums/customer-type.enum';
 
 @Component({
   selector: 'app-customer-add',

@@ -1,4 +1,4 @@
-import { CustomerType } from "../../../modules/features/customer/enums";
+import { CustomerType } from "../../../modules/features/customer/enums/customer-type.enum";
 
 export interface Customer {
   id: number;
@@ -7,11 +7,11 @@ export interface Customer {
   salutation: string;
   firstName: string;
   lastName: string;
-  customerName: string;
+  displayName: string;
   companyName?: string;
   email: string;
-  workPhone?: string;
-  mobile?: string;
+  phoneNumber?: string;
+  mobileNumber?: string;
   websiteUrl?: string;
   
   // Billing Address Information

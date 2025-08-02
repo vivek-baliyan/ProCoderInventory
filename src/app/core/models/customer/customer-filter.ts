@@ -1,4 +1,4 @@
-import { CustomerType } from "../../../modules/features/customer/enums";
+import { CustomerType } from '../../../modules/features/customer/enums/customer-type.enum';
 
 export interface CustomerFilter {
   searchTerm?: string;
@@ -11,11 +11,11 @@ export interface CustomerFilter {
   creditLimitMax?: number;
   createdDateFrom?: Date;
   createdDateTo?: Date;
-  
+
   // Pagination
   pageIndex: number;
   pageSize: number;
-  
+
   // Sorting
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';

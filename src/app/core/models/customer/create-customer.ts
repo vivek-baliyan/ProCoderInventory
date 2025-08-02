@@ -1,4 +1,6 @@
-import { CustomerType } from "../../../modules/features/customer/enums";
+import { CustomerType } from "../../../modules/features/customer/enums/customer-type.enum";
+import { ContactPerson } from "./contact-person";
+import { CustomerAddress } from "./customer-address";
 
 export interface CreateCustomer {
   customerType: CustomerType;
@@ -12,21 +14,9 @@ export interface CreateCustomer {
   mobile?: string;
   website?: string;
   
-  // Billing Address Information
-  billingAddressLine1?: string;
-  billingAddressLine2?: string;
-  billingCity?: string;
-  billingStateId?: number;
-  billingCountryId?: number;
-  billingPostalCode?: string;
+  billingAddress: CustomerAddress;
   
-  // Shipping Address Information
-  shippingAddressLine1?: string;
-  shippingAddressLine2?: string;
-  shippingCity?: string;
-  shippingStateId?: number;
-  shippingCountryId?: number;
-  shippingPostalCode?: string;
+  shippingAddress?: CustomerAddress;
   
   // Business Settings
   creditLimit?: number;
@@ -45,13 +35,4 @@ export interface CreateCustomer {
   
   // Documents
   documents?: File[];
-}
-
-export interface ContactPerson {
-  salutation: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  workPhone: string;
-  mobile: string;
 }
