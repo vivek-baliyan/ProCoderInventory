@@ -1,0 +1,92 @@
+<div class="autocomplete-container position-relative">
+  <div class="input-group">
+    <input
+      #searchInput
+      type="text"
+      class="form-control"
+      [placeholder]="placeholder"
+      [formControl]="searchControl"
+      (focus)="onInputFocus()"
+      (blur)="onInputBlur()"
+      autocomplete="off"
+    />
+    <button 
+      class="btn btn-outline-secondary" 
+      type="button" 
+      (click)="toggleDropdown()"
+    >
+      <i class="icofont-search-1"></i>
+    </button>
+    <button 
+      *ngIf="selectedItem"
+      class="btn btn-outline-secondary" 
+      type="button" 
+      (click)="clearSelection()"
+      title="Clear selection"
+    >
+      <i class="icofont-close"></i>
+    </button>
+  </div>
+
+  <!-- Dropdown -->
+  <div 
+    class="autocomplete-dropdown" 
+    *ngIf="showDropdown && (filteredItems$ | async) as items"
+    [class.show]="showDropdown"
+    (mousedown)="$event.preventDefault()"
+  >
+    <!-- Search in dropdown -->
+    <div class="dropdown-search p-2">
+      <input
+        type="text"
+        class="form-control form-control-sm"
+        placeholder="Search..."
+        [value]="searchControl.value || ''"
+        (input)="searchControl.setValue($any($event.target).value)"
+      />
+    </div>
+
+    <!-- Results -->
+    <div class="dropdown-results">
+      <div 
+        *ngFor="let item of items; trackBy: trackByItemId" 
+        class="dropdown-item-custom"
+        (mousedown)="selectItem(item)"
+      >
+        <div class="d-flex align-items-center p-2">
+          <div class="item-avatar me-3">
+            {{ getItemInitials(item.label) }}
+          </div>
+          <div class="flex-grow-1">
+            <div class="fw-medium text-dark">{{ item.label }}</div>
+            <small class="text-muted" *ngIf="item.description">
+              <i class="icofont-building me-1"></i>{{ item.description }}
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <!-- No results -->
+      <div *ngIf="items.length === 0 && (searchControl.value?.length || 0) >= minSearchLength" class="dropdown-no-results p-3 text-center text-muted">
+        <i class="icofont-search-1 me-2"></i>
+        No results found
+      </div>
+
+      <!-- Add new option - always show when dropdown is open -->
+      <div 
+        *ngIf="showAddNew" 
+        class="dropdown-item-custom add-new border-top"
+        (mousedown)="addNew()"
+      >
+        <div class="d-flex align-items-center p-2">
+          <div class="add-icon me-3">
+            <i class="icofont-plus"></i>
+          </div>
+          <div class="text-primary">
+            <strong>{{ addNewText }}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -9,6 +9,8 @@ import { UpdateCustomer } from '../../../../core/models/customer/update-customer
 import { CustomerListItem } from '../../../../core/models/customer/customer-list-item';
 import { CustomerFilter } from '../../../../core/models/customer/customer-filter';
 import { PaginatedResult } from '../../../../core/models/common/paginated-result';
+import { Dropdown } from '../../../../core/models/master/dropdown';
+import { CustomerAutocomplete } from '../../../../core/models/customer/customer-autocomplete';
 
 @Injectable({
   providedIn: 'root'
@@ -80,10 +82,14 @@ export class CustomerService {
     return this.filterCustomers(filter);
   }
 
-  // Get Customer Dropdown Options
-  getCustomerDropdown(): Observable<ApiResponse<{id: number, name: string}[]>> {
-    return this.httpClient.get<ApiResponse<{id: number, name: string}[]>>(
-      `${environment.apiBaseUrl}/Customer/dropdown`
+ getCustomerAutocomplete(searchTerm: string): Observable<ApiResponse<CustomerAutocomplete[]>> {
+    const params = new HttpParams()
+      .set('searchTerm', searchTerm)
+      .set('limit', '10');
+    
+    return this.httpClient.get<ApiResponse<CustomerAutocomplete[]>>(
+      `${environment.apiBaseUrl}/Customer/autocomplete`,
+      { params }
     );
   }
 }

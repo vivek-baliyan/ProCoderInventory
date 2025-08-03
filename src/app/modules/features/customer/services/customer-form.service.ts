@@ -4,8 +4,7 @@ import { forkJoin, Observable } from 'rxjs';
 import { CountryService } from '../../../master/services/country.service';
 import { StateService } from '../../../master/services/state.service';
 import { CurrencyService } from '../../../master/services/currency.service';
-import { Dropdown } from '../../../../core/models/master/dropdown';
-import { CustomerType } from '../enums';
+import { CustomerType } from '../enums/customer-type.enum';
 
 @Injectable({
   providedIn: 'root'

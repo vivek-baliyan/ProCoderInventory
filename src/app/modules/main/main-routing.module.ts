@@ -49,6 +49,13 @@ const routes: Routes = [
             (m) => m.CustomerModule
           ),
       },
+      {
+        path: 'sales',
+        loadChildren: () =>
+          import('../features/sales/sales.module').then(
+            (m) => m.SalesModule
+          ),
+      },
     ],
   },
 ];

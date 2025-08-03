@@ -8,10 +8,11 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ImageUploaderComponent } from './components/image-uploader/image-uploader.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ImageCropperComponent } from './components/image-cropper/image-cropper.component';
 import { ContactPersonsComponent } from './components/contact-persons/contact-persons.component';
 import { DocumentUploadComponent } from './components/document-upload/document-upload.component';
+import { AutocompleteComponent } from './components/autocomplete/autocomplete.component';
 
 @NgModule({
   declarations: [
@@ -22,11 +23,13 @@ import { DocumentUploadComponent } from './components/document-upload/document-u
     ImageCropperComponent,
     ContactPersonsComponent,
     DocumentUploadComponent,
+    AutocompleteComponent,
   ],
   imports: [
     CommonModule,
     RouterModule,
     FormsModule,
+    ReactiveFormsModule,
     BsDropdownModule,
     ModalModule,
     CollapseModule,
@@ -40,6 +43,7 @@ import { DocumentUploadComponent } from './components/document-upload/document-u
     ImageCropperComponent,
     ContactPersonsComponent,
     DocumentUploadComponent,
+    AutocompleteComponent,
   ],
 })
 export class SharedModule {}

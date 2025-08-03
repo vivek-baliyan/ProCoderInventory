@@ -1,5 +1,9 @@
-/* Custom Autocomplete Dropdown Styles */
-.custom-autocomplete-dropdown {
+.autocomplete-container {
+  width: 100%;
+}
+
+/* Dropdown Styles */
+.autocomplete-dropdown {
   position: absolute;
   top: 100%;
   left: 0;
@@ -9,20 +13,20 @@
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 1050;
-  max-height: 300px;
+  max-height: 350px;
   overflow: hidden;
   opacity: 0;
   transform: translateY(-10px);
   transition: all 0.2s ease-in-out;
 }
 
-.custom-autocomplete-dropdown.show {
+.autocomplete-dropdown.show {
   opacity: 1;
   transform: translateY(0);
 }
 
 .dropdown-results {
-  max-height: 250px;
+  max-height: 280px;
   overflow-y: auto;
 }
 
@@ -53,8 +57,13 @@
   background-color: #e3f2fd;
 }
 
-/* Customer Avatar Styles */
-.customer-avatar {
+.dropdown-no-results {
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Avatar Styles */
+.item-avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -68,11 +77,11 @@
   text-transform: uppercase;
 }
 
-.customer-avatar:nth-child(odd) {
+.item-avatar:nth-child(odd) {
   background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
 }
 
-.customer-avatar:nth-child(even) {
+.item-avatar:nth-child(even) {
   background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
 }
 
@@ -105,15 +114,19 @@
   box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
 }
 
-/* Selected Customer Display */
-.selected-customer {
-  background-color: #e3f2fd;
-  border-color: #1976d2;
+/* Input Group Button Styling */
+.btn-outline-secondary {
+  border-color: #ced4da;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #6c757d;
+  border-color: #6c757d;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .custom-autocomplete-dropdown {
+  .autocomplete-dropdown {
     left: -15px;
     right: -15px;
   }
@@ -136,4 +149,16 @@
 
 .dropdown-results::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
+}
+
+/* Selected state */
+.autocomplete-container .form-control:focus {
+  border-color: #4A90E2;
+  box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+}
+
+/* Disabled state */
+.autocomplete-container .form-control:disabled {
+  background-color: #e9ecef;
+  opacity: 1;
 }
