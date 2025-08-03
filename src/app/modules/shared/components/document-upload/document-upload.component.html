@@ -1,0 +1,73 @@
+<!-- Documents -->
+<div class="card">
+  <div class="card-header py-3 bg-transparent border-bottom-0">
+    <h6 class="mb-0 fw-bold">{{ title }}</h6>
+  </div>
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-12" *ngIf="!readonly">
+        <div class="border-dashed border-2 border-secondary rounded p-4 text-center">
+          <div class="d-flex justify-content-center align-items-center mb-3">
+            <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+              <i class="icofont-upload me-2"></i>Upload File
+            </button>
+            <input 
+              type="file" 
+              class="d-none" 
+              #fileInput 
+              multiple 
+              (change)="onFileSelected($event)" 
+              [accept]="acceptedTypes"
+            >
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="#" (click)="fileInput.click()">
+                <i class="icofont-file-document me-2"></i>Choose Files
+              </a>
+            </div>
+          </div>
+          <p class="text-muted mb-0">
+            You can upload a maximum of {{ maxFiles }} files, {{ getFileSizeText(maxFileSize) }} each
+          </p>
+        </div>
+      </div>
+      
+      <!-- Uploaded Files List -->
+      <div class="col-12" *ngIf="documents.length > 0">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>File Name</th>
+                <th>Size</th>
+                <th *ngIf="!readonly">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let doc of documents; let i = index">
+                <td>
+                  <i [class]="getFileIcon(doc.name)" class="text-primary me-2"></i>
+                  {{ doc.name }}
+                </td>
+                <td>{{ getFileSize(doc) }}</td>
+                <td *ngIf="!readonly">
+                  <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeDocument(i)">
+                    <i class="icofont-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- No Documents Message -->
+      <div class="col-12" *ngIf="documents.length === 0">
+        <div class="text-center text-muted py-4">
+          <i class="icofont-file-document fs-1 mb-3 d-block"></i>
+          <p *ngIf="!readonly">No documents uploaded yet. Click "Upload File" to get started.</p>
+          <p *ngIf="readonly">No documents available.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

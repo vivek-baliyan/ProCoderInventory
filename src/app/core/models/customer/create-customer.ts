@@ -10,9 +10,9 @@ export interface CreateCustomer {
   displayName: string;
   companyName?: string;
   email: string;
-  phone?: string;
-  mobile?: string;
-  website?: string;
+  phoneNumber?: string;
+  mobileNumber?: string;
+  websiteUrl?: string;
   
   billingAddress: CustomerAddress;
   

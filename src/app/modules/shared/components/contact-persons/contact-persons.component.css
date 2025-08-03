@@ -1,0 +1,15 @@
+/* Contact Persons Component Styles */
+.table-responsive {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.form-control-sm[readonly] {
+  background-color: #f8f9fa;
+  opacity: 1;
+}
+
+.form-select-sm[disabled] {
+  background-color: #f8f9fa;
+  opacity: 1;
+}

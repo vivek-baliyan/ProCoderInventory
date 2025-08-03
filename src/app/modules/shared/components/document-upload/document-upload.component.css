@@ -1,0 +1,27 @@
+/* Document Upload Component Styles */
+.border-dashed {
+  border-style: dashed !important;
+}
+
+.table-responsive {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.btn-outline-primary:hover {
+  color: #fff;
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.file-icon {
+  font-size: 1.2rem;
+}
+
+.upload-area {
+  transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+  background-color: #f8f9fa;
+}

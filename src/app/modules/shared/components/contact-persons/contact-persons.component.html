@@ -1,0 +1,113 @@
+<!-- Contact Persons -->
+<div class="card">
+  <div class="card-header py-3 bg-transparent border-bottom-0 d-flex justify-content-between align-items-center">
+    <h6 class="mb-0 fw-bold">Contact Persons</h6>
+    <button 
+      type="button" 
+      class="btn btn-sm btn-primary" 
+      (click)="addContactPerson()"
+      *ngIf="!readonly"
+    >
+      <i class="icofont-plus me-1"></i>Add Contact Person
+    </button>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive" *ngIf="contacts.length > 0">
+      <table class="table table-bordered">
+        <thead class="table-light">
+          <tr>
+            <th>Salutation</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email Address</th>
+            <th>Work Phone</th>
+            <th>Mobile</th>
+            <th *ngIf="!readonly">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let contact of contacts; let i = index">
+            <td>
+              <select 
+                class="form-select form-select-sm" 
+                [(ngModel)]="contact.salutation" 
+                [ngModelOptions]="{standalone: true}"
+                [disabled]="readonly"
+                (ngModelChange)="onContactChange()"
+              >
+                <option value="">Select</option>
+                <option *ngFor="let salutation of salutationOptions" [value]="salutation.value">
+                  {{ salutation.label }}
+                </option>
+              </select>
+            </td>
+            <td>
+              <input 
+                type="text" 
+                class="form-control form-control-sm" 
+                [(ngModel)]="contact.firstName" 
+                [ngModelOptions]="{standalone: true}" 
+                placeholder="First Name"
+                [readonly]="readonly"
+                (ngModelChange)="onContactChange()"
+              >
+            </td>
+            <td>
+              <input 
+                type="text" 
+                class="form-control form-control-sm" 
+                [(ngModel)]="contact.lastName" 
+                [ngModelOptions]="{standalone: true}" 
+                placeholder="Last Name"
+                [readonly]="readonly"
+                (ngModelChange)="onContactChange()"
+              >
+            </td>
+            <td>
+              <input 
+                type="email" 
+                class="form-control form-control-sm" 
+                [(ngModel)]="contact.email" 
+                [ngModelOptions]="{standalone: true}" 
+                placeholder="Email"
+                [readonly]="readonly"
+                (ngModelChange)="onContactChange()"
+              >
+            </td>
+            <td>
+              <input 
+                type="tel" 
+                class="form-control form-control-sm" 
+                [(ngModel)]="contact.phoneNumber" 
+                [ngModelOptions]="{standalone: true}" 
+                placeholder="Work Phone"
+                [readonly]="readonly"
+                (ngModelChange)="onContactChange()"
+              >
+            </td>
+            <td>
+              <input 
+                type="tel" 
+                class="form-control form-control-sm" 
+                [(ngModel)]="contact.mobileNumber" 
+                [ngModelOptions]="{standalone: true}" 
+                placeholder="Mobile"
+                [readonly]="readonly"
+                (ngModelChange)="onContactChange()"
+              >
+            </td>
+            <td *ngIf="!readonly">
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeContactPerson(i)">
+                <i class="icofont-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf="contacts.length === 0" class="text-center text-muted py-4">
+      <i class="icofont-users fs-1 mb-3 d-block"></i>
+      <p>No contact persons added yet. Click "Add Contact Person" to get started.</p>
+    </div>
+  </div>
+</div>

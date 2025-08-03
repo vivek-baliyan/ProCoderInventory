@@ -10,6 +10,8 @@ import { RouterModule } from '@angular/router';
 import { ImageUploaderComponent } from './components/image-uploader/image-uploader.component';
 import { FormsModule } from '@angular/forms';
 import { ImageCropperComponent } from './components/image-cropper/image-cropper.component';
+import { ContactPersonsComponent } from './components/contact-persons/contact-persons.component';
+import { DocumentUploadComponent } from './components/document-upload/document-upload.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +20,8 @@ import { ImageCropperComponent } from './components/image-cropper/image-cropper.
     SettingsModalComponent,
     ImageUploaderComponent,
     ImageCropperComponent,
+    ContactPersonsComponent,
+    DocumentUploadComponent,
   ],
   imports: [
     CommonModule,
@@ -34,6 +38,8 @@ import { ImageCropperComponent } from './components/image-cropper/image-cropper.
     SettingsModalComponent,
     ImageUploaderComponent,
     ImageCropperComponent,
+    ContactPersonsComponent,
+    DocumentUploadComponent,
   ],
 })
 export class SharedModule {}

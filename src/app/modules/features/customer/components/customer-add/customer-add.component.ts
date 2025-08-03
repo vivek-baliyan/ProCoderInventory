@@ -198,38 +198,12 @@ export class CustomerAddComponent implements OnInit {
     }
   }
 
-  addContactPerson(): void {
-    this.customerContacts.push({
-      customerId: 0,
-      contactType: ContactType.Secondary,
-      salutation: '',
-      firstName: '',
-      lastName: '',
-      email: '',
-      phoneNumber: '',
-      mobileNumber: '',
-      isPrimary: false,
-      isActive: true
-    });
+  onContactsChange(contacts: CustomerContact[]): void {
+    this.customerContacts = contacts;
   }
 
-  removeContactPerson(index: number): void {
-    this.customerContacts.splice(index, 1);
-  }
-
-  onFileSelected(event: any): void {
-    const files = event.target.files;
-    if (files) {
-      for (let file of files) {
-        if (this.uploadedDocuments.length < 10 && file.size <= 5 * 1024 * 1024) {
-          this.uploadedDocuments.push(file);
-        }
-      }
-    }
-  }
-
-  removeDocument(index: number): void {
-    this.uploadedDocuments.splice(index, 1);
+  onDocumentsChange(documents: File[]): void {
+    this.uploadedDocuments = documents;
   }
 
   isFieldInvalid(fieldName: string): boolean {
@@ -281,9 +255,9 @@ export class CustomerAddComponent implements OnInit {
         displayName: formData.displayName,
         companyName: formData.companyName,
         email: formData.email,
-        phone: formData.phone,
-        mobile: formData.mobile,
-        website: formData.website,
+        phoneNumber: formData.phone,
+        mobileNumber: formData.mobile,
+        websiteUrl: formData.website,
         billingAddress: billingAddress,
         shippingAddress: shippingAddress,
         creditLimit: formData.creditLimit || 0,
