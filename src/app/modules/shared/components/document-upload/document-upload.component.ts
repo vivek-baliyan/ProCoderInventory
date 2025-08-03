@@ -17,21 +17,49 @@ export class DocumentUploadComponent {
 
   onFileSelected(event: any): void {
     const files = event.target.files;
-    if (files) {
-      for (let file of files) {
-        if (this.documents.length < this.maxFiles && file.size <= this.maxFileSize) {
-          this.documents.push(file);
-        } else if (this.documents.length >= this.maxFiles) {
+    if (files && files.length > 0) {
+      const newFiles: File[] = [];
+      
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        
+        // Check if we've reached the maximum number of files
+        if (this.documents.length + newFiles.length >= this.maxFiles) {
           console.warn(`Maximum ${this.maxFiles} files allowed`);
           break;
-        } else if (file.size > this.maxFileSize) {
-          console.warn(`File ${file.name} exceeds maximum size of ${this.getFileSizeText(this.maxFileSize)}`);
         }
+        
+        // Check file size
+        if (file.size > this.maxFileSize) {
+          console.warn(`File ${file.name} exceeds maximum size of ${this.getFileSizeText(this.maxFileSize)}`);
+          continue;
+        }
+        
+        // Check file type
+        if (this.acceptedTypes && !this.isFileTypeAccepted(file)) {
+          console.warn(`File type ${file.type} is not accepted`);
+          continue;
+        }
+        
+        newFiles.push(file);
       }
+      
+      // Add new files to the existing documents array
+      this.documents.push(...newFiles);
       this.documentsChange.emit(this.documents);
+      
       // Clear the input to allow selecting the same file again if needed
       event.target.value = '';
     }
+  }
+
+  private isFileTypeAccepted(file: File): boolean {
+    if (!this.acceptedTypes) return true;
+    
+    const acceptedExtensions = this.acceptedTypes.split(',').map(ext => ext.trim().toLowerCase());
+    const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+    
+    return acceptedExtensions.includes(fileExtension);
   }
 
   removeDocument(index: number): void {

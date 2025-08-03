@@ -23,6 +23,7 @@ export class ContactPersonsComponent {
 
   addContactPerson(): void {
     const newContact: CustomerContact = {
+      id: 0,
       customerId: 0,
       contactType: ContactType.Secondary,
       salutation: '',

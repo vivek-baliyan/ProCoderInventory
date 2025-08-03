@@ -7,10 +7,13 @@ import { CountryService } from '../../../../master/services/country.service';
 import { StateService } from '../../../../master/services/state.service';
 import { CurrencyService } from '../../../../master/services/currency.service';
 import { UpdateCustomer } from '../../../../../core/models/customer/update-customer';
+import { CustomerAddress } from '../../../../../core/models/customer/customer-address';
 import { Customer } from '../../../../../core/models/customer/customer';
 import { Dropdown } from '../../../../../core/models/master/dropdown';
 import { forkJoin } from 'rxjs';
 import { CustomerType } from '../../enums/customer-type.enum';
+import { AddressType } from '../../../../../core/enums/address-type';
+import { CustomerContact } from '../../../../../core/models/customer/customer-contact';
 
 @Component({
   selector: 'app-customer-edit',
@@ -37,7 +40,7 @@ export class CustomerEditComponent implements OnInit {
   customerId: number = 0;
   customer: Customer | null = null;
   uploadedDocuments: File[] = [];
-  contactPersons: any[] = [];
+  customerContacts: CustomerContact[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -89,7 +92,7 @@ export class CustomerEditComponent implements OnInit {
       copyBillingAddress: [false],
       creditLimit: [0, [Validators.min(0)]],
       paymentTerms: [''],
-      status: ['ACTIVE', [Validators.required]],
+      status: ['ACTIVE'],
       pan: [''],
       currencyId: [''],
       priceListId: [''],
@@ -104,59 +107,63 @@ export class CustomerEditComponent implements OnInit {
       next: (response) => {
         if (response.success && response.data) {
           this.customer = response.data;
+          this.customerContacts = this.customer.contactPersons || [];
           this.populateForm(this.customer);
         } else {
           console.error('Customer not found');
           this.router.navigate(['/app/customers/list']);
         }
         this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error loading customer:', error);
-        this.isLoading = false;
-        this.router.navigate(['/app/customers/list']);
-      },
+      }
     });
   }
 
   private populateForm(customer: Customer): void {
+    const primaryContact = customer.primaryContact;
+    const billingAddr = customer.billingAddress;
+    const shippingAddr = customer.shippingAddress;
+    
     this.customerForm.patchValue({
       customerType: customer.customerType?.toString(),
-      salutation: customer.salutation,
-      firstName: customer.firstName,
-      lastName: customer.lastName,
+      salutation: primaryContact?.salutation,
+      firstName: primaryContact?.firstName,
+      lastName: primaryContact?.lastName,
       displayName: customer.displayName,
       companyName: customer.companyName,
-      email: customer.email,
-      phone: customer.phoneNumber,
-      mobile: customer.mobileNumber,
+      email: primaryContact?.email,
+      phone: primaryContact?.phoneNumber,
+      mobile: primaryContact?.mobileNumber,
       website: customer.websiteUrl,
-      billingAddressLine1: customer.billingAddress,
-      billingAddressLine2: '',
-      billingCity: customer.city,
-      billingStateId: customer.stateId,
-      billingCountryId: customer.countryId,
-      billingPostalCode: customer.postalCode,
-      shippingAddressLine1: customer.shippingAddress || customer.billingAddress,
-      shippingAddressLine2: '',
-      shippingCity: customer.city,
-      shippingStateId: customer.stateId,
-      shippingCountryId: customer.countryId,
-      shippingPostalCode: customer.postalCode,
-      creditLimit: customer.creditLimit || 0,
-      paymentTerms: customer.paymentTermDays,
+      billingAddressLine1: billingAddr?.addressLine1,
+      billingAddressLine2: billingAddr?.addressLine2,
+      billingCity: billingAddr?.city,
+      billingStateId: billingAddr?.stateId?.toString(),
+      billingCountryId: billingAddr?.countryId?.toString(),
+      billingPostalCode: billingAddr?.postalCode,
+      shippingAddressLine1: shippingAddr?.addressLine1 || billingAddr?.addressLine1,
+      shippingAddressLine2: shippingAddr?.addressLine2 || billingAddr?.addressLine2,
+      shippingCity: shippingAddr?.city || billingAddr?.city,
+      shippingStateId: shippingAddr?.stateId?.toString() || billingAddr?.stateId?.toString(),
+      shippingCountryId: shippingAddr?.countryId?.toString() || billingAddr?.countryId?.toString(),
+      shippingPostalCode: shippingAddr?.postalCode || billingAddr?.postalCode,
+      creditLimit: customer.financial?.creditLimit || 0,
+      paymentTerms: customer.financial?.paymentTermDays?.toString(),
       status: customer.isActive ? 'ACTIVE' : 'INACTIVE',
       pan: customer.panNumber,
-      currencyId: customer.currencyId,
-      priceListId: customer.priceListId,
+      currencyId: customer.currencyId?.toString(),
+      priceListId: customer.priceListId?.toString(),
       allowBackOrders: customer.allowBackOrders || false,
       sendStatements: customer.sendStatements !== false,
     });
 
     // Load states for the selected countries
-    if (customer.countryId) {
-      this.loadStatesForCountry(customer.countryId, 'billing');
-      this.loadStatesForCountry(customer.countryId, 'shipping');
+    if (billingAddr?.countryId) {
+      this.loadStatesForCountry(billingAddr.countryId, 'billing');
+    }
+    if (shippingAddr?.countryId) {
+      this.loadStatesForCountry(shippingAddr.countryId, 'shipping');
+    } else if (billingAddr?.countryId) {
+      this.loadStatesForCountry(billingAddr.countryId, 'shipping');
     }
   }
 
@@ -173,10 +180,7 @@ export class CustomerEditComponent implements OnInit {
         if (response.currencies.success && response.currencies.data) {
           this.currencyOptions = response.currencies.data;
         }
-      },
-      error: (error) => {
-        console.error('Error loading dropdown data:', error);
-      },
+      }
     });
   }
 
@@ -215,15 +219,7 @@ export class CustomerEditComponent implements OnInit {
             this.shippingStateOptions = [];
           }
         }
-      },
-      error: (error) => {
-        console.error('Error loading states:', error);
-        if (addressType === 'billing') {
-          this.billingStateOptions = [];
-        } else {
-          this.shippingStateOptions = [];
-        }
-      },
+      }
     });
   }
 
@@ -250,37 +246,12 @@ export class CustomerEditComponent implements OnInit {
     }
   }
 
-  addContactPerson(): void {
-    this.contactPersons.push({
-      salutation: '',
-      firstName: '',
-      lastName: '',
-      email: '',
-      workPhone: '',
-      mobile: '',
-    });
+  onContactsChange(contacts: CustomerContact[]): void {
+    this.customerContacts = contacts;
   }
 
-  removeContactPerson(index: number): void {
-    this.contactPersons.splice(index, 1);
-  }
-
-  onFileSelected(event: any): void {
-    const files = event.target.files;
-    if (files) {
-      for (let file of files) {
-        if (
-          this.uploadedDocuments.length < 10 &&
-          file.size <= 5 * 1024 * 1024
-        ) {
-          this.uploadedDocuments.push(file);
-        }
-      }
-    }
-  }
-
-  removeDocument(index: number): void {
-    this.uploadedDocuments.splice(index, 1);
+  onDocumentsChange(documents: File[]): void {
+    this.uploadedDocuments = documents;
   }
 
   isFieldInvalid(fieldName: string): boolean {
@@ -288,61 +259,85 @@ export class CustomerEditComponent implements OnInit {
     return !!(field && field.invalid && (field.dirty || field.touched));
   }
 
+  getFormValidationErrors(): any {
+    const formErrors: any = {};
+    
+    Object.keys(this.customerForm.controls).forEach(key => {
+      const controlErrors = this.customerForm.get(key)?.errors;
+      if (controlErrors) {
+        formErrors[key] = controlErrors;
+      }
+    });
+    
+    return formErrors;
+  }
+
   updateCustomer(): void {
+    console.log('Form Status:', this.customerForm.status);
+    console.log('Form Valid:', this.customerForm.valid);
+    console.log('Form Errors:', this.getFormValidationErrors());
+    
     if (this.customerForm.valid && this.customer) {
       this.isSaving = true;
       const formData = this.customerForm.value;
+      console.log('Form Data:', formData);
+      const billingAddress: CustomerAddress = {
+        id: this.customer.billingAddress?.id || 0,
+        customerId: this.customer.id,
+        addressType: AddressType.Billing,
+        addressLine1: formData.billingAddressLine1,
+        addressLine2: formData.billingAddressLine2,
+        city: formData.billingCity,
+        stateId: formData.billingStateId ? parseInt(formData.billingStateId) : undefined,
+        countryId: formData.billingCountryId ? parseInt(formData.billingCountryId) : undefined,
+        postalCode: formData.billingPostalCode,
+        isPrimary: true,
+        isActive: true
+      };
+
+      let shippingAddress: CustomerAddress | undefined;
+      if (formData.shippingAddressLine1 || formData.shippingCity || formData.shippingPostalCode) {
+        shippingAddress = {
+          id: this.customer.shippingAddress?.id || 0,
+          customerId: this.customer.id,
+          addressType: AddressType.Shipping,
+          addressLine1: formData.shippingAddressLine1,
+          addressLine2: formData.shippingAddressLine2,
+          city: formData.shippingCity,
+          stateId: formData.shippingStateId ? parseInt(formData.shippingStateId) : undefined,
+          countryId: formData.shippingCountryId ? parseInt(formData.shippingCountryId) : undefined,
+          postalCode: formData.shippingPostalCode,
+          isPrimary: false,
+          isActive: true
+        };
+      }
 
       const customerData: UpdateCustomer = {
         id: this.customer.id,
-        rowVersion: this.customer.rowVersion ?? 1,
         customerType: parseInt(formData.customerType),
         salutation: formData.salutation,
         firstName: formData.firstName,
         lastName: formData.lastName,
-        customerName:
-          formData.displayName ||
-          `${formData.firstName} ${formData.lastName}`.trim(),
+        displayName: formData.displayName,
         companyName: formData.companyName,
         email: formData.email,
-        workPhone: formData.phone || null,
-        mobile: formData.mobile || null,
+        phoneNumber: formData.phone,
+        mobileNumber: formData.mobile,
         websiteUrl: formData.website,
-        billingAddress: formData.billingAddressLine1,
-        billingAddressLine2: formData.billingAddressLine2,
-        billingCity: formData.billingCity,
-        billingStateId: formData.billingStateId
-          ? parseInt(formData.billingStateId)
-          : undefined,
-        billingCountryId: formData.billingCountryId
-          ? parseInt(formData.billingCountryId)
-          : undefined,
-        billingPostalCode: formData.billingPostalCode,
-        shippingAddress: formData.shippingAddressLine1,
-        shippingAddressLine2: formData.shippingAddressLine2,
-        shippingCity: formData.shippingCity,
-        shippingStateId: formData.shippingStateId
-          ? parseInt(formData.shippingStateId)
-          : undefined,
-        shippingCountryId: formData.shippingCountryId
-          ? parseInt(formData.shippingCountryId)
-          : undefined,
-        shippingPostalCode: formData.shippingPostalCode,
+        billingAddress: billingAddress,
+        shippingAddress: shippingAddress,
         creditLimit: formData.creditLimit || 0,
-        paymentTermDays: formData.paymentTerms,
-        isActive: formData.status === 'ACTIVE',
-        panNumber: formData.pan,
-        currencyId: formData.currencyId
-          ? parseInt(formData.currencyId)
-          : undefined,
-        priceListId: formData.priceListId
-          ? parseInt(formData.priceListId)
-          : undefined,
+        paymentTerms: formData.paymentTerms,
+        status: formData.status,
+        pan: formData.pan,
+        currencyId: formData.currencyId ? parseInt(formData.currencyId) : undefined,
+        priceListId: formData.priceListId ? parseInt(formData.priceListId) : undefined,
         allowBackOrders: formData.allowBackOrders || false,
         sendStatements: formData.sendStatements !== false,
-        notes: '',
+        contactPersons: this.customerContacts,
+        documents: this.uploadedDocuments
       };
-
+      
       this.customerService.updateCustomer(customerData).subscribe({
         next: (response) => {
           this.isSaving = false;
@@ -352,11 +347,7 @@ export class CustomerEditComponent implements OnInit {
           } else {
             console.error('Error updating customer:', response.message);
           }
-        },
-        error: (error) => {
-          this.isSaving = false;
-          console.error('Error updating customer:', error);
-        },
+        }
       });
     } else {
       Object.keys(this.customerForm.controls).forEach((key) => {

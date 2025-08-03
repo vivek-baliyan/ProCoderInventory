@@ -86,11 +86,7 @@ export class CustomerListComponent implements OnInit {
             this.customers = response.data.data;
             this.applyFilters();
           }
-        },
-        error: (error) => {
-          console.error('Search error:', error);
-          this.notificationService.showError('Error searching customers');
-        },
+        }
       });
   }
 
@@ -124,16 +120,7 @@ export class CustomerListComponent implements OnInit {
           this.totalItems = 0;
           this.totalPages = 0;
         }
-      },
-      error: (error) => {
-        this.loading = false;
-        console.error('Error loading customers:', error);
-        this.notificationService.showError('Error loading customers');
-        this.customers = [];
-        this.filteredCustomers = [];
-        this.totalItems = 0;
-        this.totalPages = 0;
-      },
+      }
     });
   }
 
@@ -143,10 +130,7 @@ export class CustomerListComponent implements OnInit {
         if (response.success && response.data) {
           this.countryOptions = response.data;
         }
-      },
-      error: (error) => {
-        console.error('Error loading countries:', error);
-      },
+      }
     });
   }
 
@@ -239,12 +223,7 @@ export class CustomerListComponent implements OnInit {
           );
         }
         this.modalRef?.hide();
-      },
-      error: (error) => {
-        console.error('Error deleting customer:', error);
-        this.notificationService.showError('Error deleting customer');
-        this.modalRef?.hide();
-      },
+      }
     });
   }
 
@@ -263,11 +242,7 @@ export class CustomerListComponent implements OnInit {
             response.message || 'Error updating customer status'
           );
         }
-      },
-      error: (error) => {
-        console.error('Error toggling customer status:', error);
-        this.notificationService.showError('Error updating customer status');
-      },
+      }
     });
   }
 

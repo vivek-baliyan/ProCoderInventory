@@ -154,13 +154,7 @@ export class ProductAddComponent implements OnInit {
           this.addProductForm.reset();
           this.uploadedImages = [];
           this.router.navigate(['/app/products/list']);
-        },
-        error: (error) => {
-          console.error('Error creating product:', error);
-          this.notificationService.showError(
-            'Failed to create product. Please try again.'
-          );
-        },
+        }
       });
     } else {
       console.log('Form is invalid');

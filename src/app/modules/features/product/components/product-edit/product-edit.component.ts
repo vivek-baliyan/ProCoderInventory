@@ -196,11 +196,6 @@ export class ProductEditComponent implements OnInit {
           this.notificationService.showSuccess('Product updated successfully!');
           this.router.navigate(['/app/products/list']);
           this.isSubmitting = false;
-        },
-        error: (error) => {
-          console.error('Error updating product:', error);
-          this.notificationService.showError('Failed to update product. Please try again.');
-          this.isSubmitting = false;
         }
       });
     } else {

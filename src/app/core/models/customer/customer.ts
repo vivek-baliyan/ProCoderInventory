@@ -1,45 +1,41 @@
 import { CustomerType } from "../../../modules/features/customer/enums/customer-type.enum";
+import { CustomerContact } from "./customer-contact";
+import { CustomerAddress } from "./customer-address";
+import { CustomerTaxInfo } from "./customer-tax-info";
+import { CustomerFinancial } from "./customer-financial";
 
 export interface Customer {
   id: number;
-  rowVersion: string;
-  customerType: CustomerType;
-  salutation: string;
-  firstName: string;
-  lastName: string;
+  customerCode?: string;
   displayName: string;
   companyName?: string;
-  email: string;
-  phoneNumber?: string;
-  mobileNumber?: string;
   websiteUrl?: string;
-  
-  // Billing Address Information
-  billingAddress?: string;
-  city?: string;
-  stateId?: number;
-  countryId?: number;
-  postalCode?: string;
-  
-  // Shipping Address Information
-  shippingAddress?: string;
-  
-  // Business Settings
-  creditLimit?: number;
-  paymentTermDays?: string;
-  isActive: boolean;
-  panNumber?: string;
+  customerType: CustomerType;
+  status: string;
+
+  financial?: CustomerFinancial;
+
   currencyId?: number;
+  currencyName?: string;
+  currencySymbol?: string;
+
   priceListId?: number;
-  
-  // Additional Information
-  notes?: string;
+  priceListName?: string;
+
   allowBackOrders?: boolean;
   sendStatements?: boolean;
-  
-  // Audit fields
-  createdOn?: Date;
-  modifiedOn?: Date;
-  createdBy?: string;
-  modifiedBy?: string;
+
+  isActive: boolean;
+  organisationId: number;
+
+  contactPersons: CustomerContact[];
+  addresses: CustomerAddress[];
+  taxInfos: CustomerTaxInfo[];
+
+  primaryContact?: CustomerContact;
+  billingAddress?: CustomerAddress;
+  shippingAddress?: CustomerAddress;
+  taxNumber?: string;
+  gstNumber?: string;
+  panNumber?: string;
 }

@@ -125,10 +125,6 @@ export class CustomerAddComponent implements OnInit {
         }
         
         this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error loading dropdown data:', error);
-        this.isLoading = false;
       }
     });
   }
@@ -164,14 +160,6 @@ export class CustomerAddComponent implements OnInit {
           } else {
             this.shippingStateOptions = [];
           }
-        }
-      },
-      error: (error) => {
-        console.error('Error loading states:', error);
-        if (addressType === 'billing') {
-          this.billingStateOptions = [];
-        } else {
-          this.shippingStateOptions = [];
         }
       }
     });
@@ -282,11 +270,6 @@ export class CustomerAddComponent implements OnInit {
           } else {
             console.error('Error creating customer:', response.message);
           }
-        },
-        error: (error) => {
-          this.isSaving = false;
-          console.error('Error saving customer:', error);
-          // Show error message (you can add a toast service here)
         }
       });
     } else {

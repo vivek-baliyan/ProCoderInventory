@@ -1,45 +1,39 @@
 import { CustomerType } from "../../../modules/features/customer/enums/customer-type.enum";
+import { CustomerContact } from "./customer-contact";
+import { CustomerAddress } from "./customer-address";
 
 export interface UpdateCustomer {
   id: number;
-  rowVersion: string;
   customerType: CustomerType;
   salutation: string;
   firstName: string;
   lastName: string;
-  customerName: string;
+  displayName: string;
   companyName?: string;
   email: string;
-  workPhone?: string;
-  mobile?: string;
+  phoneNumber?: string;
+  mobileNumber?: string;
   websiteUrl?: string;
   
-  // Billing Address Information
-  billingAddress?: string;
-  billingAddressLine2?: string;
-  billingCity?: string;
-  billingStateId?: number;
-  billingCountryId?: number;
-  billingPostalCode?: string;
+  billingAddress: CustomerAddress;
   
-  // Shipping Address Information
-  shippingAddress?: string;
-  shippingAddressLine2?: string;
-  shippingCity?: string;
-  shippingStateId?: number;
-  shippingCountryId?: number;
-  shippingPostalCode?: string;
+  shippingAddress?: CustomerAddress;
   
   // Business Settings
   creditLimit?: number;
-  paymentTermDays?: string;
-  isActive: boolean;
-  panNumber?: string;
+  paymentTerms?: string;
+  status: string;
+  pan?: string;
   currencyId?: number;
   priceListId?: number;
   
   // Additional Information
-  notes?: string;
   allowBackOrders?: boolean;
   sendStatements?: boolean;
+  
+  // Contact Persons
+  contactPersons?: CustomerContact[];
+  
+  // Documents
+  documents?: File[];
 }

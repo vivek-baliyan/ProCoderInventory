@@ -1,6 +1,7 @@
 import { ContactType } from "../../enums/contact-type";
 
 export interface CustomerContact {
+  id: number;
   customerId: number;
   contactType: ContactType;
   salutation: string;

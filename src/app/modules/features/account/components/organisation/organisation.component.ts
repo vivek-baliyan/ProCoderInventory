@@ -132,10 +132,7 @@ export class OrganisationComponent implements OnInit {
         next: (response) => {
           this.organisationData = response.data;
           console.log('Organisation created:', response.data);
-        },
-        error: (error) => {
-          console.error('Error updating organisation:', error);
-        },
+        }
       });
     }
   }

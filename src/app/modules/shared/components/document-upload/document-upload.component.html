@@ -8,8 +8,8 @@
       <div class="col-12" *ngIf="!readonly">
         <div class="border-dashed border-2 border-secondary rounded p-4 text-center">
           <div class="d-flex justify-content-center align-items-center mb-3">
-            <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
-              <i class="icofont-upload me-2"></i>Upload File
+            <button type="button" class="btn btn-outline-primary" (click)="fileInput.click()">
+              <i class="icofont-upload me-2"></i>Choose Files
             </button>
             <input 
               type="file" 
@@ -19,11 +19,6 @@
               (change)="onFileSelected($event)" 
               [accept]="acceptedTypes"
             >
-            <div class="dropdown-menu">
-              <a class="dropdown-item" href="#" (click)="fileInput.click()">
-                <i class="icofont-file-document me-2"></i>Choose Files
-              </a>
-            </div>
           </div>
           <p class="text-muted mb-0">
             You can upload a maximum of {{ maxFiles }} files, {{ getFileSizeText(maxFileSize) }} each
